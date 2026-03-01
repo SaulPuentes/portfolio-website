@@ -2,7 +2,7 @@
 
 import { useI18n } from "@/lib/i18n/context"
 import { cvFiles } from "@/lib/i18n"
-import { Download, ArrowDown, Globe } from "lucide-react"
+import { Download, ArrowDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export function HeroSection() {
@@ -46,16 +46,7 @@ export function HeroSection() {
                 <ArrowDown className="size-4" />
                 {t.hero.viewProjects}
               </Button>
-              <Button variant="outline" size="lg" asChild>
-                <a
-                  href="https://salsa-world.app"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Globe className="size-4" />
-                  {t.hero.salsaWorld}
-                </a>
-              </Button>
+
             </div>
           </div>
 

@@ -56,9 +56,6 @@ export function Header() {
             </button>
           ))}
 
-          {/* Theme Toggle */}
-          <ThemeToggle />
-
           {/* Language Switcher */}
           <div className="relative">
             <button
@@ -93,6 +90,9 @@ export function Header() {
               </div>
             )}
           </div>
+
+          {/* Theme Toggle */}
+          <ThemeToggle />
         </nav>
 
         {/* Mobile menu button */}
