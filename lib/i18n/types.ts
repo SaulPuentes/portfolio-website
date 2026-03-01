@@ -30,6 +30,8 @@ export interface Translations {
   }
   experience: {
     sectionTitle: string
+    viewMore: string
+    viewLess: string
   }
   projects: {
     sectionTitle: string

@@ -9,13 +9,13 @@ export function ContactSection() {
   const links = [
     {
       icon: Mail,
-      label: "saul@puentes.dev",
-      href: "mailto:saul@puentes.dev",
+      label: "hola@saulpuentes.com",
+      href: "mailto:hola@saulpuentes.com",
     },
     {
       icon: Linkedin,
       label: "LinkedIn",
-      href: "https://linkedin.com/in/saulpuentes",
+      href: "https://linkedin.com/in/saul-puentes",
     },
     {
       icon: Github,
