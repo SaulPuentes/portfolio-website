@@ -5,6 +5,7 @@ import { useI18n } from "@/lib/i18n/context"
 import { locales } from "@/lib/i18n"
 import { Menu, X, ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export function Header() {
   const { locale, setLocale, t } = useI18n()
@@ -54,6 +55,9 @@ export function Header() {
               {item.label}
             </button>
           ))}
+
+          {/* Theme Toggle */}
+          <ThemeToggle />
 
           {/* Language Switcher */}
           <div className="relative">
@@ -122,6 +126,10 @@ export function Header() {
               </button>
             ))}
             <div className="mt-2 border-t border-border pt-2">
+              <p className="px-3 pb-1 text-xs text-muted-foreground">Theme</p>
+              <div className="px-3 pb-2">
+                <ThemeToggle />
+              </div>
               <p className="px-3 pb-1 text-xs text-muted-foreground">Language</p>
               <div className="flex gap-1">
                 {locales.map((l) => (
