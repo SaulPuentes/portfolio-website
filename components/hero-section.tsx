@@ -9,32 +9,25 @@ export function HeroSection() {
   const { locale, t } = useI18n()
 
   return (
-    <section className="flex min-h-[85vh] flex-col justify-center px-4 pt-14 lg:px-8">
+    <section id="about" className="scroll-mt-16 flex min-h-[90vh] flex-col justify-center px-4 pt-16 lg:px-8">
       <div className="mx-auto w-full max-w-6xl">
-        <div className="grid gap-8 lg:grid-cols-5 lg:gap-12">
-          {/* Left - Name and title */}
-          <div className="lg:col-span-2">
-            <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
-              {"Full-Stack Engineer"}
-            </p>
-            <h1 className="text-4xl font-bold tracking-tight text-foreground lg:text-5xl text-balance">
-              {"Saul Puentes"}
-            </h1>
-            <p className="mt-4 text-lg font-medium text-foreground/80">
-              {t.hero.title}
-            </p>
-          </div>
+        <div className="grid gap-10 lg:grid-cols-5 lg:gap-16">
 
-          {/* Right - Description and CTAs */}
-          <div className="flex flex-col justify-center lg:col-span-3">
-            <p className="text-base leading-relaxed text-muted-foreground lg:text-lg">
-              {t.hero.subtitle}
-            </p>
-            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-              {t.hero.description}
-            </p>
+          {/* Left — Identity */}
+          <div className="flex flex-col justify-between lg:col-span-2">
+            <div>
+              <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-accent">
+                {"Full-Stack Engineer"}
+              </p>
+              <h1 className="text-5xl font-bold tracking-tight text-foreground lg:text-6xl text-balance">
+                {"Saul Puentes"}
+              </h1>
+              <p className="mt-4 text-lg font-medium text-foreground/70 text-balance">
+                {t.hero.title}
+              </p>
+            </div>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-10 flex flex-wrap gap-3">
               <Button asChild size="lg">
                 <a href={cvFiles[locale]} download>
                   <Download className="size-4" />
@@ -44,11 +37,11 @@ export function HeroSection() {
               <Button
                 variant="outline"
                 size="lg"
-                onClick={() => {
+                onClick={() =>
                   document
                     .querySelector("#projects")
                     ?.scrollIntoView({ behavior: "smooth" })
-                }}
+                }
               >
                 <ArrowDown className="size-4" />
                 {t.hero.viewProjects}
@@ -65,6 +58,33 @@ export function HeroSection() {
               </Button>
             </div>
           </div>
+
+          {/* Right — Summary + About combined */}
+          <div className="flex flex-col justify-center gap-6 lg:col-span-3">
+            {/* Hero subtitle / value proposition */}
+            <p className="text-base leading-relaxed text-foreground/80 lg:text-lg font-medium">
+              {t.hero.subtitle}
+            </p>
+
+            {/* Divider */}
+            <div className="h-px w-12 bg-accent/40" />
+
+            {/* About paragraphs merged inline */}
+            <div className="flex flex-col gap-4">
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                {t.hero.description}
+              </p>
+              {t.about.content.map((paragraph, idx) => (
+                <p
+                  key={idx}
+                  className="text-sm leading-relaxed text-muted-foreground"
+                >
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </div>
+
         </div>
       </div>
     </section>

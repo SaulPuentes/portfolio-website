@@ -35,5 +35,6 @@ export interface Project {
   liveUrl?: string
   repoUrl?: string
   featured?: boolean
+  image?: string
   detail: ProjectDetail
 }

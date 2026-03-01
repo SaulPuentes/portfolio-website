@@ -208,6 +208,7 @@ export const experiences: Experience[] = [
 export const projects: Project[] = [
   {
     id: "salsa-world",
+    image: "/projects/salsa-world.jpg",
     name: {
       de: "Salsa World",
       en: "Salsa World",
@@ -257,6 +258,7 @@ export const projects: Project[] = [
   },
   {
     id: "logistics-dashboard",
+    image: "/projects/logistics-dashboard.jpg",
     name: {
       de: "Logistik-Dashboard",
       en: "Logistics Dashboard",
@@ -303,6 +305,7 @@ export const projects: Project[] = [
   },
   {
     id: "ecommerce-platform",
+    image: "/projects/ecommerce-platform.jpg",
     name: {
       de: "E-Commerce Plattform",
       en: "E-Commerce Platform",
