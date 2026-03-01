@@ -46,30 +46,23 @@ export function HeroSection() {
                 <ArrowDown className="size-4" />
                 {t.hero.viewProjects}
               </Button>
-
             </div>
           </div>
 
           {/* Right — Summary + About combined */}
           <div className="flex flex-col justify-center gap-6 lg:col-span-3">
-            {/* Hero subtitle / value proposition */}
             <p className="text-base leading-relaxed text-foreground/80 lg:text-lg font-medium">
               {t.hero.subtitle}
             </p>
 
-            {/* Divider */}
             <div className="h-px w-12 bg-accent/40" />
 
-            {/* About paragraphs merged inline */}
             <div className="flex flex-col gap-4">
               <p className="text-sm leading-relaxed text-muted-foreground">
                 {t.hero.description}
               </p>
               {t.about.content.map((paragraph, idx) => (
-                <p
-                  key={idx}
-                  className="text-sm leading-relaxed text-muted-foreground"
-                >
+                <p key={idx} className="text-sm leading-relaxed text-muted-foreground">
                   {paragraph}
                 </p>
               ))}
