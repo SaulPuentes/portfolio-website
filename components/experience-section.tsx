@@ -4,6 +4,7 @@ import { useI18n } from "@/lib/i18n/context"
 import { experiences } from "@/lib/data"
 import { Badge } from "@/components/ui/badge"
 import { Briefcase } from "lucide-react"
+import { useState, useEffect } from "react"
 
 function formatDate(date: string, locale: string): string {
   if (date === "Heute" || date === "Present" || date === "Presente") return date
@@ -25,6 +26,19 @@ function getEndDateDisplay(endDate: string, locale: string): string {
     return "Heute"
   }
   return formatDate(endDate, locale)
+}
+
+function DateRange({ startDate, endDate, locale }: { startDate: string; endDate: string; locale: string }) {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
+  if (!mounted) return <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">&nbsp;</span>
+  return (
+    <span>
+      {formatDate(startDate, locale)}
+      {" — "}
+      {getEndDateDisplay(endDate, locale)}
+    </span>
+  )
 }
 
 export function ExperienceSection() {
@@ -52,9 +66,7 @@ export function ExperienceSection() {
               {/* Left: date & company */}
               <div className="lg:col-span-2">
                 <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  {formatDate(exp.startDate, locale)}
-                  {" — "}
-                  {getEndDateDisplay(exp.endDate, locale)}
+                  <DateRange startDate={exp.startDate} endDate={exp.endDate} locale={locale} />
                 </p>
                 <p className="mt-1 text-sm font-semibold text-foreground">
                   {exp.role[locale]}
