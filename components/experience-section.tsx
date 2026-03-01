@@ -3,8 +3,9 @@
 import { useI18n } from "@/lib/i18n/context"
 import { experiences } from "@/lib/data"
 import { Badge } from "@/components/ui/badge"
-import { Briefcase } from "lucide-react"
+import { Briefcase, ChevronDown, ChevronUp } from "lucide-react"
 import { useState, useEffect } from "react"
+import { Button } from "@/components/ui/button"
 
 function formatDate(date: string, locale: string): string {
   if (date === "Heute" || date === "Present" || date === "Presente") return date
@@ -41,8 +42,14 @@ function DateRange({ startDate, endDate, locale }: { startDate: string; endDate:
   )
 }
 
+const INITIAL_COUNT = 2
+
 export function ExperienceSection() {
   const { locale, t } = useI18n()
+  const [expanded, setExpanded] = useState(false)
+
+  const visible = expanded ? experiences : experiences.slice(0, INITIAL_COUNT)
+  const hasMore = experiences.length > INITIAL_COUNT
 
   return (
     <section
@@ -58,10 +65,10 @@ export function ExperienceSection() {
         </div>
 
         <div className="flex flex-col gap-0">
-          {experiences.map((exp, idx) => (
+          {visible.map((exp, idx) => (
             <div
               key={idx}
-              className="group grid gap-4 border-t border-border py-8 first:border-t-0 first:pt-0 last:pb-0 lg:grid-cols-5 lg:gap-8"
+              className="group grid gap-4 border-t border-border py-8 first:border-t-0 first:pt-0 lg:grid-cols-5 lg:gap-8"
             >
               {/* Left: date & company */}
               <div className="lg:col-span-2">
@@ -104,6 +111,28 @@ export function ExperienceSection() {
             </div>
           ))}
         </div>
+
+        {hasMore && (
+          <div className="mt-8 border-t border-border pt-8">
+            <Button
+              variant="outline"
+              onClick={() => setExpanded((v) => !v)}
+              className="flex items-center gap-2"
+            >
+              {expanded ? (
+                <>
+                  <ChevronUp className="size-4" />
+                  {t.experience.viewLess}
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="size-4" />
+                  {t.experience.viewMore}
+                </>
+              )}
+            </Button>
+          </div>
+        )}
       </div>
     </section>
   )

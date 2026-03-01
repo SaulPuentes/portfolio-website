@@ -35,6 +35,8 @@ export const de: Translations = {
   },
   experience: {
     sectionTitle: "Berufserfahrung",
+    viewMore: "Mehr anzeigen",
+    viewLess: "Weniger anzeigen",
   },
   projects: {
     sectionTitle: "Projekte",

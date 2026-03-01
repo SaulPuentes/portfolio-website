@@ -35,6 +35,8 @@ export const en: Translations = {
   },
   experience: {
     sectionTitle: "Professional Experience",
+    viewMore: "View more",
+    viewLess: "View less",
   },
   projects: {
     sectionTitle: "Projects",

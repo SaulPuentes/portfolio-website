@@ -10,7 +10,7 @@ const _jetBrainsMono = JetBrains_Mono({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: 'Saul Puentes | Senior Full-Stack Software Engineer',
   description:
-    'Portfolio von Saul Puentes - Senior Full-Stack Software Engineer mit 7+ Jahren Erfahrung in skalierbaren Systemen fur E-Commerce, SaaS und Logistikplattformen.',
+    'Portfolio of Saul Puentes - Senior Full-Stack Software Engineer with 7+ years of experience building scalable systems for e-commerce, SaaS, and logistics platforms.',
   keywords: [
     'Full-Stack Engineer',
     'Software Developer',
@@ -24,10 +24,10 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Saul Puentes | Senior Full-Stack Software Engineer',
     description:
-      'Portfolio von Saul Puentes - 7+ Jahre Erfahrung in skalierbaren Systemen.',
+      'Portfolio of Saul Puentes - 7+ years of experience building scalable systems.',
     type: 'website',
-    locale: 'de_DE',
-    alternateLocale: ['en_US', 'es_ES'],
+    locale: 'en_US',
+    alternateLocale: ['de_DE', 'es_ES'],
   },
   robots: {
     index: true,
@@ -58,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="de" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth">
       <body className="font-sans antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           {children}
