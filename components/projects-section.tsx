@@ -279,12 +279,9 @@ export function ProjectsSection() {
       <div
         ref={sliderRef}
         onScroll={updateScrollState}
-        className="flex gap-5 overflow-x-auto scroll-smooth px-4 pb-4 snap-x snap-mandatory lg:px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex justify-center gap-5 overflow-x-auto scroll-smooth px-4 pb-4 snap-x snap-mandatory lg:px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         style={{ scrollPaddingLeft: "2rem" }}
       >
-        {/* Left padding sentinel to align with max-w-6xl */}
-        <div className="hidden shrink-0 lg:block" style={{ width: "max(0px, calc((100vw - 72rem) / 2))" }} />
-
         {projects.map((project) => (
           <ProjectCard
             key={project.id}
@@ -292,9 +289,6 @@ export function ProjectsSection() {
             onOpenDetail={() => setSelectedProject(project)}
           />
         ))}
-
-        {/* Right padding sentinel */}
-        <div className="hidden shrink-0 lg:block" style={{ width: "max(0px, calc((100vw - 72rem) / 2))" }} />
       </div>
 
       {/* Dot indicators */}

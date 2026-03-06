@@ -42,7 +42,7 @@ function DateRange({ startDate, endDate, locale }: { startDate: string; endDate:
   )
 }
 
-const INITIAL_COUNT = 2
+const INITIAL_COUNT = 3
 
 export function ExperienceSection() {
   const { locale, t } = useI18n()
@@ -113,7 +113,7 @@ export function ExperienceSection() {
         </div>
 
         {hasMore && (
-          <div className="mt-8 border-t border-border pt-8">
+          <div className="mt-8 flex justify-center border-t border-border pt-8">
             <Button
               variant="outline"
               onClick={() => setExpanded((v) => !v)}

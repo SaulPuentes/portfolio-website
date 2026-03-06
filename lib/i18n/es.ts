@@ -12,7 +12,7 @@ export const es: Translations = {
     title: "Senior Full-Stack Software Engineer",
     subtitle: "Sistemas Escalables. Arquitectura Limpia. Resultados Medibles.",
     description:
-      "Mas de 7 anos de experiencia desarrollando sistemas escalables para plataformas de e-commerce, SaaS y logistica. Fuerte responsabilidad en ingenieria y trabajo estructurado en equipos multifuncionales.",
+      "Senior Full-Stack Software Engineer con más de 7 años de experiencia desarrollando aplicaciones web escalables y sistemas distribuidos para plataformas de e-commerce, SaaS y logística.\n\nMentalidad de ownership con experiencia en arquitectura de sistemas, escalabilidad y colaboración cross-functional.\n\nAbierto a reubicación en Alemania o Austria. Nivel de alemán B1.",
     downloadCv: "Descargar CV",
     viewProjects: "Ver Proyectos",
     salsaWorld: "Salsa World",

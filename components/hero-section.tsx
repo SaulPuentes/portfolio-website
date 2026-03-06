@@ -58,11 +58,8 @@ export function HeroSection() {
             <div className="h-px w-12 bg-accent/40" />
 
             <div className="flex flex-col gap-4">
-              <p className="text-sm leading-relaxed text-muted-foreground">
-                {t.hero.description}
-              </p>
-              {t.about.content.map((paragraph, idx) => (
-                <p key={idx} className="text-sm leading-relaxed text-muted-foreground">
+              {t.hero.description.split(/\n\n+/).map((paragraph, idx) => (
+                <p key={`desc-${idx}`} className="text-sm leading-relaxed text-muted-foreground">
                   {paragraph}
                 </p>
               ))}
