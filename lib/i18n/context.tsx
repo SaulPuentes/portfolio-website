@@ -8,7 +8,7 @@ import {
   useEffect,
   type ReactNode,
 } from "react"
-import { getTranslations, defaultLocale } from "./index"
+import { getTranslations, defaultLocale, locales } from "./index"
 import type { Locale, Translations } from "./types"
 
 interface I18nContextValue {
@@ -24,7 +24,8 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const stored = localStorage.getItem("portfolio-locale") as Locale | null
-    if (stored && ["de", "en", "es"].includes(stored)) {
+    const validCodes = locales.map(l => l.code)
+    if (stored && validCodes.includes(stored)) {
       setLocaleState(stored)
     }
   }, [])

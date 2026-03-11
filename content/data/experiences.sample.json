@@ -1,0 +1,63 @@
+[
+  {
+    "company": {
+      "de": "Freelance / Selbstständig",
+      "en": "Freelance",
+      "es": "Freelance / Independiente"
+    },
+    "role": {
+      "de": "Software Developer",
+      "en": "Software Developer",
+      "es": "Software Developer"
+    },
+    "startDate": "2024-01",
+    "endDate": "Heute",
+    "achievements": {
+      "de": [
+        "Beispiel-Projekt 1: Kurzbeschreibung der Leistung.",
+        "Beispiel-Projekt 2: Kurzbeschreibung der Leistung.",
+        "Beispiel-Projekt 3: Kurzbeschreibung der Leistung."
+      ],
+      "en": [
+        "Sample project 1: Brief description of your achievement.",
+        "Sample project 2: Brief description of your achievement.",
+        "Sample project 3: Brief description of your achievement."
+      ],
+      "es": [
+        "Proyecto ejemplo 1: Breve descripción de tu logro.",
+        "Proyecto ejemplo 2: Breve descripción de tu logro.",
+        "Proyecto ejemplo 3: Breve descripción de tu logro."
+      ]
+    },
+    "technologies": ["React", "Node.js", "TypeScript"]
+  },
+  {
+    "company": {
+      "de": "Beispiel GmbH",
+      "en": "Example Corp",
+      "es": "Ejemplo S.A."
+    },
+    "role": {
+      "de": "Full Stack Developer",
+      "en": "Full Stack Developer",
+      "es": "Full Stack Developer"
+    },
+    "startDate": "2022-06",
+    "endDate": "2023-12",
+    "achievements": {
+      "de": [
+        "Architektur und Implementierung einer skalierbaren Webanwendung.",
+        "Code-Reviews und Mentoring für Junior-Entwickler."
+      ],
+      "en": [
+        "Architected and implemented a scalable web application.",
+        "Code reviews and mentoring for junior developers."
+      ],
+      "es": [
+        "Diseño e implementación de una aplicación web escalable.",
+        "Revisiones de código y mentoría para desarrolladores junior."
+      ]
+    },
+    "technologies": ["Next.js", "PostgreSQL", "AWS", "Docker"]
+  }
+]

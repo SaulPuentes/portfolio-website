@@ -1,26 +1,21 @@
-import { de } from "./de"
-import { en } from "./en"
-import { es } from "./es"
+import enJson from "@/content/i18n/en.json"
+import esJson from "@/content/i18n/es.json"
+import deJson from "@/content/i18n/de.json"
+import { siteConfig } from "@/lib/site-config"
 import type { Locale, Translations } from "./types"
 
 export type { Locale, Translations }
 
-const translations: Record<Locale, Translations> = { de, en, es }
+const translations: Record<string, Translations> = {
+  de: deJson as Translations,
+  en: enJson as Translations,
+  es: esJson as Translations,
+}
 
 export function getTranslations(locale: Locale): Translations {
   return translations[locale]
 }
 
-export const locales: { code: Locale; label: string; flag: string }[] = [
-  { code: "de", label: "Deutsch", flag: "DE" },
-  { code: "en", label: "English", flag: "EN" },
-  { code: "es", label: "Espanol", flag: "ES" },
-]
-
-export const defaultLocale: Locale = "en"
-
-export const cvFiles: Record<Locale, string> = {
-  de: "/cv/CV_DE.pdf",
-  en: "/cv/CV_EN.pdf",
-  es: "/cv/CV_ES.pdf",
-}
+export const locales = siteConfig.locales
+export const defaultLocale = siteConfig.defaultLocale as Locale
+export const cvFiles = siteConfig.cvFiles as Record<Locale, string>

@@ -5,6 +5,7 @@ import { useI18n } from "@/lib/i18n/context"
 import { locales } from "@/lib/i18n"
 import { Menu, X, ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { siteConfig } from "@/lib/site-config"
 import { ThemeToggle } from "@/components/theme-toggle"
 
 export function Header() {
@@ -41,7 +42,7 @@ export function Header() {
             window.scrollTo({ top: 0, behavior: "smooth" })
           }}
         >
-          {"S. Puentes"}
+          {siteConfig.brandName}
         </a>
 
         {/* Desktop nav */}

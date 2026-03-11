@@ -1,0 +1,45 @@
+[
+  {
+    "key": "frontend",
+    "items": [
+      { "name": "React" },
+      { "name": "Next.js" },
+      { "name": "TypeScript" },
+      { "name": "Tailwind CSS" },
+      { "name": "HTML5 / CSS3" }
+    ]
+  },
+  {
+    "key": "backend",
+    "items": [
+      { "name": "Node.js" },
+      { "name": "Express" },
+      { "name": "REST APIs" },
+      { "name": "GraphQL APIs" }
+    ]
+  },
+  {
+    "key": "cloud",
+    "items": [
+      { "name": "AWS" },
+      { "name": "Docker" },
+      { "name": "Vercel" }
+    ]
+  },
+  {
+    "key": "databases",
+    "items": [
+      { "name": "PostgreSQL" },
+      { "name": "MongoDB" },
+      { "name": "Redis" }
+    ]
+  },
+  {
+    "key": "practices",
+    "items": [
+      { "name": "Agile / Scrum" },
+      { "name": "Code Reviews" },
+      { "name": "Unit Testing" }
+    ]
+  }
+]

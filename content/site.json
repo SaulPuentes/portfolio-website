@@ -1,0 +1,30 @@
+{
+  "name": "Saul Puentes",
+  "brandName": "S. Puentes",
+  "tagline": "Full Stack Developer",
+  "email": "saul.puentess@gmail.com",
+  "footerNote": "Built with Next.js",
+  "socialLinks": [
+    {
+      "platform": "linkedin",
+      "label": "LinkedIn",
+      "url": "https://www.linkedin.com/in/saul-puentes"
+    },
+    {
+      "platform": "github",
+      "label": "GitHub",
+      "url": "https://github.com/SaulPuentes"
+    }
+  ],
+  "locales": [
+    { "code": "de", "label": "Deutsch", "flag": "DE" },
+    { "code": "en", "label": "English", "flag": "EN" },
+    { "code": "es", "label": "Espanol", "flag": "ES" }
+  ],
+  "defaultLocale": "en",
+  "cvFiles": {
+    "de": "/cv/CV_DE.pdf",
+    "en": "/cv/CV_EN.pdf",
+    "es": "/cv/CV_ES.pdf"
+  }
+}

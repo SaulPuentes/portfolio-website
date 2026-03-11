@@ -2,32 +2,28 @@ import type { Metadata } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { ThemeProvider } from '@/components/theme-provider'
+import { siteConfig } from '@/lib/site-config'
 import './globals.css'
 
 const _inter = Inter({ subsets: ["latin"] })
 const _jetBrainsMono = JetBrains_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: 'Saul Puentes | Senior Full-Stack Software Engineer',
+  title: `${siteConfig.name} | ${siteConfig.tagline}`,
   description:
-    'Portfolio of Saul Puentes - Senior Full-Stack Software Engineer with 7+ years of experience building scalable systems for e-commerce, SaaS, and logistics platforms.',
+    `Portfolio of ${siteConfig.name} - ${siteConfig.tagline}`,
   keywords: [
     'Full-Stack Engineer',
     'Software Developer',
     'React',
     'Node.js',
     'TypeScript',
-    'Germany',
-    'Austria',
-    'DACH',
   ],
   openGraph: {
-    title: 'Saul Puentes | Senior Full-Stack Software Engineer',
+    title: `${siteConfig.name} | ${siteConfig.tagline}`,
     description:
-      'Portfolio of Saul Puentes - 7+ years of experience building scalable systems.',
+      `Portfolio of ${siteConfig.name} - ${siteConfig.tagline}`,
     type: 'website',
-    locale: 'en_US',
-    alternateLocale: ['de_DE', 'es_ES'],
   },
   robots: {
     index: true,

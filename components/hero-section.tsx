@@ -3,6 +3,7 @@
 import { useI18n } from "@/lib/i18n/context"
 import { cvFiles } from "@/lib/i18n"
 import { Download, ArrowDown } from "lucide-react"
+import { siteConfig } from "@/lib/site-config"
 import { Button } from "@/components/ui/button"
 
 export function HeroSection() {
@@ -17,10 +18,10 @@ export function HeroSection() {
           <div className="flex flex-col justify-between lg:col-span-2">
             <div>
               <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-accent">
-                {"Full-Stack Engineer"}
+                {siteConfig.tagline}
               </p>
               <h1 className="text-5xl font-bold tracking-tight text-foreground lg:text-6xl text-balance">
-                {"Saul Puentes"}
+                {siteConfig.name}
               </h1>
               <p className="mt-4 text-lg font-medium text-foreground/70 text-balance">
                 {t.hero.title}

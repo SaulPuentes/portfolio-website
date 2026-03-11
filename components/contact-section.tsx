@@ -1,7 +1,13 @@
 "use client"
 
 import { useI18n } from "@/lib/i18n/context"
-import { Mail, Linkedin, Github } from "lucide-react"
+import { siteConfig } from "@/lib/site-config"
+import { Mail, Linkedin, Github, type LucideIcon } from "lucide-react"
+
+const platformIcons: Record<string, LucideIcon> = {
+  linkedin: Linkedin,
+  github: Github,
+}
 
 export function ContactSection() {
   const { t } = useI18n()
@@ -9,19 +15,14 @@ export function ContactSection() {
   const links = [
     {
       icon: Mail,
-      label: "hola@saulpuentes.com",
-      href: "mailto:hola@saulpuentes.com",
+      label: siteConfig.email,
+      href: `mailto:${siteConfig.email}`,
     },
-    {
-      icon: Linkedin,
-      label: "LinkedIn",
-      href: "https://linkedin.com/in/saul-puentes",
-    },
-    {
-      icon: Github,
-      label: "GitHub",
-      href: "https://github.com/saulpuentes",
-    },
+    ...siteConfig.socialLinks.map((link) => ({
+      icon: platformIcons[link.platform] || Mail,
+      label: link.label,
+      href: link.url,
+    })),
   ]
 
   return (
