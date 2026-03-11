@@ -1,0 +1,64 @@
+{
+  "nav": {
+    "about": "Profile",
+    "skills": "Skills",
+    "experience": "Experience",
+    "projects": "Projects",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Full Stack Developer",
+    "subtitle": "Scalable Systems. Clean Architecture. Measurable Results.",
+    "description": "Hi, I'm Saúl Puentes — a Software Engineer with 7 years of experience in full-stack web development. I'm an expert in JavaScript and have a proven track record of building scalable and customizable applications across e-commerce, logistics, and SaaS.\n\nMy work includes leading the development of a logistics platform, designing inventory systems with Shopify, implementing dynamic UI features, integrating headless CMS solutions, and building multilingual, mobile-ready applications. I've worked extensively with React, Next.js, NestJS, and Node.js, along with Docker, AWS, and various SQL/NoSQL databases.\n\nComfortable working in remote, multicultural environments. I follow Agile/Scrum methodologies.",
+    "downloadCv": "Download CV",
+    "viewProjects": "View Projects",
+    "salsaWorld": "Salsa World"
+  },
+  "about": {
+    "sectionTitle": "Profile",
+    "content": [
+      "Software Engineer with 7 years of experience in full-stack web development, specializing in JavaScript and modern frameworks like React, Next.js, NestJS, and Node.js.",
+      "Proven track record building scalable applications for e-commerce, logistics, and SaaS. Experience includes headless CMS integration, Shopify inventory systems, and multilingual mobile-ready applications.",
+      "Background in e-commerce, IT consulting, and real estate. Comfortable in remote, multicultural environments. Agile/Scrum methodologies."
+    ]
+  },
+  "skills": {
+    "sectionTitle": "Core Competencies",
+    "frontend": "Frontend",
+    "backend": "Backend",
+    "cloud": "Cloud & Infrastructure",
+    "databases": "Databases",
+    "practices": "Engineering Practices"
+  },
+  "experience": {
+    "sectionTitle": "Professional Experience",
+    "viewMore": "View more",
+    "viewLess": "View less"
+  },
+  "projects": {
+    "sectionTitle": "Projects",
+    "viewLive": "Live Preview",
+    "viewRepo": "Repository",
+    "viewDetails": "Details",
+    "problem": "Problem Statement",
+    "architecture": "Architecture Overview",
+    "decisions": "Technical Decisions",
+    "challenges": "Challenges",
+    "results": "Results & Impact",
+    "lessons": "Lessons Learned",
+    "close": "Close",
+    "featured": "Featured Project"
+  },
+  "contact": {
+    "sectionTitle": "Contact",
+    "description": "Interested in working together? I look forward to hearing from you.",
+    "email": "Email",
+    "namePlaceholder": "Your name",
+    "emailPlaceholder": "Your email address",
+    "messagePlaceholder": "Your message",
+    "send": "Send Message"
+  },
+  "footer": {
+    "rights": "All rights reserved."
+  }
+}

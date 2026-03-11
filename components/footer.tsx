@@ -1,6 +1,7 @@
 "use client"
 
 import { useI18n } from "@/lib/i18n/context"
+import { siteConfig } from "@/lib/site-config"
 
 export function Footer() {
   const { t } = useI18n()
@@ -9,10 +10,10 @@ export function Footer() {
     <footer className="border-t border-border px-4 py-8 lg:px-8">
       <div className="mx-auto flex max-w-6xl items-center justify-between">
         <p className="text-xs text-muted-foreground">
-          {"2026 Saul Puentes. "}{t.footer.rights}
+          {`${new Date().getFullYear()} ${siteConfig.name}. `}{t.footer.rights}
         </p>
         <p className="text-xs text-muted-foreground">
-          {"Built with Next.js"}
+          {siteConfig.footerNote}
         </p>
       </div>
     </footer>

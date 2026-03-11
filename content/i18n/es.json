@@ -1,0 +1,64 @@
+{
+  "nav": {
+    "about": "Perfil",
+    "skills": "Competencias",
+    "experience": "Experiencia",
+    "projects": "Proyectos",
+    "contact": "Contacto"
+  },
+  "hero": {
+    "title": "Full Stack Developer",
+    "subtitle": "Sistemas Escalables. Arquitectura Limpia. Resultados Medibles.",
+    "description": "Hola, soy Saúl Puentes — Ingeniero de Software con 7 años de experiencia en desarrollo web full-stack. Soy experto en JavaScript y tengo un historial comprobado construyendo aplicaciones escalables y personalizables en e-commerce, logística y SaaS.\n\nMi trabajo incluye liderar el desarrollo de una plataforma logística, diseñar sistemas de inventario con Shopify, implementar funciones dinámicas de UI, integrar soluciones headless CMS y construir aplicaciones multilingües y listas para móvil. He trabajado extensamente con React, Next.js, NestJS y Node.js, junto con Docker, AWS y diversas bases de datos SQL/NoSQL.\n\nCómodo trabajando en entornos remotos y multiculturales. Sigo metodologías Agile/Scrum.",
+    "downloadCv": "Descargar CV",
+    "viewProjects": "Ver Proyectos",
+    "salsaWorld": "Salsa World"
+  },
+  "about": {
+    "sectionTitle": "Perfil",
+    "content": [
+      "Ingeniero de Software con 7 años de experiencia en desarrollo web full-stack, especializado en JavaScript y frameworks modernos como React, Next.js, NestJS y Node.js.",
+      "Historial comprobado construyendo aplicaciones escalables para e-commerce, logística y SaaS. Experiencia en integración de headless CMS, sistemas de inventario con Shopify y aplicaciones multilingües listas para móvil.",
+      "Experiencia en e-commerce, consultoría IT y bienes raíces. Cómodo en entornos remotos y multiculturales. Metodologías Agile/Scrum."
+    ]
+  },
+  "skills": {
+    "sectionTitle": "Competencias",
+    "frontend": "Frontend",
+    "backend": "Backend",
+    "cloud": "Cloud e Infraestructura",
+    "databases": "Bases de Datos",
+    "practices": "Practicas de Ingenieria"
+  },
+  "experience": {
+    "sectionTitle": "Experiencia Profesional",
+    "viewMore": "Ver mas",
+    "viewLess": "Ver menos"
+  },
+  "projects": {
+    "sectionTitle": "Proyectos",
+    "viewLive": "Ver en vivo",
+    "viewRepo": "Repositorio",
+    "viewDetails": "Detalles",
+    "problem": "Planteamiento del problema",
+    "architecture": "Vision general de la arquitectura",
+    "decisions": "Decisiones tecnicas",
+    "challenges": "Desafios",
+    "results": "Resultados e impacto",
+    "lessons": "Lecciones aprendidas",
+    "close": "Cerrar",
+    "featured": "Proyecto destacado"
+  },
+  "contact": {
+    "sectionTitle": "Contacto",
+    "description": "Interesado en colaborar? Espero tu mensaje con gusto.",
+    "email": "Correo electronico",
+    "namePlaceholder": "Tu nombre",
+    "emailPlaceholder": "Tu correo electronico",
+    "messagePlaceholder": "Tu mensaje",
+    "send": "Enviar mensaje"
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados."
+  }
+}
