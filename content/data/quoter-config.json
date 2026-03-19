@@ -1,0 +1,308 @@
+{
+  "disclaimer": {
+    "es": "Este cotizador ofrece un estimado aproximado basado en tus respuestas. El precio final puede variar dependiendo de los detalles específicos del proyecto. Te contactaremos para darte una cotización más precisa.",
+    "en": "This quoter provides an approximate estimate based on your answers. The final price may vary depending on the specific details of the project. We will contact you for a more precise quote.",
+    "de": "Dieser Kalkulator bietet eine ungefähre Schätzung basierend auf Ihren Antworten. Der endgültige Preis kann je nach den spezifischen Projektdetails variieren. Wir werden Sie für ein genaueres Angebot kontaktieren."
+  },
+  "currency": "MXN",
+  "variancePercent": 20,
+  "title": {
+    "es": "Cotizador de Proyectos",
+    "en": "Project Quoter",
+    "de": "Projektkalkulator"
+  },
+  "subtitle": {
+    "es": "Responde algunas preguntas para obtener un estimado del costo de tu proyecto.",
+    "en": "Answer a few questions to get an estimate for your project cost.",
+    "de": "Beantworten Sie einige Fragen, um eine Kostenschätzung für Ihr Projekt zu erhalten."
+  },
+  "resultTitle": {
+    "es": "Tu estimado",
+    "en": "Your estimate",
+    "de": "Ihre Schätzung"
+  },
+  "resultDescription": {
+    "es": "Basado en tus respuestas, el costo aproximado de tu proyecto es:",
+    "en": "Based on your answers, the approximate cost of your project is:",
+    "de": "Basierend auf Ihren Antworten betragen die ungefähren Kosten Ihres Projekts:"
+  },
+  "contactCta": {
+    "es": "Solicitar cotización formal",
+    "en": "Request a formal quote",
+    "de": "Formelles Angebot anfordern"
+  },
+  "buttons": {
+    "next": { "es": "Siguiente", "en": "Next", "de": "Weiter" },
+    "prev": { "es": "Anterior", "en": "Previous", "de": "Zurück" },
+    "finish": { "es": "Ver estimado", "en": "See estimate", "de": "Schätzung anzeigen" },
+    "restart": { "es": "Empezar de nuevo", "en": "Start over", "de": "Neu starten" }
+  },
+  "sections": [
+    {
+      "id": "project-type",
+      "title": { "es": "Tipo de proyecto", "en": "Project type", "de": "Projekttyp" },
+      "questions": [
+        {
+          "id": "type",
+          "question": {
+            "es": "¿Qué tipo de proyecto necesitas?",
+            "en": "What type of project do you need?",
+            "de": "Welche Art von Projekt benötigen Sie?"
+          },
+          "type": "single",
+          "options": [
+            { "label": { "es": "Página web informativa", "en": "Informational website", "de": "Informationswebseite" }, "value": "landing", "price": 8000 },
+            { "label": { "es": "Tienda en línea", "en": "Online store", "de": "Online-Shop" }, "value": "ecommerce", "price": 25000 },
+            { "label": { "es": "Aplicación web (con login, dashboard, etc.)", "en": "Web application (with login, dashboard, etc.)", "de": "Webanwendung (mit Login, Dashboard, etc.)" }, "value": "webapp", "price": 30000 },
+            { "label": { "es": "Aplicación móvil", "en": "Mobile app", "de": "Mobile App" }, "value": "mobile", "price": 40000 },
+            { "label": { "es": "No estoy seguro", "en": "I'm not sure", "de": "Ich bin nicht sicher" }, "value": "unsure", "price": 15000 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scope",
+      "title": { "es": "Alcance del proyecto", "en": "Project scope", "de": "Projektumfang" },
+      "questions": [
+        {
+          "id": "pages",
+          "question": {
+            "es": "¿Cuántas páginas o secciones necesitas aproximadamente?",
+            "en": "Approximately how many pages or sections do you need?",
+            "de": "Wie viele Seiten oder Abschnitte benötigen Sie ungefähr?"
+          },
+          "type": "single",
+          "options": [
+            { "label": { "es": "1 a 3 páginas (algo sencillo)", "en": "1 to 3 pages (something simple)", "de": "1 bis 3 Seiten (etwas Einfaches)" }, "value": "small", "price": 0 },
+            { "label": { "es": "4 a 7 páginas (tamaño mediano)", "en": "4 to 7 pages (medium size)", "de": "4 bis 7 Seiten (mittlere Größe)" }, "value": "medium", "price": 5000 },
+            { "label": { "es": "8 o más páginas (proyecto grande)", "en": "8 or more pages (large project)", "de": "8 oder mehr Seiten (großes Projekt)" }, "value": "large", "price": 12000 },
+            { "label": { "es": "No sé", "en": "I don't know", "de": "Ich weiß nicht" }, "value": "unsure", "price": 5000 }
+          ]
+        },
+        {
+          "id": "auth",
+          "question": {
+            "es": "¿Necesitas que los usuarios puedan crear una cuenta o iniciar sesión?",
+            "en": "Do you need users to be able to create an account or log in?",
+            "de": "Müssen Benutzer ein Konto erstellen oder sich anmelden können?"
+          },
+          "type": "single",
+          "options": [
+            { "label": { "es": "Sí", "en": "Yes", "de": "Ja" }, "value": "yes", "price": 8000 },
+            { "label": { "es": "No", "en": "No", "de": "Nein" }, "value": "no", "price": 0 },
+            { "label": { "es": "No sé", "en": "I don't know", "de": "Ich weiß nicht" }, "value": "unsure", "price": 4000 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "design",
+      "title": { "es": "Diseño", "en": "Design", "de": "Design" },
+      "questions": [
+        {
+          "id": "design-ready",
+          "question": {
+            "es": "¿Ya tienes el diseño de cómo quieres que se vea?",
+            "en": "Do you already have the design for how you want it to look?",
+            "de": "Haben Sie bereits das Design, wie es aussehen soll?"
+          },
+          "type": "single",
+          "options": [
+            { "label": { "es": "Sí, tengo diseños listos", "en": "Yes, I have designs ready", "de": "Ja, ich habe fertige Designs" }, "value": "ready", "price": 0 },
+            { "label": { "es": "Tengo una idea general pero no diseños formales", "en": "I have a general idea but no formal designs", "de": "Ich habe eine allgemeine Idee, aber keine formellen Designs" }, "value": "partial", "price": 5000 },
+            { "label": { "es": "No, necesito ayuda con el diseño", "en": "No, I need help with the design", "de": "Nein, ich brauche Hilfe beim Design" }, "value": "need-design", "price": 10000 },
+            { "label": { "es": "No sé", "en": "I don't know", "de": "Ich weiß nicht" }, "value": "unsure", "price": 5000 }
+          ]
+        },
+        {
+          "id": "branding",
+          "question": {
+            "es": "¿Necesitas que el sitio tenga tu marca (logo, colores, tipografía)?",
+            "en": "Do you need the site to have your branding (logo, colors, typography)?",
+            "de": "Soll die Seite Ihr Branding haben (Logo, Farben, Typografie)?"
+          },
+          "type": "single",
+          "options": [
+            { "label": { "es": "Sí, ya tengo mi identidad de marca", "en": "Yes, I already have my brand identity", "de": "Ja, ich habe bereits meine Markenidentität" }, "value": "has-brand", "price": 0 },
+            { "label": { "es": "Necesito que me ayuden a crearla", "en": "I need help creating it", "de": "Ich brauche Hilfe beim Erstellen" }, "value": "need-brand", "price": 8000 },
+            { "label": { "es": "No es necesario por ahora", "en": "Not necessary for now", "de": "Im Moment nicht nötig" }, "value": "no", "price": 0 },
+            { "label": { "es": "No sé", "en": "I don't know", "de": "Ich weiß nicht" }, "value": "unsure", "price": 4000 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "features",
+      "title": { "es": "Funcionalidades", "en": "Features", "de": "Funktionen" },
+      "questions": [
+        {
+          "id": "contact-form",
+          "question": {
+            "es": "¿Necesitas un formulario de contacto?",
+            "en": "Do you need a contact form?",
+            "de": "Benötigen Sie ein Kontaktformular?"
+          },
+          "type": "single",
+          "options": [
+            { "label": { "es": "Sí", "en": "Yes", "de": "Ja" }, "value": "yes", "price": 2000 },
+            { "label": { "es": "No", "en": "No", "de": "Nein" }, "value": "no", "price": 0 },
+            { "label": { "es": "No sé", "en": "I don't know", "de": "Ich weiß nicht" }, "value": "unsure", "price": 1000 }
+          ]
+        },
+        {
+          "id": "payments",
+          "question": {
+            "es": "¿Necesitas recibir pagos en línea?",
+            "en": "Do you need to accept online payments?",
+            "de": "Müssen Sie Online-Zahlungen akzeptieren?"
+          },
+          "type": "single",
+          "options": [
+            { "label": { "es": "Sí, con tarjeta de crédito/débito", "en": "Yes, with credit/debit card", "de": "Ja, mit Kredit-/Debitkarte" }, "value": "card", "price": 8000 },
+            { "label": { "es": "Sí, con otros métodos (PayPal, transferencia, etc.)", "en": "Yes, with other methods (PayPal, transfer, etc.)", "de": "Ja, mit anderen Methoden (PayPal, Überweisung, etc.)" }, "value": "other", "price": 5000 },
+            { "label": { "es": "No", "en": "No", "de": "Nein" }, "value": "no", "price": 0 },
+            { "label": { "es": "No sé", "en": "I don't know", "de": "Ich weiß nicht" }, "value": "unsure", "price": 4000 }
+          ]
+        },
+        {
+          "id": "multilingual",
+          "question": {
+            "es": "¿Necesitas que el sitio esté en más de un idioma?",
+            "en": "Do you need the site in more than one language?",
+            "de": "Benötigen Sie die Seite in mehr als einer Sprache?"
+          },
+          "type": "single",
+          "options": [
+            { "label": { "es": "Sí", "en": "Yes", "de": "Ja" }, "value": "yes", "price": 5000 },
+            { "label": { "es": "No", "en": "No", "de": "Nein" }, "value": "no", "price": 0 },
+            { "label": { "es": "No sé", "en": "I don't know", "de": "Ich weiß nicht" }, "value": "unsure", "price": 2500 }
+          ]
+        },
+        {
+          "id": "admin-panel",
+          "question": {
+            "es": "¿Necesitas un panel para editar el contenido tú mismo?",
+            "en": "Do you need a panel to edit the content yourself?",
+            "de": "Benötigen Sie ein Panel, um den Inhalt selbst zu bearbeiten?"
+          },
+          "type": "single",
+          "options": [
+            { "label": { "es": "Sí, quiero poder editar textos, imágenes, productos, etc.", "en": "Yes, I want to edit text, images, products, etc.", "de": "Ja, ich möchte Texte, Bilder, Produkte usw. bearbeiten" }, "value": "yes", "price": 10000 },
+            { "label": { "es": "No, está bien si los cambios los hace el desarrollador", "en": "No, it's fine if the developer makes changes", "de": "Nein, es ist in Ordnung, wenn der Entwickler Änderungen vornimmt" }, "value": "no", "price": 0 },
+            { "label": { "es": "No sé", "en": "I don't know", "de": "Ich weiß nicht" }, "value": "unsure", "price": 5000 }
+          ]
+        },
+        {
+          "id": "integrations",
+          "question": {
+            "es": "¿Necesitas integración con algún servicio externo?",
+            "en": "Do you need integration with any external service?",
+            "de": "Benötigen Sie die Integration mit einem externen Dienst?"
+          },
+          "type": "multiple",
+          "options": [
+            { "label": { "es": "Redes sociales (Instagram, Facebook, etc.)", "en": "Social media (Instagram, Facebook, etc.)", "de": "Soziale Medien (Instagram, Facebook, etc.)" }, "value": "social", "price": 2000 },
+            { "label": { "es": "Google Analytics o herramientas de seguimiento", "en": "Google Analytics or tracking tools", "de": "Google Analytics oder Tracking-Tools" }, "value": "analytics", "price": 1500 },
+            { "label": { "es": "Email marketing (Mailchimp, etc.)", "en": "Email marketing (Mailchimp, etc.)", "de": "E-Mail-Marketing (Mailchimp, etc.)" }, "value": "email-marketing", "price": 3000 },
+            { "label": { "es": "CRM o sistema de ventas", "en": "CRM or sales system", "de": "CRM oder Verkaufssystem" }, "value": "crm", "price": 5000 },
+            { "label": { "es": "No necesito integraciones", "en": "I don't need integrations", "de": "Ich brauche keine Integrationen" }, "value": "none", "price": 0 },
+            { "label": { "es": "No sé", "en": "I don't know", "de": "Ich weiß nicht" }, "value": "unsure", "price": 2000 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "content",
+      "title": { "es": "Contenido", "en": "Content", "de": "Inhalt" },
+      "questions": [
+        {
+          "id": "content-ready",
+          "question": {
+            "es": "¿Ya tienes el contenido (textos, fotos, videos) para el sitio?",
+            "en": "Do you already have the content (text, photos, videos) for the site?",
+            "de": "Haben Sie bereits den Inhalt (Texte, Fotos, Videos) für die Seite?"
+          },
+          "type": "single",
+          "options": [
+            { "label": { "es": "Sí, todo listo", "en": "Yes, everything is ready", "de": "Ja, alles ist bereit" }, "value": "ready", "price": 0 },
+            { "label": { "es": "Tengo algo pero necesito ayuda", "en": "I have some but need help", "de": "Ich habe etwas, brauche aber Hilfe" }, "value": "partial", "price": 3000 },
+            { "label": { "es": "No, necesito ayuda con todo el contenido", "en": "No, I need help with all the content", "de": "Nein, ich brauche Hilfe mit dem gesamten Inhalt" }, "value": "need-all", "price": 7000 },
+            { "label": { "es": "No sé", "en": "I don't know", "de": "Ich weiß nicht" }, "value": "unsure", "price": 3000 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "timeline",
+      "title": { "es": "Plazos y mantenimiento", "en": "Timeline & maintenance", "de": "Zeitplan & Wartung" },
+      "questions": [
+        {
+          "id": "deadline",
+          "question": {
+            "es": "¿Para cuándo necesitas el proyecto?",
+            "en": "When do you need the project?",
+            "de": "Wann benötigen Sie das Projekt?"
+          },
+          "type": "single",
+          "options": [
+            { "label": { "es": "Lo antes posible (menos de 1 mes)", "en": "As soon as possible (less than 1 month)", "de": "So schnell wie möglich (weniger als 1 Monat)" }, "value": "asap", "price": 5000 },
+            { "label": { "es": "En 1 a 2 meses", "en": "In 1 to 2 months", "de": "In 1 bis 2 Monaten" }, "value": "1-2months", "price": 2000 },
+            { "label": { "es": "En 3 meses o más", "en": "In 3 months or more", "de": "In 3 Monaten oder mehr" }, "value": "3months", "price": 0 },
+            { "label": { "es": "No tengo prisa", "en": "I'm in no rush", "de": "Ich habe keine Eile" }, "value": "no-rush", "price": 0 }
+          ]
+        },
+        {
+          "id": "maintenance",
+          "question": {
+            "es": "¿Necesitas mantenimiento o soporte después del lanzamiento?",
+            "en": "Do you need maintenance or support after launch?",
+            "de": "Benötigen Sie Wartung oder Support nach dem Start?"
+          },
+          "type": "single",
+          "options": [
+            { "label": { "es": "Sí, mantenimiento mensual", "en": "Yes, monthly maintenance", "de": "Ja, monatliche Wartung" }, "value": "monthly", "price": 5000 },
+            { "label": { "es": "Solo soporte por un tiempo limitado", "en": "Only support for a limited time", "de": "Nur Support für eine begrenzte Zeit" }, "value": "limited", "price": 2000 },
+            { "label": { "es": "No, solo necesito el desarrollo", "en": "No, I only need the development", "de": "Nein, ich brauche nur die Entwicklung" }, "value": "no", "price": 0 },
+            { "label": { "es": "No sé", "en": "I don't know", "de": "Ich weiß nicht" }, "value": "unsure", "price": 2000 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contact-info",
+      "title": { "es": "Datos de contacto", "en": "Contact information", "de": "Kontaktinformationen" },
+      "questions": [
+        {
+          "id": "name",
+          "question": {
+            "es": "¿Cuál es tu nombre?",
+            "en": "What is your name?",
+            "de": "Wie ist Ihr Name?"
+          },
+          "type": "text",
+          "options": []
+        },
+        {
+          "id": "email",
+          "question": {
+            "es": "¿Cuál es tu correo electrónico?",
+            "en": "What is your email?",
+            "de": "Wie ist Ihre E-Mail-Adresse?"
+          },
+          "type": "email",
+          "options": []
+        },
+        {
+          "id": "comments",
+          "question": {
+            "es": "¿Algo más que quieras comentar sobre tu proyecto? (opcional)",
+            "en": "Anything else you'd like to share about your project? (optional)",
+            "de": "Möchten Sie noch etwas zu Ihrem Projekt mitteilen? (optional)"
+          },
+          "type": "textarea",
+          "options": []
+        }
+      ]
+    }
+  ]
+}
