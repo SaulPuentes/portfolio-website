@@ -8,7 +8,6 @@ export interface Translations {
   }
   hero: {
     title: string
-    subtitle: string
     description: string
     downloadCv: string
     viewProjects: string

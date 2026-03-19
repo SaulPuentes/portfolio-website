@@ -32,5 +32,6 @@ export interface Project {
   repoUrl?: string
   featured?: boolean
   image?: string
+  gallery?: string[]
   detail: ProjectDetail
 }

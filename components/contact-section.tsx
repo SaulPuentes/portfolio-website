@@ -34,12 +34,9 @@ export function ContactSection() {
         <div className="grid gap-8 lg:grid-cols-5 lg:gap-12">
           {/* Label */}
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-2">
-              <Mail className="size-4 text-accent" />
-              <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                {t.contact.sectionTitle}
-              </h2>
-            </div>
+            <h2 className="text-3xl font-bold md:text-4xl">
+              {t.contact.sectionTitle}
+            </h2>
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
               {t.contact.description}
             </p>

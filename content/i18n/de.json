@@ -5,9 +5,8 @@
     "contact": "Kontakt"
   },
   "hero": {
-    "title": "Full Stack Developer",
-    "subtitle": "Skalierbare Systeme. Klare Architektur. Messbare Ergebnisse.",
-    "description": "Hi, ich bin Saúl Puentes — Software-Ingenieur mit 7 Jahren Erfahrung in der Full-Stack-Webentwicklung. Ich bin Experte für JavaScript und habe mich beim Aufbau skalierbarer und anpassbarer Anwendungen in E-Commerce, Logistik und SaaS bewährt.\n\nMeine Arbeit umfasst die Leitung der Entwicklung einer Logistikplattform, Shopify-Inventarsysteme, dynamische UI-Features, Headless-CMS-Integration und mehrsprachige, mobilfähige Anwendungen. Umfangreiche Erfahrung mit React, Next.js, NestJS und Node.js sowie Docker, AWS und SQL/NoSQL-Datenbanken.\n\nGewohnt an remote, multikulturelle Umgebungen. Agile/Scrum-Methodik.",
+    "title": "Softwareingenieur mit über 8 Jahren Erfahrung.",
+    "description": "Ich entwickle skalierbare Webanwendungen und Plattformen für E-Commerce, Logistik und SaaS. Ich arbeite an komplexen Produkten und erstelle anpassbare, effiziente Lösungen, die mitwachsen.",
     "downloadCv": "Lebenslauf herunterladen",
     "viewProjects": "Projekte ansehen",
     "salsaWorld": "Salsa World"
@@ -15,7 +14,7 @@
   "about": {
     "sectionTitle": "Profil",
     "content": [
-      "Software-Ingenieur mit 7 Jahren Erfahrung in der Full-Stack-Webentwicklung, spezialisiert auf JavaScript und moderne Frameworks wie React, Next.js, NestJS und Node.js.",
+      "Software-Ingenieur mit über 8 Jahren Erfahrung in der Full-Stack-Webentwicklung, spezialisiert auf JavaScript und moderne Frameworks wie React, Next.js, NestJS und Node.js.",
       "Bewährter Track Record beim Aufbau skalierbarer Anwendungen für E-Commerce, Logistik und SaaS. Erfahrung mit Headless-CMS, Shopify-Inventarsystemen und mehrsprachigen mobilen Anwendungen.",
       "Hintergrund in E-Commerce, IT-Beratung und Immobilien. Gewohnt an remote, multikulturelle Umgebungen. Agile/Scrum-Methodik."
     ]
