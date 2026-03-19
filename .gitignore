@@ -11,6 +11,8 @@ node_modules/
 content/site.json
 content/data/*
 !content/data/*.sample.*
+!content/data/quoter-config.json
+!content/data/quoter-questions.md
 docs/curriculum.md
 out/
 .env*.local
