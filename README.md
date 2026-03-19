@@ -15,15 +15,13 @@ A multilingual, content-agnostic portfolio website template built with Next.js, 
 ```bash
 npm install
 # Copy sample data files (required on first clone — originals are gitignored)
-cp content/data/experiences.sample.json content/data/experiences.json
 cp content/data/projects.sample.json content/data/projects.json
-cp content/data/skills.sample.json content/data/skills.json
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to see the site.
 
-> **Note:** `experiences.json`, `projects.json`, and `skills.json` are gitignored to protect personal data. Use the `.sample.json` files as templates. `docs/linkedin.md` is also gitignored; use `docs/linkedin.sample.md` as a template when importing from LinkedIn.
+> **Note:** `projects.json` is gitignored to protect personal data. Use the `.sample.json` file as a template. `docs/curriculum.md` is also gitignored; use `docs/curriculum.sample.md` as a template when importing from LinkedIn.
 
 ## Customization
 
@@ -50,44 +48,6 @@ Place CV PDFs in `public/cv/`.
 ### `content/i18n/{en,es,de}.json` — UI Translations
 
 Each file contains all translatable UI strings (nav labels, section titles, button text, descriptions). The structure must match the `Translations` interface in `lib/i18n/types.ts`.
-
-### `content/data/skills.json` — Skills
-
-Array of skill categories, each with a `key` and `items` array:
-
-```json
-[
-  {
-    "key": "frontend",
-    "items": [{ "name": "React" }, { "name": "Next.js" }]
-  }
-]
-```
-
-The `key` must match a key in the `skills` section of each translation file (e.g. `"frontend"` maps to `t.skills.frontend`).
-
-### `content/data/experiences.json` — Work Experience
-
-Array of experience entries with per-locale fields:
-
-```json
-[
-  {
-    "company": { "en": "Acme Corp", "es": "Acme Corp", "de": "Acme GmbH" },
-    "role": { "en": "Engineer", "es": "Ingeniero", "de": "Ingenieur" },
-    "startDate": "2022-03",
-    "endDate": "Heute",
-    "achievements": {
-      "en": ["Built X", "Improved Y"],
-      "es": ["Construi X", "Mejore Y"],
-      "de": ["X gebaut", "Y verbessert"]
-    },
-    "technologies": ["React", "Node.js"]
-  }
-]
-```
-
-Use `"Heute"` as the `endDate` value for current positions — it's automatically translated to "Present" (EN) or "Presente" (ES) in the UI.
 
 ### `content/data/projects.json` — Projects
 
@@ -124,7 +84,7 @@ Place project images in `public/projects/`. The `liveUrl`, `repoUrl`, `image`, a
 2. Add the locale entry to `content/site.json` → `locales` array
 3. Add the locale code to the `Locale` type union in `lib/i18n/types.ts`
 4. Import and register the new JSON in `lib/i18n/index.ts`
-5. Add the locale key to all `Record<Locale, string>` fields in `experiences.json` and `projects.json`
+5. Add the locale key to all `Record<Locale, string>` fields in `projects.json`
 6. Add a CV file path in `content/site.json` → `cvFiles`
 
 ## Adding a Social Link Platform
@@ -148,7 +108,7 @@ This generates a static export in the `out/` directory. Deploy it to any static 
 content/                  # All editable content (JSON)
   site.json               # Personal info & config
   i18n/                   # UI translations per language
-  data/                   # Skills, experiences, projects
+  data/                   # Projects data
 components/               # React components
 lib/                      # Utilities, types, i18n logic
   site-config.ts          # Typed accessor for site.json

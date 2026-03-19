@@ -1,8 +1,6 @@
 {
   "nav": {
     "about": "Profile",
-    "skills": "Skills",
-    "experience": "Experience",
     "projects": "Projects",
     "contact": "Contact"
   },
@@ -22,18 +20,27 @@
       "Background in e-commerce, IT consulting, and real estate. Comfortable in remote, multicultural environments. Agile/Scrum methodologies."
     ]
   },
-  "skills": {
-    "sectionTitle": "Core Competencies",
-    "frontend": "Frontend",
-    "backend": "Backend",
-    "cloud": "Cloud & Infrastructure",
-    "databases": "Databases",
-    "practices": "Engineering Practices"
+  "services": {
+    "sectionTitle": "Services",
+    "planning": {
+      "title": "Strategy & Architecture",
+      "description": "I help translate business goals into a clear technical foundation: scope definition, architecture, workflows, and stack decisions for SaaS products, logistics platforms, and e-commerce experiences."
+    },
+    "development": {
+      "title": "Full-Stack Development",
+      "description": "I build scalable web applications with React, Next.js, NestJS, and Node.js, from dashboards and internal platforms to multilingual websites and mobile-ready experiences."
+    },
+    "analysis": {
+      "title": "E-commerce, CMS & Automation",
+      "description": "I design solutions that reduce manual work and improve operations: Shopify integrations, headless CMS workflows, process automation, and content structures that are easier to maintain."
+    },
+    "consulting": {
+      "title": "Technical Consulting & Audit",
+      "description": "I review existing products to uncover bottlenecks in performance, maintainability, and scalability, then propose concrete improvements focused on measurable outcomes and realistic execution."
+    }
   },
-  "experience": {
-    "sectionTitle": "Professional Experience",
-    "viewMore": "View more",
-    "viewLess": "View less"
+  "skills": {
+    "sectionTitle": "Skills"
   },
   "projects": {
     "sectionTitle": "Projects",

@@ -1,8 +1,8 @@
-import type { SkillCategory, Experience, Project } from "./types"
+import type { SkillCategory, Project, Service } from "./types"
 import skillsJson from "@/content/data/skills.json"
-import experiencesJson from "@/content/data/experiences.json"
 import projectsJson from "@/content/data/projects.json"
+import servicesJson from "@/content/data/services.json"
 
 export const skills: SkillCategory[] = skillsJson as SkillCategory[]
-export const experiences: Experience[] = experiencesJson as Experience[]
 export const projects: Project[] = projectsJson as Project[]
+export const services: Service[] = servicesJson as Service[]

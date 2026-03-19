@@ -9,15 +9,6 @@ export interface SkillCategory {
   items: Skill[]
 }
 
-export interface Experience {
-  company: Record<Locale, string>
-  role: Record<Locale, string>
-  startDate: string
-  endDate: string
-  achievements: Record<Locale, string[]>
-  technologies: string[]
-}
-
 export interface ProjectDetail {
   problem: Record<Locale, string>
   architecture: Record<Locale, string>
@@ -25,6 +16,11 @@ export interface ProjectDetail {
   challenges: Record<Locale, string>
   results: Record<Locale, string>
   lessons: Record<Locale, string>
+}
+
+export interface Service {
+  number: string
+  key: string
 }
 
 export interface Project {

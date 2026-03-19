@@ -1,19 +1,19 @@
 {
-  "name": "Saul Puentes",
-  "brandName": "S. Puentes",
-  "tagline": "Full Stack Developer",
-  "email": "saul.puentess@gmail.com",
+  "name": "Your Name",
+  "brandName": "Your Name",
+  "tagline": "Your Tagline",
+  "email": "you@example.com",
   "footerNote": "Built with Next.js",
   "socialLinks": [
     {
       "platform": "linkedin",
       "label": "LinkedIn",
-      "url": "https://www.linkedin.com/in/saul-puentes"
+      "url": "https://www.linkedin.com/in/your-profile"
     },
     {
       "platform": "github",
       "label": "GitHub",
-      "url": "https://github.com/SaulPuentes"
+      "url": "https://github.com/your-username"
     }
   ],
   "locales": [
