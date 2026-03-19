@@ -1,0 +1,18 @@
+[
+  {
+    "number": "01",
+    "key": "planning"
+  },
+  {
+    "number": "02",
+    "key": "development"
+  },
+  {
+    "number": "03",
+    "key": "analysis"
+  },
+  {
+    "number": "04",
+    "key": "consulting"
+  }
+]

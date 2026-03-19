@@ -14,7 +14,7 @@
     },
     "technologies": ["React", "Node.js", "PostgreSQL"],
     "liveUrl": "https://example.com",
-    "repoUrl": "https://github.com/username/repo",
+    "repoUrl": "https://github.com/your-username/sample-project",
     "featured": true,
     "detail": {
       "problem": {

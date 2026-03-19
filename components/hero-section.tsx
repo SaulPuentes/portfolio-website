@@ -5,13 +5,14 @@ import { cvFiles } from "@/lib/i18n"
 import { Download, ArrowDown } from "lucide-react"
 import { siteConfig } from "@/lib/site-config"
 import { Button } from "@/components/ui/button"
+import { SkillsMarquee } from "@/components/skills-marquee"
 
 export function HeroSection() {
   const { locale, t } = useI18n()
 
   return (
-    <section id="about" className="scroll-mt-16 flex min-h-[90vh] flex-col justify-center px-4 pt-16 lg:px-8">
-      <div className="mx-auto w-full max-w-6xl">
+    <section id="about" className="scroll-mt-16 flex h-dvh min-h-[600px] flex-col px-4 pt-16 lg:px-8">
+      <div className="mx-auto flex w-full max-w-6xl flex-1 items-center">
         <div className="grid gap-10 lg:grid-cols-5 lg:gap-16">
 
           {/* Left — Identity */}
@@ -69,6 +70,8 @@ export function HeroSection() {
 
         </div>
       </div>
+
+      <SkillsMarquee />
     </section>
   )
 }

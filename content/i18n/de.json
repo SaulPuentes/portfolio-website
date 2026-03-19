@@ -1,8 +1,6 @@
 {
   "nav": {
     "about": "Profil",
-    "skills": "Kompetenzen",
-    "experience": "Erfahrung",
     "projects": "Projekte",
     "contact": "Kontakt"
   },
@@ -22,18 +20,27 @@
       "Hintergrund in E-Commerce, IT-Beratung und Immobilien. Gewohnt an remote, multikulturelle Umgebungen. Agile/Scrum-Methodik."
     ]
   },
-  "skills": {
-    "sectionTitle": "Kompetenzen",
-    "frontend": "Frontend",
-    "backend": "Backend",
-    "cloud": "Cloud & Infrastruktur",
-    "databases": "Datenbanken",
-    "practices": "Engineering Practices"
+  "services": {
+    "sectionTitle": "Dienstleistungen",
+    "planning": {
+      "title": "Strategie & Architektur",
+      "description": "Ich helfe dabei, Geschäftsziele in ein klares technisches Fundament zu übersetzen: Scope, Architektur, Workflows und Stack-Entscheidungen für SaaS-Produkte, Logistikplattformen und E-Commerce-Erlebnisse."
+    },
+    "development": {
+      "title": "Full-Stack-Entwicklung",
+      "description": "Ich entwickle skalierbare Webanwendungen mit React, Next.js, NestJS und Node.js, von Dashboards und internen Plattformen bis zu mehrsprachigen Websites und mobiloptimierten Erlebnissen."
+    },
+    "analysis": {
+      "title": "E-Commerce, CMS & Automatisierung",
+      "description": "Ich konzipiere Lösungen, die manuelle Arbeit reduzieren und Abläufe verbessern: Shopify-Integrationen, Headless-CMS-Workflows, Prozessautomatisierung und Inhaltsstrukturen, die leichter zu pflegen sind."
+    },
+    "consulting": {
+      "title": "Technische Beratung & Audit",
+      "description": "Ich analysiere bestehende Produkte, finde Engpässe bei Performance, Wartbarkeit und Skalierbarkeit und schlage konkrete Verbesserungen mit Fokus auf messbare Ergebnisse und realistische Umsetzung vor."
+    }
   },
-  "experience": {
-    "sectionTitle": "Berufserfahrung",
-    "viewMore": "Mehr anzeigen",
-    "viewLess": "Weniger anzeigen"
+  "skills": {
+    "sectionTitle": "Fähigkeiten"
   },
   "projects": {
     "sectionTitle": "Projekte",

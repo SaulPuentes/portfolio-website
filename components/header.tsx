@@ -7,6 +7,7 @@ import { Menu, X, ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { siteConfig } from "@/lib/site-config"
 import { ThemeToggle } from "@/components/theme-toggle"
+import Link from "next/link"
 
 export function Header() {
   const { locale, setLocale, t } = useI18n()
@@ -15,8 +16,6 @@ export function Header() {
 
   const navItems = [
     { href: "#about", label: t.nav.about },
-    { href: "#skills", label: t.nav.skills },
-    { href: "#experience", label: t.nav.experience },
     { href: "#projects", label: t.nav.projects },
     { href: "#contact", label: t.nav.contact },
   ]
@@ -56,6 +55,13 @@ export function Header() {
               {item.label}
             </button>
           ))}
+
+          <Link
+            href="/cotizador"
+            className="flex items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            Cotizar
+          </Link>
 
           {/* Language Switcher */}
           <div className="relative">
@@ -126,6 +132,13 @@ export function Header() {
                 {item.label}
               </button>
             ))}
+            <Link
+              href="/cotizador"
+              onClick={() => setMobileOpen(false)}
+              className="mt-2 flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              Cotizar
+            </Link>
             <div className="mt-2 border-t border-border pt-2">
               <p className="px-3 pb-1 text-xs text-muted-foreground">Theme</p>
               <div className="px-3 pb-2">

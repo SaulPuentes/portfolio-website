@@ -7,11 +7,11 @@ __v0_jsx-dev-runtime.ts
 node_modules/
 .next/
 
-# Personal data (use *.sample.json as templates)
-content/data/experiences.json
-content/data/projects.json
-content/data/skills.json
-docs/linkedin.md
+# Personal data (use *.sample.* as templates)
+content/site.json
+content/data/*
+!content/data/*.sample.*
+docs/curriculum.md
 out/
 .env*.local
 .DS_Store

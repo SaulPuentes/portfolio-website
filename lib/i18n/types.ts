@@ -3,8 +3,6 @@ export type Locale = "de" | "en" | "es"
 export interface Translations {
   nav: {
     about: string
-    skills: string
-    experience: string
     projects: string
     contact: string
   }
@@ -20,18 +18,15 @@ export interface Translations {
     sectionTitle: string
     content: string[]
   }
+  services: {
+    sectionTitle: string
+    planning: { title: string; description: string }
+    development: { title: string; description: string }
+    analysis: { title: string; description: string }
+    consulting: { title: string; description: string }
+  }
   skills: {
     sectionTitle: string
-    frontend: string
-    backend: string
-    cloud: string
-    databases: string
-    practices: string
-  }
-  experience: {
-    sectionTitle: string
-    viewMore: string
-    viewLess: string
   }
   projects: {
     sectionTitle: string
