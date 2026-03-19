@@ -5,9 +5,8 @@
     "contact": "Contact"
   },
   "hero": {
-    "title": "Full Stack Developer",
-    "subtitle": "Scalable Systems. Clean Architecture. Measurable Results.",
-    "description": "Hi, I'm Saúl Puentes — a Software Engineer with 7 years of experience in full-stack web development. I'm an expert in JavaScript and have a proven track record of building scalable and customizable applications across e-commerce, logistics, and SaaS.\n\nMy work includes leading the development of a logistics platform, designing inventory systems with Shopify, implementing dynamic UI features, integrating headless CMS solutions, and building multilingual, mobile-ready applications. I've worked extensively with React, Next.js, NestJS, and Node.js, along with Docker, AWS, and various SQL/NoSQL databases.\n\nComfortable working in remote, multicultural environments. I follow Agile/Scrum methodologies.",
+    "title": "Software Engineer with 8+ years of experience.",
+    "description": "I build scalable web applications and platforms for e-commerce, logistics, and SaaS. I've worked on complex products, creating adaptable, efficient solutions built to grow.",
     "downloadCv": "Download CV",
     "viewProjects": "View Projects",
     "salsaWorld": "Salsa World"
@@ -15,7 +14,7 @@
   "about": {
     "sectionTitle": "Profile",
     "content": [
-      "Software Engineer with 7 years of experience in full-stack web development, specializing in JavaScript and modern frameworks like React, Next.js, NestJS, and Node.js.",
+      "Software Engineer with 8+ years of experience in full-stack web development, specializing in JavaScript and modern frameworks like React, Next.js, NestJS, and Node.js.",
       "Proven track record building scalable applications for e-commerce, logistics, and SaaS. Experience includes headless CMS integration, Shopify inventory systems, and multilingual mobile-ready applications.",
       "Background in e-commerce, IT consulting, and real estate. Comfortable in remote, multicultural environments. Agile/Scrum methodologies."
     ]

@@ -5,9 +5,8 @@
     "contact": "Contacto"
   },
   "hero": {
-    "title": "Full Stack Developer",
-    "subtitle": "Sistemas Escalables. Arquitectura Limpia. Resultados Medibles.",
-    "description": "Hola, soy Saúl Puentes — Ingeniero de Software con 7 años de experiencia en desarrollo web full-stack. Soy experto en JavaScript y tengo un historial comprobado construyendo aplicaciones escalables y personalizables en e-commerce, logística y SaaS.\n\nMi trabajo incluye liderar el desarrollo de una plataforma logística, diseñar sistemas de inventario con Shopify, implementar funciones dinámicas de UI, integrar soluciones headless CMS y construir aplicaciones multilingües y listas para móvil. He trabajado extensamente con React, Next.js, NestJS y Node.js, junto con Docker, AWS y diversas bases de datos SQL/NoSQL.\n\nCómodo trabajando en entornos remotos y multiculturales. Sigo metodologías Agile/Scrum.",
+    "title": "Ingeniero de Software con + de 8 años de experiencia.",
+    "description": "Desarrollo aplicaciones y plataformas web escalables para e-commerce, logística y SaaS. He trabajado en productos complejos, creando soluciones adaptables, eficientes y listas para crecer.",
     "downloadCv": "Descargar CV",
     "viewProjects": "Ver Proyectos",
     "salsaWorld": "Salsa World"
@@ -15,7 +14,7 @@
   "about": {
     "sectionTitle": "Perfil",
     "content": [
-      "Ingeniero de Software con 7 años de experiencia en desarrollo web full-stack, especializado en JavaScript y frameworks modernos como React, Next.js, NestJS y Node.js.",
+      "Ingeniero de Software con + de 8 años de experiencia en desarrollo web full-stack, especializado en JavaScript y frameworks modernos como React, Next.js, NestJS y Node.js.",
       "Historial comprobado construyendo aplicaciones escalables para e-commerce, logística y SaaS. Experiencia en integración de headless CMS, sistemas de inventario con Shopify y aplicaciones multilingües listas para móvil.",
       "Experiencia en e-commerce, consultoría IT y bienes raíces. Cómodo en entornos remotos y multiculturales. Metodologías Agile/Scrum."
     ]

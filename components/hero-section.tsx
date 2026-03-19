@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useRef } from "react"
 import { useI18n } from "@/lib/i18n/context"
 import { cvFiles } from "@/lib/i18n"
 import { Download, ArrowDown } from "lucide-react"
@@ -9,27 +10,46 @@ import { SkillsMarquee } from "@/components/skills-marquee"
 
 export function HeroSection() {
   const { locale, t } = useI18n()
+  const sectionRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+
+    const items = el.querySelectorAll<HTMLElement>("[data-hero]")
+    items.forEach((item) => {
+      item.style.opacity = "0"
+      item.style.transform = "translateY(24px)"
+    })
+
+    const delays = [100, 300, 500, 700]
+    items.forEach((item, i) => {
+      setTimeout(() => {
+        item.style.transition = "opacity 0.6s ease-out, transform 0.6s ease-out"
+        item.style.opacity = "1"
+        item.style.transform = "translateY(0)"
+      }, delays[i] ?? 200 * i)
+    })
+
+  }, [])
 
   return (
     <section id="about" className="scroll-mt-16 flex h-dvh min-h-[600px] flex-col px-4 pt-16 lg:px-8">
-      <div className="mx-auto flex w-full max-w-6xl flex-1 items-center">
-        <div className="grid gap-10 lg:grid-cols-5 lg:gap-16">
+      <div ref={sectionRef} className="mx-auto flex w-full max-w-6xl flex-1 items-center">
+        <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
 
           {/* Left — Identity */}
-          <div className="flex flex-col justify-between lg:col-span-2">
+          <div className="flex flex-col justify-between">
             <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-accent">
-                {siteConfig.tagline}
-              </p>
-              <h1 className="text-5xl font-bold tracking-tight text-foreground lg:text-6xl text-balance">
+              <h1 data-hero className="text-5xl font-bold tracking-tight text-foreground lg:text-6xl text-balance">
                 {siteConfig.name}
               </h1>
-              <p className="mt-4 text-lg font-medium text-foreground/70 text-balance">
+              <p data-hero className="mt-4 text-lg font-medium text-foreground/70 text-balance">
                 {t.hero.title}
               </p>
             </div>
 
-            <div className="mt-10 flex flex-wrap gap-3">
+            <div data-hero className="mt-10 flex flex-wrap gap-3">
               <Button asChild size="lg">
                 <a href={cvFiles[locale]} download>
                   <Download className="size-4" />
@@ -51,21 +71,11 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* Right — Summary + About combined */}
-          <div className="flex flex-col justify-center gap-6 lg:col-span-3">
-            <p className="text-base leading-relaxed text-foreground/80 lg:text-lg font-medium">
-              {t.hero.subtitle}
+          {/* Right — Short intro */}
+          <div data-hero className="flex flex-col justify-center">
+            <p className="text-base leading-relaxed text-muted-foreground lg:text-lg">
+              {t.hero.description}
             </p>
-
-            <div className="h-px w-12 bg-accent/40" />
-
-            <div className="flex flex-col gap-4">
-              {t.hero.description.split(/\n\n+/).map((paragraph, idx) => (
-                <p key={`desc-${idx}`} className="text-sm leading-relaxed text-muted-foreground">
-                  {paragraph}
-                </p>
-              ))}
-            </div>
           </div>
 
         </div>
