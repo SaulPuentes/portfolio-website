@@ -44,7 +44,12 @@ export function ServicesSection() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative" style={{ height: "300vh" }}>
+    <section
+      id="services"
+      ref={sectionRef}
+      className="relative scroll-mt-16"
+      style={{ height: "300vh" }}
+    >
       <div className="sticky top-0 h-screen flex items-center">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold mb-8">{t.services.sectionTitle}</h2>
@@ -59,7 +64,7 @@ export function ServicesSection() {
               return (
                 <div
                   key={service.key}
-                  className="p-8 md:p-12 transition-all duration-700 ease-out"
+                  className="flex flex-col justify-between p-8 md:p-12 transition-all duration-700 ease-out"
                   style={{
                     opacity: isVisible ? 1 : 0,
                     transform: isVisible
@@ -67,15 +72,17 @@ export function ServicesSection() {
                       : "translateY(1.5rem)",
                   }}
                 >
-                  <span className="font-mono text-sm text-muted-foreground">
-                    {service.number}
-                  </span>
-                  <h3 className="text-xl md:text-2xl font-semibold mt-2">
-                    {serviceData.title}
-                  </h3>
-                  <p className="text-muted-foreground mt-3 text-sm md:text-base leading-relaxed">
-                    {serviceData.description}
-                  </p>
+                  <div>
+                    <span className="font-mono text-sm text-muted-foreground">
+                      {service.number}
+                    </span>
+                    <h3 className="text-xl md:text-2xl font-semibold mt-2">
+                      {serviceData.title}
+                    </h3>
+                    <p className="text-muted-foreground mt-3 text-sm md:text-base leading-relaxed">
+                      {serviceData.description}
+                    </p>
+                  </div>
                   <hr className="mt-6 border-border" />
                 </div>
               )

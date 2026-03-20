@@ -1,6 +1,7 @@
 {
   "nav": {
     "about": "Profile",
+    "services": "Services",
     "projects": "Projects",
     "contact": "Contact"
   },
