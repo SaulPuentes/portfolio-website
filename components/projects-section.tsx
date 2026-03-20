@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useRef } from "react"
 import Image from "next/image"
 import { useI18n } from "@/lib/i18n/context"
 import { projects } from "@/lib/data"
@@ -21,6 +21,7 @@ import {
   ArrowUpRight,
 } from "lucide-react"
 import type { Project } from "@/lib/types"
+import { useInView, useScrollCards } from "@/hooks/use-scroll-cards"
 
 /* ------------------------------------------------------------------ */
 /*  ProjectDetailModal — preserved from original                       */
@@ -133,7 +134,7 @@ function GalleryCollage({
 
   if (images.length === 0) {
     return (
-      <div className="flex aspect-video items-center justify-center rounded-xl bg-muted">
+      <div className="flex aspect-[4/3] items-center justify-center rounded-xl bg-muted">
         <FolderGit2 className="size-16 text-muted-foreground/20" />
       </div>
     )
@@ -141,7 +142,7 @@ function GalleryCollage({
 
   if (images.length === 1) {
     return (
-      <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-muted">
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-muted">
         <Image
           src={images[0]}
           alt={alt}
@@ -187,11 +188,13 @@ function ProjectCard({
 
   return (
     <article
-      className="absolute inset-0 flex items-center justify-center transition-all duration-700 ease-out"
+      className="absolute inset-0 flex items-center justify-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
       style={{
         zIndex: isVisible ? index + 1 : 0,
         opacity: isVisible ? 1 : 0,
-        transform: isVisible ? "translateY(0)" : "translateY(80vh)",
+        transform: isVisible
+          ? "translateY(0) scale(1)"
+          : "translateY(60px) scale(0.97)",
         pointerEvents: isVisible ? "auto" : "none",
       }}
     >
@@ -261,7 +264,7 @@ function ProjectCard({
           </div>
 
           {/* Right: Gallery */}
-          <div className="w-full lg:w-1/2">
+          <div className="w-full lg:w-1/2 lg:min-h-[400px]">
             <GalleryCollage
               gallery={project.gallery}
               image={project.image}
@@ -275,49 +278,19 @@ function ProjectCard({
 }
 
 /* ------------------------------------------------------------------ */
-/*  ProjectsSection — scroll-driven stacking (like ServicesSection)     */
+/*  ProjectsSection — scroll-driven stacking                           */
 /* ------------------------------------------------------------------ */
 
 export function ProjectsSection() {
   const { t } = useI18n()
   const sectionRef = useRef<HTMLDivElement>(null)
-  const [activeIndex, setActiveIndex] = useState(0)
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const total = projects.length
 
-  useEffect(() => {
-    const section = sectionRef.current
-    if (!section) return
+  const inView = useInView(sectionRef)
+  const { activeIndex, progress, vhPerSlide } = useScrollCards(sectionRef, total)
 
-    const handleScroll = () => {
-      const rect = section.getBoundingClientRect()
-      const sectionHeight = section.offsetHeight
-      const scrolled = -rect.top
-      const scrollableDistance = sectionHeight - window.innerHeight
-
-      if (scrolled < 0) {
-        setActiveIndex(0)
-        return
-      }
-
-      if (scrollableDistance <= 0) {
-        setActiveIndex(total - 1)
-        return
-      }
-
-      const progress = Math.min(Math.max(scrolled / scrollableDistance, 0), 1)
-      // Each card gets an equal slice of scroll distance
-      const index = Math.min(Math.floor(progress * total), total - 1)
-      setActiveIndex(index)
-    }
-
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    handleScroll()
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [total])
-
-  // Height: 100vh per card + 100vh for the sticky viewport
-  const sectionHeight = `${total * 150}vh`
+  const sectionHeight = `${total * vhPerSlide}vh`
 
   return (
     <section
@@ -326,38 +299,62 @@ export function ProjectsSection() {
       className="relative scroll-mt-16"
       style={{ height: sectionHeight }}
     >
-      <div className="sticky top-0 h-screen flex flex-col">
-        {/* Section header */}
-        <div className="mx-auto w-full max-w-6xl px-4 pt-20 lg:px-8">
-          <h2 className="mb-8 text-3xl font-bold md:text-4xl">
-            {t.projects.sectionTitle}
-          </h2>
+      <div className="sticky top-0 flex h-screen">
+        <div className="flex flex-1 flex-col">
+          {/* Section header */}
+          <div
+            className="mx-auto w-full max-w-6xl px-4 pt-20 lg:px-8 transition-all duration-700 ease-out"
+            style={{
+              opacity: inView ? 1 : 0,
+              transform: inView ? "translateY(0)" : "translateY(24px)",
+            }}
+          >
+            <h2 className="mb-8 text-3xl font-bold md:text-4xl">
+              {t.projects.sectionTitle}
+            </h2>
+          </div>
+
+          {/* Card viewport */}
+          <div
+            className="relative mx-auto flex-1 w-full max-w-6xl px-4 lg:px-8 transition-all duration-700 ease-out delay-200"
+            style={{
+              opacity: inView ? 1 : 0,
+              transform: inView ? "translateY(0)" : "translateY(32px)",
+            }}
+          >
+            {projects.map((project, i) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                isVisible={i <= activeIndex}
+                index={i}
+                total={total}
+                onOpenDetail={() => setSelectedProject(project)}
+              />
+            ))}
+          </div>
         </div>
 
-        {/* Card viewport */}
-        <div className="relative flex-1 mx-auto w-full max-w-6xl px-4 lg:px-8">
-          {projects.map((project, i) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              isVisible={i <= activeIndex}
-              index={i}
-              total={total}
-              onOpenDetail={() => setSelectedProject(project)}
-            />
-          ))}
-        </div>
-
-        {/* Dot indicators */}
-        <div className="flex justify-center gap-2 pb-8">
-          {projects.map((p, i) => (
+        {/* Vertical progress bar */}
+        <div
+          className="hidden md:flex flex-col items-center gap-3 py-20 pr-6 transition-all duration-700 ease-out delay-500"
+          style={{
+            opacity: inView ? 1 : 0,
+            transform: inView ? "translateY(0)" : "translateY(20px)",
+          }}
+        >
+          <span className="text-xs font-mono text-muted-foreground">
+            {String(activeIndex + 1).padStart(2, "0")}
+          </span>
+          <div className="relative w-[2px] flex-1 rounded-full bg-border overflow-hidden">
             <div
-              key={p.id}
-              className={`h-1.5 rounded-full transition-all duration-500 ${
-                i <= activeIndex ? "w-4 bg-accent" : "w-1.5 bg-border"
-              }`}
+              className="absolute inset-x-0 top-0 rounded-full bg-accent transition-[height] duration-200 ease-out"
+              style={{ height: `${progress * 100}%` }}
             />
-          ))}
+          </div>
+          <span className="text-xs font-mono text-muted-foreground">
+            {String(total).padStart(2, "0")}
+          </span>
         </div>
       </div>
 

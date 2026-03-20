@@ -3,6 +3,7 @@ export type Locale = "de" | "en" | "es"
 export interface Translations {
   nav: {
     about: string
+    services: string
     projects: string
     contact: string
   }
