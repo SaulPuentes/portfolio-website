@@ -165,7 +165,7 @@ export function ScrollCarousel({
     centeredSlides: true,
     slideOpacity: true,
     isScrubActive: scrub,
-    isScrubOnTouchActive: scrub,
+    isScrubOnTouchActive: false,
     scrubDir: 1,
   }
 
