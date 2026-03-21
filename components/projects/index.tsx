@@ -61,6 +61,11 @@ export function ProjectsSection() {
           items={carouselItems}
           heading={t.projects.sectionTitle}
           scrub
+          onCardClick={(index) => {
+            if (index >= 0 && index < projects.length) {
+              setSelectedProject(projects[index])
+            }
+          }}
         />
       </div>
 

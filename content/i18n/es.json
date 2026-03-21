@@ -7,7 +7,7 @@
   },
   "hero": {
     "title": "Ingeniero de Software con + de 8 años de experiencia.",
-    "description": "Desarrollo aplicaciones y plataformas web escalables para e-commerce, logística y SaaS. He trabajado en productos complejos, creando soluciones adaptables, eficientes y listas para crecer.",
+    "description": "Desarrollo aplicaciones y plataformas web para e-commerce, logística y SaaS, con un diseño muy profesional y cuidado al detalle. Trabajo en productos complejos con soluciones claras, eficientes y alineadas a cada marca.",
     "downloadCv": "Descargar CV",
     "viewProjects": "Ver Proyectos",
     "salsaWorld": "Salsa World"
@@ -52,7 +52,9 @@
     "decisions": "Decisiones tecnicas",
     "challenges": "Desafios",
     "results": "Resultados e impacto",
-    "links": "Enlaces del proyecto",
+    "links": "Enlaces",
+    "techStack": "Stack tecnologico",
+    "lessons": "Lecciones aprendidas",
     "close": "Cerrar",
     "featured": "Proyecto destacado"
   },

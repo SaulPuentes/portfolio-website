@@ -27,13 +27,14 @@ interface ScrollCarouselProps {
   id?: string
   scrub?: boolean
   className?: string
+  onCardClick?: (index: number) => void
 }
 
 /* ------------------------------------------------------------------ */
 /*  SlideCard — handles gallery hover cycling                          */
 /* ------------------------------------------------------------------ */
 
-function SlideCard({ item }: { item: CarouselItem }) {
+function SlideCard({ item, onClick }: { item: CarouselItem; onClick?: () => void }) {
   const images = item.gallery && item.gallery.length > 1 ? item.gallery : null
   const [imgIndex, setImgIndex] = useState(0)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -61,6 +62,10 @@ function SlideCard({ item }: { item: CarouselItem }) {
         className="card"
         onMouseEnter={startCycling}
         onMouseLeave={stopCycling}
+        onClick={onClick}
+        role={onClick ? "button" : undefined}
+        tabIndex={onClick ? 0 : undefined}
+        onKeyDown={onClick ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick() } } : undefined}
       >
         {images ? (
           <div className="media-container">
@@ -152,6 +157,7 @@ export function ScrollCarousel({
   id,
   scrub = true,
   className = "",
+  onCardClick,
 }: ScrollCarouselProps) {
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -180,7 +186,7 @@ export function ScrollCarousel({
           <div className="swiper-column-gap" />
           <div className="swiper-wrapper">
             {items.map((item, i) => (
-              <SlideCard key={i} item={item} />
+              <SlideCard key={i} item={item} onClick={onCardClick ? () => onCardClick(i) : undefined} />
             ))}
           </div>
         </div>
