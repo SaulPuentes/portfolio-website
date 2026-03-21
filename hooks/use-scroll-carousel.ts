@@ -242,8 +242,10 @@ export function useScrollCarousel(
 
       el.dataset.scrub = "true"
 
-      // Init swiper
-      swiperEl.classList.add("swiper-no-swiping")
+      // Only disable touch swiping when scrub is active
+      if (scrubActive) {
+        swiperEl.classList.add("swiper-no-swiping")
+      }
 
       const sw = new SwiperCore(swiperEl, {
         init: false,
