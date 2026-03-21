@@ -24,15 +24,6 @@ export function ProjectDetailModal({
 }) {
   const { locale, t } = useI18n()
 
-  const details = [
-    { label: t.projects.problem, content: project.detail.problem[locale] },
-    { label: t.projects.architecture, content: project.detail.architecture[locale] },
-    { label: t.projects.decisions, content: project.detail.decisions[locale] },
-    { label: t.projects.challenges, content: project.detail.challenges[locale] },
-    { label: t.projects.results, content: project.detail.results[locale] },
-    ...(project.detail.lessons ? [{ label: t.projects.lessons, content: project.detail.lessons[locale] }] : []),
-  ]
-
   const images =
     project.gallery && project.gallery.length > 0
       ? project.gallery
@@ -73,12 +64,7 @@ export function ProjectDetailModal({
             <ImageCarousel images={images} alt={project.name[locale]} />
           )}
 
-          {/* 2. Description */}
-          <DialogDescription className="mt-4">
-            {project.description[locale]}
-          </DialogDescription>
-
-          {/* 3. Tech stack */}
+          {/* 2. Tech stack */}
           <div className="mt-4">
             <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-foreground">
               {t.projects.techStack}
@@ -92,12 +78,28 @@ export function ProjectDetailModal({
             </div>
           </div>
 
+          {/* 3. Description */}
+          <div className="mt-6">
+            <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-foreground">
+              {t.projects.description}
+            </h4>
+            <DialogDescription asChild>
+              <div className="flex flex-col gap-3">
+                {project.description[locale].map((paragraph, i) => (
+                  <p key={i} className="text-sm leading-relaxed text-muted-foreground">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            </DialogDescription>
+          </div>
+
           {/* 4. Links */}
           <div className="mt-4">
             <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-foreground">
               {t.projects.links}
             </h4>
-            <div className="flex flex-wrap gap-3 rounded-lg bg-muted/50 px-4 py-3">
+            <div className="flex flex-wrap gap-3 rounded-lg bg-muted/50 px-4 py-2">
               {project.liveUrls && project.liveUrls.length > 0 ? (
                 project.liveUrls.map((link) => (
                   <Button key={link.url} asChild>
@@ -124,20 +126,6 @@ export function ProjectDetailModal({
                 </Button>
               )}
             </div>
-          </div>
-
-          {/* 5. Detail sections */}
-          <div className="mt-4 flex flex-col gap-5">
-            {details.map((d) => (
-              <div key={d.label}>
-                <h4 className="mb-1 text-xs font-semibold uppercase tracking-wider text-foreground">
-                  {d.label}
-                </h4>
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  {d.content}
-                </p>
-              </div>
-            ))}
           </div>
         </div>
       </DialogContent>

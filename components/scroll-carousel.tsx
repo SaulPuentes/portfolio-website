@@ -5,6 +5,7 @@ import Image from "next/image"
 import { ArrowUpRight } from "lucide-react"
 import { useScrollCarousel } from "@/hooks/use-scroll-carousel"
 import type { ScrollCarouselOptions } from "@/hooks/use-scroll-carousel"
+import { cn } from "@/lib/utils"
 import "swiper/css"
 import "@/styles/scroll-carousel.css"
 
@@ -59,7 +60,7 @@ function SlideCard({ item, onClick }: { item: CarouselItem; onClick?: () => void
   return (
     <div className="swiper-slide no-interaction">
       <div
-        className="card"
+        className={cn("card", onClick && "cursor-pointer")}
         onMouseEnter={startCycling}
         onMouseLeave={stopCycling}
         onClick={onClick}

@@ -8,40 +8,22 @@
       "es": "Proyecto de Ejemplo"
     },
     "description": {
-      "de": "Kurzbeschreibung deines Projekts für alle Sprachen.",
-      "en": "Brief description of your project in all languages.",
-      "es": "Breve descripción de tu proyecto en todos los idiomas."
+      "de": [
+        "Kurzbeschreibung deines Projekts für alle Sprachen.",
+        "Detaillierte Beschreibung mit Kontext, Architektur und Ergebnissen."
+      ],
+      "en": [
+        "Brief description of your project in all languages.",
+        "Detailed description with context, architecture, and results."
+      ],
+      "es": [
+        "Breve descripción de tu proyecto en todos los idiomas.",
+        "Descripción detallada con contexto, arquitectura y resultados."
+      ]
     },
     "technologies": ["React", "Node.js", "PostgreSQL"],
     "liveUrl": "https://example.com",
     "repoUrl": "https://github.com/your-username/sample-project",
-    "featured": true,
-    "detail": {
-      "problem": {
-        "de": "Problemstellung.",
-        "en": "Problem statement.",
-        "es": "Planteamiento del problema."
-      },
-      "architecture": {
-        "de": "Architekturüberblick.",
-        "en": "Architecture overview.",
-        "es": "Visión general de la arquitectura."
-      },
-      "decisions": {
-        "de": "Technische Entscheidungen.",
-        "en": "Technical decisions.",
-        "es": "Decisiones técnicas."
-      },
-      "challenges": {
-        "de": "Herausforderungen.",
-        "en": "Challenges.",
-        "es": "Desafíos."
-      },
-      "results": {
-        "de": "Ergebnisse und Auswirkungen.",
-        "en": "Results and impact.",
-        "es": "Resultados e impacto."
-      }
-    }
+    "featured": true
   }
 ]
