@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useCallback } from "react"
 import { I18nProvider } from "@/lib/i18n/context"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { QuoterForm } from "@/components/quoter/quoter-form"
@@ -11,8 +12,13 @@ import Link from "next/link"
 
 function CotizadorContent() {
   const { locale } = useI18n()
+  const [showingResult, setShowingResult] = useState(false)
 
   const t = (obj: Record<string, string>) => obj[locale] || obj["es"] || ""
+
+  const handleShowResult = useCallback((showing: boolean) => {
+    setShowingResult(showing)
+  }, [])
 
   return (
     <div className="min-h-screen bg-background">
@@ -30,12 +36,14 @@ function CotizadorContent() {
       </header>
 
       <main className="mx-auto max-w-3xl px-4 py-12">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold">{t(quoterConfig.title)}</h1>
-          <p className="mt-2 text-muted-foreground">{t(quoterConfig.subtitle)}</p>
-        </div>
+        {!showingResult && (
+          <div className="mb-8 text-center">
+            <h1 className="text-3xl font-bold">{t(quoterConfig.title)}</h1>
+            <p className="mt-2 text-muted-foreground">{t(quoterConfig.subtitle)}</p>
+          </div>
+        )}
 
-        <QuoterForm />
+        <QuoterForm onShowResult={handleShowResult} />
       </main>
     </div>
   )
