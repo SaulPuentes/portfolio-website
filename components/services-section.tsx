@@ -10,7 +10,7 @@ const QUADRANT_ORDER = [0, 1, 2, 3] // TL, TR, BL, BR
 export function ServicesSection() {
   const { t } = useI18n()
   const sectionRef = useRef<HTMLDivElement>(null)
-  const [visibleCount, setVisibleCount] = useState(0)
+  const [visibleCount, setVisibleCount] = useState(1)
 
   useEffect(() => {
     const section = sectionRef.current
@@ -23,7 +23,7 @@ export function ServicesSection() {
       const scrollableDistance = sectionHeight - window.innerHeight
 
       if (scrolled < 0) {
-        setVisibleCount(0)
+        setVisibleCount(1)
         return
       }
 
