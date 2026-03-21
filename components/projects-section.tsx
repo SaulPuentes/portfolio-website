@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState } from "react"
 import Image from "next/image"
 import { useI18n } from "@/lib/i18n/context"
 import { projects } from "@/lib/data"
@@ -14,14 +14,13 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog"
 import {
-  FolderGit2,
   ExternalLink,
   Github,
   Star,
-  ArrowUpRight,
 } from "lucide-react"
 import type { Project } from "@/lib/types"
-import { useInView, useScrollCards } from "@/hooks/use-scroll-cards"
+import { ScrollCarousel } from "@/components/scroll-carousel"
+import type { CarouselItem } from "@/components/scroll-carousel"
 
 /* ------------------------------------------------------------------ */
 /*  ProjectDetailModal — preserved from original                       */
@@ -118,244 +117,55 @@ function ProjectDetailModal({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Gallery Collage                                                    */
-/* ------------------------------------------------------------------ */
-
-function GalleryCollage({
-  gallery,
-  image,
-  alt,
-}: {
-  gallery?: string[]
-  image?: string
-  alt: string
-}) {
-  const images = gallery?.length ? gallery : image ? [image] : []
-
-  if (images.length === 0) {
-    return (
-      <div className="flex aspect-[4/3] items-center justify-center rounded-xl bg-muted">
-        <FolderGit2 className="size-16 text-muted-foreground/20" />
-      </div>
-    )
-  }
-
-  if (images.length === 1) {
-    return (
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-muted">
-        <Image
-          src={images[0]}
-          alt={alt}
-          fill
-          className="object-cover"
-        />
-      </div>
-    )
-  }
-
-  return (
-    <div className="grid grid-cols-2 gap-3">
-      {images.slice(0, 4).map((src, i) => (
-        <div
-          key={i}
-          className="relative aspect-[4/3] overflow-hidden rounded-lg bg-muted"
-        >
-          <Image src={src} alt={`${alt} ${i + 1}`} fill className="object-cover" />
-        </div>
-      ))}
-    </div>
-  )
-}
-
-/* ------------------------------------------------------------------ */
-/*  ProjectCard — rendered inside sticky viewport                      */
-/* ------------------------------------------------------------------ */
-
-function ProjectCard({
-  project,
-  isVisible,
-  index,
-  total,
-  onOpenDetail,
-}: {
-  project: Project
-  isVisible: boolean
-  index: number
-  total: number
-  onOpenDetail: () => void
-}) {
-  const { locale, t } = useI18n()
-
-  return (
-    <article
-      className="absolute inset-0 flex items-center justify-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
-      style={{
-        zIndex: isVisible ? index + 1 : 0,
-        opacity: isVisible ? 1 : 0,
-        transform: isVisible
-          ? "translateY(0) scale(1)"
-          : "translateY(60px) scale(0.97)",
-        pointerEvents: isVisible ? "auto" : "none",
-      }}
-    >
-      <div className="w-full max-w-5xl rounded-2xl border border-border bg-card p-6 shadow-lg md:p-10">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-12">
-          {/* Left: Info */}
-          <div className="flex flex-1 flex-col gap-5">
-            {project.featured && (
-              <div className="flex items-center gap-1.5">
-                <Star className="size-3.5 fill-accent text-accent" />
-                <span className="text-xs font-medium uppercase tracking-wider text-accent">
-                  {t.projects.featured}
-                </span>
-              </div>
-            )}
-
-            <h3 className="text-3xl font-bold text-foreground md:text-5xl">
-              {project.name[locale]}
-            </h3>
-
-            <p className="max-w-md text-base leading-relaxed text-muted-foreground md:text-lg">
-              {project.description[locale]}
-            </p>
-
-            <div className="flex flex-wrap gap-1.5">
-              {project.technologies.map((tech) => (
-                <Badge key={tech} variant="outline" className="text-xs font-normal">
-                  {tech}
-                </Badge>
-              ))}
-            </div>
-
-            {/* Actions */}
-            <div className="flex items-center gap-4 pt-2">
-              <button
-                onClick={onOpenDetail}
-                className="flex items-center gap-1.5 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-accent-foreground transition-colors hover:bg-accent/80"
-              >
-                {t.projects.viewDetails}
-                <ArrowUpRight className="size-4" />
-              </button>
-
-              {project.liveUrl && (
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <ExternalLink className="size-3.5" />
-                  {t.projects.viewLive}
-                </a>
-              )}
-
-              {project.repoUrl && (
-                <a
-                  href={project.repoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <Github className="size-3.5" />
-                  {t.projects.viewRepo}
-                </a>
-              )}
-            </div>
-          </div>
-
-          {/* Right: Gallery */}
-          <div className="w-full lg:w-1/2 lg:min-h-[400px]">
-            <GalleryCollage
-              gallery={project.gallery}
-              image={project.image}
-              alt={project.name[locale]}
-            />
-          </div>
-        </div>
-      </div>
-    </article>
-  )
-}
-
-/* ------------------------------------------------------------------ */
-/*  ProjectsSection — scroll-driven stacking                           */
+/*  ProjectsSection                                                    */
 /* ------------------------------------------------------------------ */
 
 export function ProjectsSection() {
-  const { t } = useI18n()
-  const sectionRef = useRef<HTMLDivElement>(null)
+  const { locale, t } = useI18n()
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
-  const total = projects.length
 
-  const inView = useInView(sectionRef)
-  const { activeIndex, progress, vhPerSlide } = useScrollCards(sectionRef, total)
+  const carouselItems: CarouselItem[] = projects.map((p) => ({
+    image: p.image
+      ? { src: p.image, alt: p.name[locale], width: 1024, height: 640 }
+      : undefined,
+    title: p.name[locale],
+    description: p.description[locale],
+    badges: p.technologies,
+    cta: {
+      label: t.projects.viewDetails,
+      href: "#",
+    },
+  }))
 
-  const sectionHeight = `${total * vhPerSlide}vh`
+  const handleCtaClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement
+    const ctaEl = target.closest<HTMLAnchorElement>(".cta-button")
+    if (!ctaEl) return
+
+    e.preventDefault()
+    // Find which slide was clicked
+    const slideEl = ctaEl.closest(".swiper-slide")
+    if (!slideEl) return
+    const slideContainer = slideEl.parentElement
+    if (!slideContainer) return
+    const index = Array.from(slideContainer.children).filter(
+      (el) => el.classList.contains("swiper-slide"),
+    ).indexOf(slideEl)
+    if (index >= 0 && index < projects.length) {
+      setSelectedProject(projects[index])
+    }
+  }
 
   return (
-    <section
-      id="projects"
-      ref={sectionRef}
-      className="relative scroll-mt-16"
-      style={{ height: sectionHeight }}
-    >
-      <div className="sticky top-0 flex h-screen">
-        <div className="flex flex-1 flex-col">
-          {/* Section header */}
-          <div
-            className="mx-auto w-full max-w-6xl px-4 pt-20 lg:px-8 transition-all duration-700 ease-out"
-            style={{
-              opacity: inView ? 1 : 0,
-              transform: inView ? "translateY(0)" : "translateY(24px)",
-            }}
-          >
-            <h2 className="mb-8 text-3xl font-bold md:text-4xl">
-              {t.projects.sectionTitle}
-            </h2>
-          </div>
-
-          {/* Card viewport */}
-          <div
-            className="relative mx-auto flex-1 w-full max-w-6xl px-4 lg:px-8 transition-all duration-700 ease-out delay-200"
-            style={{
-              opacity: inView ? 1 : 0,
-              transform: inView ? "translateY(0)" : "translateY(32px)",
-            }}
-          >
-            {projects.map((project, i) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                isVisible={i <= activeIndex}
-                index={i}
-                total={total}
-                onOpenDetail={() => setSelectedProject(project)}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Vertical progress bar */}
-        <div
-          className="hidden md:flex flex-col items-center gap-3 py-20 pr-6 transition-all duration-700 ease-out delay-500"
-          style={{
-            opacity: inView ? 1 : 0,
-            transform: inView ? "translateY(0)" : "translateY(20px)",
-          }}
-        >
-          <span className="text-xs font-mono text-muted-foreground">
-            {String(activeIndex + 1).padStart(2, "0")}
-          </span>
-          <div className="relative w-[2px] flex-1 rounded-full bg-border overflow-hidden">
-            <div
-              className="absolute inset-x-0 top-0 rounded-full bg-accent transition-[height] duration-200 ease-out"
-              style={{ height: `${progress * 100}%` }}
-            />
-          </div>
-          <span className="text-xs font-mono text-muted-foreground">
-            {String(total).padStart(2, "0")}
-          </span>
-        </div>
+    <section id="projects" className="relative scroll-mt-16">
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+      <div onClick={handleCtaClick}>
+        <ScrollCarousel
+          id="projects-carousel"
+          items={carouselItems}
+          heading={t.projects.sectionTitle}
+          scrub
+        />
       </div>
 
       {selectedProject && (
