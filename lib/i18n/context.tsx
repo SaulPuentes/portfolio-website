@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react"
 import { getTranslations, defaultLocale, locales } from "./index"
+import { getLocaleFromUrl } from "./url-locale"
 import type { Locale, Translations } from "./types"
 
 interface I18nContextValue {
@@ -23,10 +24,18 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(defaultLocale)
 
   useEffect(() => {
+    const urlLocale = getLocaleFromUrl()
+    if (urlLocale) {
+      setLocaleState(urlLocale)
+      localStorage.setItem("portfolio-locale", urlLocale)
+      document.documentElement.lang = urlLocale
+      return
+    }
     const stored = localStorage.getItem("portfolio-locale") as Locale | null
     const validCodes = locales.map(l => l.code)
     if (stored && validCodes.includes(stored)) {
       setLocaleState(stored)
+      document.documentElement.lang = stored
     }
   }, [])
 

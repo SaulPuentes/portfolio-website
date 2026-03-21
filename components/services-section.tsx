@@ -1,59 +1,15 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
 import { useI18n } from "@/lib/i18n/context"
 import { services } from "@/lib/data"
 import type { Translations } from "@/lib/i18n/types"
+import { useScrollReveal } from "@/hooks/use-scroll-reveal"
 
 const QUADRANT_ORDER = [0, 1, 2, 3] // TL, TR, BL, BR
 
 export function ServicesSection() {
   const { t } = useI18n()
-  const sectionRef = useRef<HTMLDivElement>(null)
-  const [visibleCount, setVisibleCount] = useState(1)
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768)
-    checkMobile()
-    window.addEventListener("resize", checkMobile)
-    return () => window.removeEventListener("resize", checkMobile)
-  }, [])
-
-  useEffect(() => {
-    if (isMobile) {
-      setVisibleCount(4)
-      return
-    }
-
-    const section = sectionRef.current
-    if (!section) return
-
-    const handleScroll = () => {
-      const rect = section.getBoundingClientRect()
-      const sectionHeight = section.offsetHeight
-      const scrolled = -rect.top
-      const scrollableDistance = sectionHeight - window.innerHeight
-
-      if (scrolled < 0) {
-        setVisibleCount(1)
-        return
-      }
-
-      if (scrollableDistance <= 0) {
-        setVisibleCount(4)
-        return
-      }
-
-      const progress = Math.min(Math.max(scrolled / scrollableDistance, 0), 1)
-      const count = Math.min(Math.floor(progress * 5) + 1, 4)
-      setVisibleCount(count)
-    }
-
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    handleScroll()
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [isMobile])
+  const { sectionRef, visibleCount, isMobile } = useScrollReveal(QUADRANT_ORDER.length)
 
   return (
     <section
