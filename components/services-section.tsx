@@ -11,8 +11,21 @@ export function ServicesSection() {
   const { t } = useI18n()
   const sectionRef = useRef<HTMLDivElement>(null)
   const [visibleCount, setVisibleCount] = useState(1)
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
+
+  useEffect(() => {
+    if (isMobile) {
+      setVisibleCount(4)
+      return
+    }
+
     const section = sectionRef.current
     if (!section) return
 
@@ -33,7 +46,6 @@ export function ServicesSection() {
       }
 
       const progress = Math.min(Math.max(scrolled / scrollableDistance, 0), 1)
-      // Show 1 at 0%, 2 at 25%, 3 at 50%, 4 at 75%
       const count = Math.min(Math.floor(progress * 5) + 1, 4)
       setVisibleCount(count)
     }
@@ -41,17 +53,19 @@ export function ServicesSection() {
     window.addEventListener("scroll", handleScroll, { passive: true })
     handleScroll()
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+  }, [isMobile])
 
   return (
     <section
       id="services"
       ref={sectionRef}
       className="relative scroll-mt-16"
-      style={{ height: "300vh" }}
+      style={{ height: isMobile ? "auto" : "300vh" }}
     >
-      <div className="sticky top-0 h-screen flex items-center">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div
+        className={isMobile ? "" : "sticky top-0 h-screen flex items-center"}
+      >
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-0">
           <h2 className="text-3xl md:text-4xl font-bold mb-8">{t.services.sectionTitle}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
             {QUADRANT_ORDER.map((index) => {

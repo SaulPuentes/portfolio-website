@@ -68,14 +68,31 @@ export function ProjectDetailModal({
 
         {/* Scrollable content */}
         <div className="flex-1 overflow-y-auto px-6 py-4">
-          <DialogDescription className="mb-4">
-            {project.description[locale]}
-          </DialogDescription>
-
+          {/* 1. Image carousel */}
           {images.length > 0 && (
             <ImageCarousel images={images} alt={project.name[locale]} />
           )}
 
+          {/* 2. Description */}
+          <DialogDescription className="mt-4">
+            {project.description[locale]}
+          </DialogDescription>
+
+          {/* 3. Tech stack */}
+          <div className="mt-4">
+            <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-foreground">
+              {t.projects.techStack}
+            </h4>
+            <div className="flex flex-wrap gap-1.5">
+              {project.technologies.map((tech) => (
+                <Badge key={tech} variant="secondary" className="text-xs font-normal">
+                  {tech}
+                </Badge>
+              ))}
+            </div>
+          </div>
+
+          {/* 4. Links */}
           <div className="mt-4">
             <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-foreground">
               {t.projects.links}
@@ -109,6 +126,7 @@ export function ProjectDetailModal({
             </div>
           </div>
 
+          {/* 5. Detail sections */}
           <div className="mt-4 flex flex-col gap-5">
             {details.map((d) => (
               <div key={d.label}>
@@ -119,14 +137,6 @@ export function ProjectDetailModal({
                   {d.content}
                 </p>
               </div>
-            ))}
-          </div>
-
-          <div className="mt-4 flex flex-wrap gap-1.5">
-            {project.technologies.map((tech) => (
-              <Badge key={tech} variant="secondary" className="text-xs font-normal">
-                {tech}
-              </Badge>
             ))}
           </div>
         </div>

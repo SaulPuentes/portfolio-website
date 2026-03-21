@@ -7,7 +7,7 @@
   },
   "hero": {
     "title": "Softwareingenieur mit über 8 Jahren Erfahrung.",
-    "description": "Ich entwickle skalierbare Webanwendungen und Plattformen für E-Commerce, Logistik und SaaS. Ich arbeite an komplexen Produkten und erstelle anpassbare, effiziente Lösungen, die mitwachsen.",
+    "description": "Ich entwickle Webanwendungen und Plattformen für E-Commerce, Logistik und SaaS — mit sehr professionellem Design und Liebe zum Detail. Bei komplexen Produkten liefere ich klare, effiziente Lösungen, die zur jeweiligen Marke passen.",
     "downloadCv": "Lebenslauf herunterladen",
     "viewProjects": "Projekte ansehen",
     "salsaWorld": "Salsa World"
@@ -52,7 +52,9 @@
     "decisions": "Technische Entscheidungen",
     "challenges": "Herausforderungen",
     "results": "Ergebnisse",
-    "links": "Projekt-Links",
+    "links": "Links",
+    "techStack": "Tech-Stack",
+    "lessons": "Erkenntnisse",
     "close": "Schliessen",
     "featured": "Hauptprojekt"
   },

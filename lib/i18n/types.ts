@@ -39,6 +39,8 @@ export interface Translations {
     challenges: string
     results: string
     links: string
+    techStack: string
+    lessons: string
     close: string
     featured: string
   }

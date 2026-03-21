@@ -7,7 +7,7 @@
   },
   "hero": {
     "title": "Software Engineer with 8+ years of experience.",
-    "description": "I build scalable web applications and platforms for e-commerce, logistics, and SaaS. I've worked on complex products, creating adaptable, efficient solutions built to grow.",
+    "description": "I build web applications and platforms for e-commerce, logistics, and SaaS — with a highly professional design and attention to detail. I work on complex products with clear, efficient solutions tailored to each brand.",
     "downloadCv": "Download CV",
     "viewProjects": "View Projects",
     "salsaWorld": "Salsa World"
@@ -52,7 +52,9 @@
     "decisions": "Technical Decisions",
     "challenges": "Challenges",
     "results": "Results & Impact",
-    "links": "Project Links",
+    "links": "Links",
+    "techStack": "Tech Stack",
+    "lessons": "Lessons Learned",
     "close": "Close",
     "featured": "Featured Project"
   },

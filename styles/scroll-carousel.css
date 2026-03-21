@@ -129,6 +129,11 @@
   user-select: none;
 }
 
+.carousel .no-interaction .card {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
 .carousel .no-interaction .cta-button {
   pointer-events: none;
 }
