@@ -15,6 +15,7 @@ export interface ProjectDetail {
   decisions: Record<Locale, string>
   challenges: Record<Locale, string>
   results: Record<Locale, string>
+  lessons?: Record<Locale, string>
 }
 
 export interface Service {
