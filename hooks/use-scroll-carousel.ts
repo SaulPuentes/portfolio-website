@@ -96,7 +96,6 @@ export function useScrollCarousel(
       const swiperEl = el.querySelector<HTMLElement>(".swiper-container")
       const wrapperEl = swiperEl?.querySelector<HTMLElement>(".swiper-wrapper")
       const spacingEl = swiperEl?.querySelector<HTMLElement>(".swiper-column-gap")
-      const textBefore = el.querySelector<HTMLElement>(".text-before")
       const mediaRef = el.querySelector<HTMLElement>(".media-container")
 
       if (!swiperEl || !wrapperEl) return
@@ -205,20 +204,6 @@ export function useScrollCarousel(
         isTouchingRef.current = false
       }
 
-      const updateTextBefore = () => {
-        const sw = swiperRef.current
-        if (!sw || !textBefore || !mediaRef) return
-
-        const bodyW = document.body.clientWidth
-        const slideW = mediaRef.offsetWidth
-        const wDiff = Math.max(0, (bodyW - getMaxWrapper()) * 0.5)
-        const slideOffset = centeredRef.current
-          ? (bodyW - slideW) * 0.5 + getSlidesOffset()
-          : getSlidesOffset()
-        const beforeW = bodyW - slideOffset - wDiff
-        textBefore.style.cssText = `--swiper-text-before-width: ${beforeW}px; --swiper-text-before-margin-left: ${slideOffset}px;`
-      }
-
       function _updateSwiper(sw: Swiper) {
         if (!initializedRef.current || !sw) return
         sw.transitionEnd?.()
@@ -235,7 +220,6 @@ export function useScrollCarousel(
 
         sw.update()
         onSwiperProgress()
-        updateTextBefore()
       }
 
       const updateSwiperByProgress = (progress: number) => {
