@@ -33,14 +33,9 @@ export interface Translations {
     viewLive: string
     viewRepo: string
     viewDetails: string
-    problem: string
-    architecture: string
-    decisions: string
-    challenges: string
-    results: string
+    description: string
     links: string
     techStack: string
-    lessons: string
     close: string
     featured: string
   }

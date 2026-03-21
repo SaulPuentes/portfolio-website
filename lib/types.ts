@@ -9,15 +9,6 @@ export interface SkillCategory {
   items: Skill[]
 }
 
-export interface ProjectDetail {
-  problem: Record<Locale, string>
-  architecture: Record<Locale, string>
-  decisions: Record<Locale, string>
-  challenges: Record<Locale, string>
-  results: Record<Locale, string>
-  lessons?: Record<Locale, string>
-}
-
 export interface Service {
   number: string
   key: string
@@ -26,7 +17,7 @@ export interface Service {
 export interface Project {
   id: string
   name: Record<Locale, string>
-  description: Record<Locale, string>
+  description: Record<Locale, string[]>
   technologies: string[]
   liveUrl?: string
   liveUrls?: { label: string; url: string }[]
@@ -34,5 +25,4 @@ export interface Project {
   featured?: boolean
   image?: string
   gallery?: string[]
-  detail: ProjectDetail
 }

@@ -26,7 +26,7 @@ export function ProjectsSection() {
           }))
         : undefined,
     title: p.name[locale],
-    description: p.description[locale],
+    description: p.description[locale][0],
     badges: p.technologies,
     cta: {
       label: t.projects.viewDetails,
