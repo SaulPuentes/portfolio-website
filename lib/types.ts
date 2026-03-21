@@ -15,7 +15,6 @@ export interface ProjectDetail {
   decisions: Record<Locale, string>
   challenges: Record<Locale, string>
   results: Record<Locale, string>
-  lessons: Record<Locale, string>
 }
 
 export interface Service {
@@ -29,6 +28,7 @@ export interface Project {
   description: Record<Locale, string>
   technologies: string[]
   liveUrl?: string
+  liveUrls?: { label: string; url: string }[]
   repoUrl?: string
   featured?: boolean
   image?: string

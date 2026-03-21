@@ -34,8 +34,8 @@ export function HeroSection() {
   }, [])
 
   return (
-    <section id="about" className="scroll-mt-16 flex h-dvh min-h-[600px] flex-col px-4 pt-16 lg:px-8">
-      <div ref={sectionRef} className="mx-auto flex w-full max-w-6xl flex-1 items-center">
+    <section id="about" className="scroll-mt-16 flex h-dvh min-h-[600px] flex-col pt-16">
+      <div ref={sectionRef} className="mx-auto flex w-full max-w-7xl flex-1 items-center px-4 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
 
           {/* Left — Identity */}

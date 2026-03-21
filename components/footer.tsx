@@ -7,8 +7,8 @@ export function Footer() {
   const { t } = useI18n()
 
   return (
-    <footer className="border-t border-border px-4 py-8 lg:px-8">
-      <div className="mx-auto flex max-w-6xl items-center justify-between">
+    <footer className="border-t border-border py-8">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <p className="text-xs text-muted-foreground">
           {`${new Date().getFullYear()} ${siteConfig.name}. `}{t.footer.rights}
         </p>
