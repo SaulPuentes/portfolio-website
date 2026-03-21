@@ -9,12 +9,56 @@ function NavigationMenu({
   className,
   children,
   viewport = true,
+  activeSlider = false,
   ...props
 }: React.ComponentProps<typeof NavigationMenuPrimitive.Root> & {
   viewport?: boolean
+  activeSlider?: boolean
 }) {
+  const rootRef = React.useRef<HTMLElement>(null)
+  const [sliderStyle, setSliderStyle] = React.useState<{
+    width: number
+    left: number
+  } | null>(null)
+
+  const updateSlider = React.useCallback(() => {
+    const root = rootRef.current
+    if (!root) return
+    const active = root.querySelector<HTMLElement>('[data-active="true"]')
+    if (active) {
+      const rootRect = root.getBoundingClientRect()
+      const activeRect = active.getBoundingClientRect()
+      setSliderStyle({
+        width: activeRect.width,
+        left: activeRect.left - rootRect.left,
+      })
+    }
+  }, [])
+
+  React.useEffect(() => {
+    if (!activeSlider) return
+    updateSlider()
+
+    const root = rootRef.current
+    if (!root) return
+
+    const observer = new MutationObserver(updateSlider)
+    observer.observe(root, {
+      attributes: true,
+      attributeFilter: ['data-active'],
+      subtree: true,
+    })
+
+    window.addEventListener('resize', updateSlider)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', updateSlider)
+    }
+  }, [activeSlider, updateSlider])
+
   return (
     <NavigationMenuPrimitive.Root
+      ref={rootRef}
       data-slot="navigation-menu"
       data-viewport={viewport}
       className={cn(
@@ -24,6 +68,13 @@ function NavigationMenu({
       {...props}
     >
       {children}
+      {activeSlider && sliderStyle && (
+        <span
+          data-slot="navigation-menu-slider"
+          className="absolute bottom-0 h-[3px] bg-primary transition-all duration-300 ease-in-out"
+          style={{ width: sliderStyle.width, left: sliderStyle.left }}
+        />
+      )}
       {viewport && <NavigationMenuViewport />}
     </NavigationMenuPrimitive.Root>
   )

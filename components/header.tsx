@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { useI18n } from "@/lib/i18n/context"
 import { locales } from "@/lib/i18n"
 import { Menu, X, ChevronDown } from "lucide-react"
@@ -13,6 +13,49 @@ export function Header() {
   const { locale, setLocale, t } = useI18n()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
+  const [activeHref, setActiveHref] = useState<string | null>(null)
+  const navRef = useRef<HTMLElement>(null)
+  const buttonRefs = useRef<Map<string, HTMLButtonElement>>(new Map())
+  const [sliderStyle, setSliderStyle] = useState<{ width: number; left: number } | null>(null)
+
+  const headerRef = useRef<HTMLElement>(null)
+
+  const updateSlider = useCallback(() => {
+    if (!activeHref || !headerRef.current) return
+    const btn = buttonRefs.current.get(activeHref)
+    if (!btn) return
+    const headerRect = headerRef.current.getBoundingClientRect()
+    const btnRect = btn.getBoundingClientRect()
+    setSliderStyle({ width: btnRect.width, left: btnRect.left - headerRect.left })
+  }, [activeHref])
+
+  useEffect(() => {
+    const sectionIds = navItems.map((item) => item.href.replace("#", ""))
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveHref(`#${entry.target.id}`)
+          }
+        }
+      },
+      { rootMargin: "-50% 0px -50% 0px" }
+    )
+
+    for (const id of sectionIds) {
+      const el = document.getElementById(id)
+      if (el) observer.observe(el)
+    }
+
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    updateSlider()
+    window.addEventListener("resize", updateSlider)
+    return () => window.removeEventListener("resize", updateSlider)
+  }, [updateSlider])
 
   const navItems = [
     { href: "#about", label: t.nav.about },
@@ -32,7 +75,7 @@ export function Header() {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
+    <header ref={headerRef} className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 lg:px-8">
         <a
           href="#"
@@ -46,12 +89,19 @@ export function Header() {
         </a>
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-6 md:flex" aria-label="Main navigation">
+        <nav ref={navRef} className="relative hidden items-center gap-6 md:flex" aria-label="Main navigation">
           {navItems.map((item) => (
             <button
               key={item.href}
+              ref={(el) => {
+                if (el) buttonRefs.current.set(item.href, el)
+                else buttonRefs.current.delete(item.href)
+              }}
               onClick={() => scrollTo(item.href)}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className={cn(
+                "text-sm transition-colors hover:text-foreground",
+                activeHref === item.href ? "text-foreground" : "text-muted-foreground"
+              )}
             >
               {item.label}
             </button>
@@ -168,6 +218,12 @@ export function Header() {
             </div>
           </div>
         </nav>
+      )}
+      {sliderStyle && (
+        <span
+          className="absolute bottom-0 hidden h-[2px] bg-primary transition-all duration-300 ease-in-out md:block"
+          style={{ width: sliderStyle.width, left: sliderStyle.left }}
+        />
       )}
     </header>
   )
