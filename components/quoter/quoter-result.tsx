@@ -2,8 +2,28 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { AlertTriangle, Mail, RotateCcw } from "lucide-react"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { AlertTriangle, ChevronDown, Mail, RotateCcw } from "lucide-react"
 import { siteConfig } from "@/lib/site-config"
+
+interface QuestionOption {
+  label: Record<string, string>
+  value: string
+  price: number
+}
+
+interface Question {
+  id: string
+  question: Record<string, string>
+  type: string
+  options: QuestionOption[]
+}
+
+interface Section {
+  id: string
+  title: Record<string, string>
+  questions: Question[]
+}
 
 interface QuoterResultProps {
   priceRange: { min: number; max: number }
@@ -15,6 +35,8 @@ interface QuoterResultProps {
     contactCta: Record<string, string>
     buttons: { restart: Record<string, string> }
   }
+  sections: Section[]
+  answers: Record<string, string | string[]>
   t: (obj: Record<string, string>) => string
   onRestart: () => void
 }
@@ -28,10 +50,25 @@ function formatPrice(amount: number, currency: string) {
   }).format(amount)
 }
 
+function getAnswerLabel(question: Question, answer: string | string[], t: (obj: Record<string, string>) => string): string {
+  if (question.options.length === 0) return String(answer)
+  if (Array.isArray(answer)) {
+    return answer
+      .map((v) => question.options.find((o) => o.value === v))
+      .filter(Boolean)
+      .map((o) => t(o!.label))
+      .join(", ")
+  }
+  const opt = question.options.find((o) => o.value === answer)
+  return opt ? t(opt.label) : String(answer)
+}
+
 export function QuoterResult({
   priceRange,
   currency,
   config,
+  sections,
+  answers,
   t,
   onRestart,
 }: QuoterResultProps) {
@@ -62,6 +99,36 @@ export function QuoterResult({
           <p className="text-sm text-muted-foreground">{t(config.disclaimer)}</p>
         </div>
       </div>
+
+      {/* Answers summary */}
+      <Collapsible className="mx-auto max-w-md">
+        <CollapsibleTrigger asChild>
+          <button className="flex w-full items-center justify-between rounded-lg border border-border px-4 py-3 text-sm font-medium transition-colors hover:bg-muted [&[data-state=open]>svg]:rotate-180">
+            {t({ es: "Ver resumen de respuestas", en: "View answers summary", de: "Antwortübersicht anzeigen" })}
+            <ChevronDown className="size-4 shrink-0 transition-transform duration-200" />
+          </button>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <Card className="mt-2">
+            <CardContent className="pt-6">
+              <div className="space-y-4">
+                {sections.map((section) =>
+                  section.questions.map((question) => {
+                    const answer = answers[question.id]
+                    if (!answer || (Array.isArray(answer) && answer.length === 0)) return null
+                    return (
+                      <div key={question.id} className="border-b border-border pb-3 last:border-0 last:pb-0">
+                        <p className="text-sm text-muted-foreground">{t(question.question)}</p>
+                        <p className="mt-0.5 text-sm font-medium">{getAnswerLabel(question, answer, t)}</p>
+                      </div>
+                    )
+                  })
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </CollapsibleContent>
+      </Collapsible>
 
       <div className="flex flex-col items-center gap-3">
         <Button asChild size="lg">

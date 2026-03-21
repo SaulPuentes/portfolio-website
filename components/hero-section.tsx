@@ -22,13 +22,13 @@ export function HeroSection() {
       item.style.transform = "translateY(24px)"
     })
 
-    const delays = [100, 300, 500, 700]
+    const delays = [300, 600, 900, 1200]
     items.forEach((item, i) => {
       setTimeout(() => {
-        item.style.transition = "opacity 0.6s ease-out, transform 0.6s ease-out"
+        item.style.transition = "opacity 0.9s ease-out, transform 0.9s ease-out"
         item.style.opacity = "1"
         item.style.transform = "translateY(0)"
-      }, delays[i] ?? 200 * i)
+      }, delays[i] ?? 300 * i)
     })
 
   }, [])

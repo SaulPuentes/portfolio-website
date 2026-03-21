@@ -267,42 +267,6 @@
           ]
         }
       ]
-    },
-    {
-      "id": "contact-info",
-      "title": { "es": "Datos de contacto", "en": "Contact information", "de": "Kontaktinformationen" },
-      "questions": [
-        {
-          "id": "name",
-          "question": {
-            "es": "¿Cuál es tu nombre?",
-            "en": "What is your name?",
-            "de": "Wie ist Ihr Name?"
-          },
-          "type": "text",
-          "options": []
-        },
-        {
-          "id": "email",
-          "question": {
-            "es": "¿Cuál es tu correo electrónico?",
-            "en": "What is your email?",
-            "de": "Wie ist Ihre E-Mail-Adresse?"
-          },
-          "type": "email",
-          "options": []
-        },
-        {
-          "id": "comments",
-          "question": {
-            "es": "¿Algo más que quieras comentar sobre tu proyecto? (opcional)",
-            "en": "Anything else you'd like to share about your project? (optional)",
-            "de": "Möchten Sie noch etwas zu Ihrem Projekt mitteilen? (optional)"
-          },
-          "type": "textarea",
-          "options": []
-        }
-      ]
     }
   ]
 }

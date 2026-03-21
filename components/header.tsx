@@ -19,6 +19,13 @@ export function Header() {
   const [sliderStyle, setSliderStyle] = useState<{ width: number; left: number } | null>(null)
 
   const headerRef = useRef<HTMLElement>(null)
+  const [headerReady, setHeaderReady] = useState(false)
+
+  useEffect(() => {
+    // Small delay so elements mount before animation starts
+    const timer = setTimeout(() => setHeaderReady(true), 100)
+    return () => clearTimeout(timer)
+  }, [])
 
   const updateSlider = useCallback(() => {
     if (!activeHref || !headerRef.current) return
@@ -79,7 +86,12 @@ export function Header() {
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 lg:px-8">
         <a
           href="#"
-          className="text-sm font-semibold tracking-tight text-foreground"
+          className="text-sm font-semibold tracking-tight text-foreground transition-all duration-700 ease-out"
+          style={{
+            opacity: headerReady ? 1 : 0,
+            transform: headerReady ? "translateY(0)" : "translateY(-10px)",
+            transitionDelay: "0ms",
+          }}
           onClick={(e) => {
             e.preventDefault()
             window.scrollTo({ top: 0, behavior: "smooth" })
@@ -90,7 +102,7 @@ export function Header() {
 
         {/* Desktop nav */}
         <nav ref={navRef} className="relative hidden items-center gap-6 md:flex" aria-label="Main navigation">
-          {navItems.map((item) => (
+          {navItems.map((item, i) => (
             <button
               key={item.href}
               ref={(el) => {
@@ -99,9 +111,14 @@ export function Header() {
               }}
               onClick={() => scrollTo(item.href)}
               className={cn(
-                "text-sm transition-colors hover:text-foreground",
+                "text-sm transition-all duration-700 ease-out hover:text-foreground",
                 activeHref === item.href ? "text-foreground" : "text-muted-foreground"
               )}
+              style={{
+                opacity: headerReady ? 1 : 0,
+                transform: headerReady ? "translateY(0)" : "translateY(-10px)",
+                transitionDelay: `${(i + 1) * 80}ms`,
+              }}
             >
               {item.label}
             </button>
@@ -109,13 +126,25 @@ export function Header() {
 
           <Link
             href="/cotizador"
-            className="flex items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="flex items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-all duration-700 ease-out hover:bg-primary/90"
+            style={{
+              opacity: headerReady ? 1 : 0,
+              transform: headerReady ? "translateY(0)" : "translateY(-10px)",
+              transitionDelay: `${(navItems.length + 1) * 80}ms`,
+            }}
           >
             Cotizar
           </Link>
 
           {/* Language Switcher */}
-          <div className="relative">
+          <div
+            className="relative transition-all duration-700 ease-out"
+            style={{
+              opacity: headerReady ? 1 : 0,
+              transform: headerReady ? "translateY(0)" : "translateY(-10px)",
+              transitionDelay: `${(navItems.length + 2) * 80}ms`,
+            }}
+          >
             <button
               onClick={() => setLangOpen(!langOpen)}
               onBlur={() => setTimeout(() => setLangOpen(false), 150)}
@@ -150,7 +179,16 @@ export function Header() {
           </div>
 
           {/* Theme Toggle */}
-          <ThemeToggle />
+          <div
+            className="transition-all duration-700 ease-out"
+            style={{
+              opacity: headerReady ? 1 : 0,
+              transform: headerReady ? "translateY(0)" : "translateY(-10px)",
+              transitionDelay: `${(navItems.length + 3) * 80}ms`,
+            }}
+          >
+            <ThemeToggle />
+          </div>
         </nav>
 
         {/* Mobile menu button */}
