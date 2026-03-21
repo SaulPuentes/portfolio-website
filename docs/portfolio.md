@@ -30,13 +30,11 @@ Lista resumida de proyectos para documentar lo más relevante: qué se hizo, tip
 
 ---
 
-### 2) Sistema de Pagos Digitales para Grupo Xcaret
+### 2) Implementación de Pagos Digitales para Grupo Xcaret
 
 **Tipo:** Aplicación web / Plataforma
 
-**Título:** Grupo Xcaret
-
-**Link del sitio:** pendiente
+**Link del sitio:** Proyecto privado
 
 **Descripción del trabajo:**
 
@@ -55,11 +53,9 @@ Lista resumida de proyectos para documentar lo más relevante: qué se hizo, tip
 
 ---
 
-### 3) Portal Nacional de Centros Comerciales: Galerías
+### 3) Plataforma Web para Centros Comerciales Galerías
 
 **Tipo:** Sitio web de galerías
-
-**Título:** Galerías
 
 **Link del sitio:** pendiente
 
@@ -77,13 +73,15 @@ Lista resumida de proyectos para documentar lo más relevante: qué se hizo, tip
 
 ---
 
-### 4) Tiendas con Shopify — Simonett & Twelve Thirty Four
+### 4) Desarrollo de E-commerce (Shopify)
 
-**Tipo:** E-commerce (`Shopify`)
+**Tipo:** E-commerce
 
 **Título:** Simonett & Twelve Thirty Four (Shopify)
 
-**Link del sitio:** pendiente
+**Link del sitios:**
+- [Simonett](https://simonett.us/)
+- [Twelve Thirty Four Flowers](https://twelvethirtyfourflowers.com/)
 
 **Descripción del trabajo:**
 
