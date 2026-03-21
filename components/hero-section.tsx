@@ -17,11 +17,6 @@ export function HeroSection() {
     if (!el) return
 
     const items = el.querySelectorAll<HTMLElement>("[data-hero]")
-    items.forEach((item) => {
-      item.style.opacity = "0"
-      item.style.transform = "translateY(24px)"
-    })
-
     const delays = [300, 600, 900, 1200]
     items.forEach((item, i) => {
       setTimeout(() => {
@@ -41,15 +36,15 @@ export function HeroSection() {
           {/* Left — Identity */}
           <div className="flex flex-col justify-between">
             <div>
-              <h1 data-hero className="text-5xl font-bold tracking-tight text-foreground lg:text-6xl text-balance">
+              <h1 data-hero className="text-5xl font-bold tracking-tight text-foreground lg:text-6xl text-balance opacity-0 translate-y-6">
                 {siteConfig.name}
               </h1>
-              <p data-hero className="mt-4 text-lg font-medium text-foreground/70 text-balance">
+              <p data-hero className="mt-4 text-lg font-medium text-foreground/70 text-balance opacity-0 translate-y-6">
                 {t.hero.title}
               </p>
             </div>
 
-            <div data-hero className="mt-10 flex flex-wrap gap-3">
+            <div data-hero className="mt-10 flex flex-wrap gap-3 opacity-0 translate-y-6">
               <Button asChild size="lg">
                 <a href={cvFiles[locale]} download>
                   <Download className="size-4" />
@@ -72,7 +67,7 @@ export function HeroSection() {
           </div>
 
           {/* Right — Short intro */}
-          <div data-hero className="flex flex-col justify-center">
+          <div data-hero className="flex flex-col justify-center opacity-0 translate-y-6">
             <p className="text-base leading-relaxed text-muted-foreground lg:text-lg">
               {t.hero.description}
             </p>

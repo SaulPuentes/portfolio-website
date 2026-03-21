@@ -95,38 +95,40 @@ export function ProjectDetailModal({
           </div>
 
           {/* 4. Links */}
-          <div className="mt-4">
-            <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-foreground">
-              {t.projects.links}
-            </h4>
-            <div className="flex flex-wrap gap-3 rounded-lg bg-muted/50 px-4 py-2">
-              {project.liveUrls && project.liveUrls.length > 0 ? (
-                project.liveUrls.map((link) => (
-                  <Button key={link.url} asChild>
-                    <a href={link.url} target="_blank" rel="noopener noreferrer">
+          {project.liveUrls && project.liveUrls.length > 0 && (
+            <div className="mt-4">
+              <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-foreground">
+                {t.projects.links}
+              </h4>
+              <div className="flex flex-wrap gap-3 rounded-lg bg-muted/50 px-4 py-2">
+                {project.liveUrls && project.liveUrls.length > 0 ? (
+                  project.liveUrls.map((link) => (
+                    <Button key={link.url} asChild>
+                      <a href={link.url} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="size-4" />
+                        {link.label}
+                      </a>
+                    </Button>
+                  ))
+                ) : project.liveUrl ? (
+                  <Button asChild>
+                    <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="size-4" />
-                      {link.label}
+                      {t.projects.viewLive}
                     </a>
                   </Button>
-                ))
-              ) : project.liveUrl ? (
-                <Button asChild>
-                  <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="size-4" />
-                    {t.projects.viewLive}
-                  </a>
-                </Button>
-              ) : null}
-              {project.repoUrl && (
-                <Button variant="outline" asChild>
-                  <a href={project.repoUrl} target="_blank" rel="noopener noreferrer">
-                    <Github className="size-4" />
-                    {t.projects.viewRepo}
-                  </a>
-                </Button>
-              )}
+                ) : null}
+                {project.repoUrl && (
+                  <Button variant="outline" asChild>
+                    <a href={project.repoUrl} target="_blank" rel="noopener noreferrer">
+                      <Github className="size-4" />
+                      {t.projects.viewRepo}
+                    </a>
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>

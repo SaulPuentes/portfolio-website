@@ -3,7 +3,7 @@ import { Inter, JetBrains_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { ThemeProvider } from '@/components/theme-provider'
 import { siteConfig } from '@/lib/site-config'
-import './globals.css'
+import './styles/globals.css'
 
 const _inter = Inter({ subsets: ["latin"] })
 const _jetBrainsMono = JetBrains_Mono({ subsets: ["latin"] })

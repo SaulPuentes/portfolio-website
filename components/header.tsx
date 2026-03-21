@@ -1,85 +1,32 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback } from "react"
-import { useI18n } from "@/lib/i18n/context"
-import { locales } from "@/lib/i18n"
-import { Menu, X, ChevronDown } from "lucide-react"
+import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { Menu, X, ChevronDown } from "lucide-react"
 import { siteConfig } from "@/lib/site-config"
 import { ThemeToggle } from "@/components/theme-toggle"
-import Link from "next/link"
+import { locales } from "@/lib/i18n"
+import { useHeader } from "@/hooks/use-header"
 
 export function Header() {
-  const { locale, setLocale, t } = useI18n()
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [langOpen, setLangOpen] = useState(false)
-  const [activeHref, setActiveHref] = useState<string | null>(null)
-  const navRef = useRef<HTMLElement>(null)
-  const buttonRefs = useRef<Map<string, HTMLButtonElement>>(new Map())
-  const [sliderStyle, setSliderStyle] = useState<{ width: number; left: number } | null>(null)
-
-  const headerRef = useRef<HTMLElement>(null)
-  const [headerReady, setHeaderReady] = useState(false)
-
-  useEffect(() => {
-    // Small delay so elements mount before animation starts
-    const timer = setTimeout(() => setHeaderReady(true), 100)
-    return () => clearTimeout(timer)
-  }, [])
-
-  const updateSlider = useCallback(() => {
-    if (!activeHref || !headerRef.current) return
-    const btn = buttonRefs.current.get(activeHref)
-    if (!btn) return
-    const headerRect = headerRef.current.getBoundingClientRect()
-    const btnRect = btn.getBoundingClientRect()
-    setSliderStyle({ width: btnRect.width, left: btnRect.left - headerRect.left })
-  }, [activeHref])
-
-  useEffect(() => {
-    const sectionIds = navItems.map((item) => item.href.replace("#", ""))
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveHref(`#${entry.target.id}`)
-          }
-        }
-      },
-      { rootMargin: "-50% 0px -50% 0px" }
-    )
-
-    for (const id of sectionIds) {
-      const el = document.getElementById(id)
-      if (el) observer.observe(el)
-    }
-
-    return () => observer.disconnect()
-  }, [])
-
-  useEffect(() => {
-    updateSlider()
-    window.addEventListener("resize", updateSlider)
-    return () => window.removeEventListener("resize", updateSlider)
-  }, [updateSlider])
-
-  const navItems = [
-    { href: "#about", label: t.nav.about },
-    { href: "#services", label: t.nav.services },
-    { href: "#projects", label: t.nav.projects },
-    { href: "#contact", label: t.nav.contact },
-  ]
-
-  const currentLocale = locales.find((l) => l.code === locale)
-
-  function scrollTo(href: string) {
-    setMobileOpen(false)
-    const el = document.querySelector(href)
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" })
-    }
-  }
+  const {
+    locale,
+    t,
+    localePrefix,
+    currentLocale,
+    navItems,
+    mobileOpen,
+    setMobileOpen,
+    langOpen,
+    setLangOpen,
+    activeHref,
+    headerReady,
+    headerRef,
+    buttonRefs,
+    sliderStyle,
+    handleSetLocale,
+    scrollTo,
+  } = useHeader()
 
   return (
     <header ref={headerRef} className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
@@ -101,7 +48,7 @@ export function Header() {
         </a>
 
         {/* Desktop nav */}
-        <nav ref={navRef} className="relative hidden items-center gap-6 md:flex" aria-label="Main navigation">
+        <nav className="relative hidden items-center gap-6 md:flex" aria-label="Main navigation">
           {navItems.map((item, i) => (
             <button
               key={item.href}
@@ -125,7 +72,7 @@ export function Header() {
           ))}
 
           <Link
-            href="/cotizador"
+            href={`${localePrefix}/cotizador`}
             className="flex items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-all duration-700 ease-out hover:bg-primary/90"
             style={{
               opacity: headerReady ? 1 : 0,
@@ -160,7 +107,7 @@ export function Header() {
                   <button
                     key={l.code}
                     onClick={() => {
-                      setLocale(l.code)
+                      handleSetLocale(l.code)
                       setLangOpen(false)
                     }}
                     className={cn(
@@ -222,7 +169,7 @@ export function Header() {
               </button>
             ))}
             <Link
-              href="/cotizador"
+              href={`${localePrefix}/cotizador`}
               onClick={() => setMobileOpen(false)}
               className="mt-2 flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
@@ -239,7 +186,7 @@ export function Header() {
                   <button
                     key={l.code}
                     onClick={() => {
-                      setLocale(l.code)
+                      handleSetLocale(l.code)
                       setMobileOpen(false)
                     }}
                     className={cn(

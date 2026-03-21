@@ -7,7 +7,7 @@ import { useScrollCarousel } from "@/hooks/use-scroll-carousel"
 import type { ScrollCarouselOptions } from "@/hooks/use-scroll-carousel"
 import { cn } from "@/lib/utils"
 import "swiper/css"
-import "@/styles/scroll-carousel.css"
+import "@/app/styles/scroll-carousel.css"
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
