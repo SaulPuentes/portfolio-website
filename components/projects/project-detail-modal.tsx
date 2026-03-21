@@ -30,7 +30,7 @@ export function ProjectDetailModal({
     { label: t.projects.decisions, content: project.detail.decisions[locale] },
     { label: t.projects.challenges, content: project.detail.challenges[locale] },
     { label: t.projects.results, content: project.detail.results[locale] },
-    { label: t.projects.lessons, content: project.detail.lessons[locale] },
+    ...(project.detail.lessons ? [{ label: t.projects.lessons, content: project.detail.lessons[locale] }] : []),
   ]
 
   const images =
@@ -76,12 +76,37 @@ export function ProjectDetailModal({
             <ImageCarousel images={images} alt={project.name[locale]} />
           )}
 
-          <div className="mt-4 flex flex-wrap gap-1.5">
-            {project.technologies.map((tech) => (
-              <Badge key={tech} variant="secondary" className="text-xs font-normal">
-                {tech}
-              </Badge>
-            ))}
+          <div className="mt-4">
+            <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-foreground">
+              {t.projects.links}
+            </h4>
+            <div className="flex flex-wrap gap-3 rounded-lg bg-muted/50 px-4 py-3">
+              {project.liveUrls && project.liveUrls.length > 0 ? (
+                project.liveUrls.map((link) => (
+                  <Button key={link.url} asChild>
+                    <a href={link.url} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="size-4" />
+                      {link.label}
+                    </a>
+                  </Button>
+                ))
+              ) : project.liveUrl ? (
+                <Button asChild>
+                  <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="size-4" />
+                    {t.projects.viewLive}
+                  </a>
+                </Button>
+              ) : null}
+              {project.repoUrl && (
+                <Button variant="outline" asChild>
+                  <a href={project.repoUrl} target="_blank" rel="noopener noreferrer">
+                    <Github className="size-4" />
+                    {t.projects.viewRepo}
+                  </a>
+                </Button>
+              )}
+            </div>
           </div>
 
           <div className="mt-4 flex flex-col gap-5">
@@ -97,32 +122,12 @@ export function ProjectDetailModal({
             ))}
           </div>
 
-          <div className="mt-6 flex flex-wrap gap-3 rounded-lg bg-muted/50 px-4 py-3">
-            {project.liveUrls && project.liveUrls.length > 0 ? (
-              project.liveUrls.map((link) => (
-                <Button key={link.url} asChild>
-                  <a href={link.url} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="size-4" />
-                    {link.label}
-                  </a>
-                </Button>
-              ))
-            ) : project.liveUrl ? (
-              <Button asChild>
-                <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="size-4" />
-                  {t.projects.viewLive}
-                </a>
-              </Button>
-            ) : null}
-            {project.repoUrl && (
-              <Button variant="outline" asChild>
-                <a href={project.repoUrl} target="_blank" rel="noopener noreferrer">
-                  <Github className="size-4" />
-                  {t.projects.viewRepo}
-                </a>
-              </Button>
-            )}
+          <div className="mt-4 flex flex-wrap gap-1.5">
+            {project.technologies.map((tech) => (
+              <Badge key={tech} variant="secondary" className="text-xs font-normal">
+                {tech}
+              </Badge>
+            ))}
           </div>
         </div>
       </DialogContent>
