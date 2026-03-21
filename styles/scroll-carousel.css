@@ -123,6 +123,16 @@
   user-select: none;
 }
 
+/* Fade-in for image transitions */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.carousel .animate-fade-in {
+  animation: fade-in 0.4s ease-in-out;
+}
+
 /* No-interaction state */
 .carousel .no-interaction {
   pointer-events: none;

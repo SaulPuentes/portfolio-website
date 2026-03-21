@@ -4,7 +4,7 @@ import { I18nProvider } from "@/lib/i18n/context"
 import { Header } from "@/components/header"
 import { HeroSection } from "@/components/hero-section"
 import { ServicesSection } from "@/components/services-section"
-import { ProjectsSection } from "@/components/projects-section"
+import { ProjectsSection } from "@/components/projects"
 import { ContactSection } from "@/components/contact-section"
 import { Footer } from "@/components/footer"
 

@@ -38,7 +38,6 @@ export interface Translations {
     decisions: string
     challenges: string
     results: string
-    lessons: string
     close: string
     featured: string
   }

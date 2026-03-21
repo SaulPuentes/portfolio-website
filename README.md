@@ -70,7 +70,6 @@ Array of project entries with per-locale fields and a `detail` object:
       "decisions": { "en": "...", "es": "...", "de": "..." },
       "challenges": { "en": "...", "es": "...", "de": "..." },
       "results": { "en": "...", "es": "...", "de": "..." },
-      "lessons": { "en": "...", "es": "...", "de": "..." }
     }
   }
 ]

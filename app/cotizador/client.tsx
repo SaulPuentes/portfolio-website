@@ -23,7 +23,7 @@ function CotizadorContent() {
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
-        <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
           <Link
             href="/"
             className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -35,7 +35,7 @@ function CotizadorContent() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl px-4 py-12">
+      <main className="mx-auto max-w-5xl px-4 py-12">
         {!showingResult && (
           <div className="mb-8 text-center">
             <h1 className="text-3xl font-bold">{t(quoterConfig.title)}</h1>

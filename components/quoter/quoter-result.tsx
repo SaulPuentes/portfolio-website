@@ -2,8 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { AlertTriangle, ChevronDown, Mail, RotateCcw } from "lucide-react"
+import { AlertTriangle, Mail, RotateCcw } from "lucide-react"
 import { siteConfig } from "@/lib/site-config"
 
 interface QuestionOption {
@@ -84,63 +83,61 @@ export function QuoterResult({
         <p className="mt-2 text-muted-foreground">{t(config.resultDescription)}</p>
       </div>
 
-      <Card className="mx-auto max-w-md">
-        <CardContent className="pt-6 text-center">
-          <p className="text-4xl font-bold text-primary">
-            {formatPrice(priceRange.min, currency)} – {formatPrice(priceRange.max, currency)}
-          </p>
-          <p className="mt-1 text-sm text-muted-foreground">{currency}</p>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
+        {/* Left column — answers summary 7/12 */}
+        <Card className="md:col-span-7">
+          <CardContent className="pt-6">
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+              {t({ es: "Resumen de respuestas", en: "Answers summary", de: "Antwortübersicht" })}
+            </h3>
+            <div className="space-y-4">
+              {sections.map((section) =>
+                section.questions.map((question) => {
+                  const answer = answers[question.id]
+                  if (!answer || (Array.isArray(answer) && answer.length === 0)) return null
+                  return (
+                    <div key={question.id} className="border-b border-border pb-3 last:border-0 last:pb-0">
+                      <p className="text-sm text-muted-foreground">{t(question.question)}</p>
+                      <p className="mt-0.5 text-sm font-medium">{getAnswerLabel(question, answer, t)}</p>
+                    </div>
+                  )
+                })
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
-      <div className="mx-auto max-w-md rounded-lg border border-amber-500/30 bg-amber-500/5 p-4">
-        <div className="flex gap-3">
-          <AlertTriangle className="mt-0.5 size-5 shrink-0 text-amber-500" />
-          <p className="text-sm text-muted-foreground">{t(config.disclaimer)}</p>
-        </div>
-      </div>
-
-      {/* Answers summary */}
-      <Collapsible className="mx-auto max-w-md">
-        <CollapsibleTrigger asChild>
-          <button className="flex w-full items-center justify-between rounded-lg border border-border px-4 py-3 text-sm font-medium transition-colors hover:bg-muted [&[data-state=open]>svg]:rotate-180">
-            {t({ es: "Ver resumen de respuestas", en: "View answers summary", de: "Antwortübersicht anzeigen" })}
-            <ChevronDown className="size-4 shrink-0 transition-transform duration-200" />
-          </button>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <Card className="mt-2">
-            <CardContent className="pt-6">
-              <div className="space-y-4">
-                {sections.map((section) =>
-                  section.questions.map((question) => {
-                    const answer = answers[question.id]
-                    if (!answer || (Array.isArray(answer) && answer.length === 0)) return null
-                    return (
-                      <div key={question.id} className="border-b border-border pb-3 last:border-0 last:pb-0">
-                        <p className="text-sm text-muted-foreground">{t(question.question)}</p>
-                        <p className="mt-0.5 text-sm font-medium">{getAnswerLabel(question, answer, t)}</p>
-                      </div>
-                    )
-                  })
-                )}
-              </div>
+        {/* Right column — price, disclaimer, buttons 5/12 */}
+        <div className="space-y-6 md:col-span-5">
+          <Card>
+            <CardContent className="pt-6 text-center">
+              <p className="text-4xl font-bold text-primary">
+                {formatPrice(priceRange.min, currency)} – {formatPrice(priceRange.max, currency)}
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">{currency}</p>
             </CardContent>
           </Card>
-        </CollapsibleContent>
-      </Collapsible>
 
-      <div className="flex flex-col items-center gap-3">
-        <Button asChild size="lg">
-          <a href={`mailto:${siteConfig.email}?subject=${mailSubject}&body=${mailBody}`}>
-            <Mail className="mr-2 size-4" />
-            {t(config.contactCta)}
-          </a>
-        </Button>
-        <Button variant="ghost" size="sm" onClick={onRestart}>
-          <RotateCcw className="mr-2 size-4" />
-          {t(config.buttons.restart)}
-        </Button>
+          <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-4">
+            <div className="flex gap-3">
+              <AlertTriangle className="mt-0.5 size-5 shrink-0 text-amber-500" />
+              <p className="text-sm text-muted-foreground">{t(config.disclaimer)}</p>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center gap-3">
+            <Button asChild size="lg" className="w-full">
+              <a href={`mailto:${siteConfig.email}?subject=${mailSubject}&body=${mailBody}`}>
+                <Mail className="mr-2 size-4" />
+                {t(config.contactCta)}
+              </a>
+            </Button>
+            <Button variant="ghost" size="sm" onClick={onRestart}>
+              <RotateCcw className="mr-2 size-4" />
+              {t(config.buttons.restart)}
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   )
