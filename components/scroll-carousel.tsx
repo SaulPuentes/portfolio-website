@@ -53,7 +53,7 @@ function SlideCard({ item }: { item: CarouselItem }) {
     setImgIndex(0)
   }, [])
 
-  const currentImage = images ? images[imgIndex] : item.image
+  const currentImage = !images ? item.image : null
 
   return (
     <div className="swiper-slide no-interaction">
@@ -62,31 +62,44 @@ function SlideCard({ item }: { item: CarouselItem }) {
         onMouseEnter={startCycling}
         onMouseLeave={stopCycling}
       >
-        {currentImage ? (
+        {images ? (
+          <div className="media-container">
+            {images.map((img, i) => (
+              <Image
+                key={img.src}
+                src={img.src}
+                alt={img.alt}
+                width={img.width}
+                height={img.height}
+                className={`object-cover w-full h-full transition-opacity duration-400 ${
+                  i === imgIndex ? "opacity-100" : "opacity-0"
+                }`}
+                sizes="(max-width: 51.29875em) 100vw, 500px"
+              />
+            ))}
+            <div className="absolute bottom-2 left-1/2 z-10 flex -translate-x-1/2 gap-1.5 pointer-events-none">
+              {images.map((_, i) => (
+                <span
+                  key={i}
+                  className={`size-1.5 rounded-full transition-colors ${
+                    i === imgIndex
+                      ? "bg-white"
+                      : "bg-white/40"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        ) : currentImage ? (
           <div className="media-container">
             <Image
-              key={currentImage.src}
               src={currentImage.src}
               alt={currentImage.alt}
               width={currentImage.width}
               height={currentImage.height}
-              className="object-cover w-full h-full animate-fade-in"
+              className="object-cover w-full h-full"
               sizes="(max-width: 51.29875em) 100vw, 500px"
             />
-            {images && (
-              <div className="absolute bottom-2 left-1/2 z-10 flex -translate-x-1/2 gap-1.5 pointer-events-none">
-                {images.map((_, i) => (
-                  <span
-                    key={i}
-                    className={`size-1.5 rounded-full transition-colors ${
-                      i === imgIndex
-                        ? "bg-white"
-                        : "bg-white/40"
-                    }`}
-                  />
-                ))}
-              </div>
-            )}
           </div>
         ) : (
           <div className="media-container bg-muted flex items-center justify-center">
