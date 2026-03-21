@@ -54,7 +54,7 @@ export function ScrollCarousel({
     <div id={id} className={`carousel ${className}`} ref={containerRef}>
       <div className="wrapper">
         {heading && (
-          <div className="text-before">
+          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pb-6">
             <h2 className="text-3xl font-bold md:text-4xl text-foreground">
               {heading}
             </h2>
