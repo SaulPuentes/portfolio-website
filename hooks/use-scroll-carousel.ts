@@ -93,12 +93,13 @@ export function useScrollCarousel(
       if (destroyed) return
       gsapLib.registerPlugin(ScrollTrigger)
 
+      const outerWrapperEl = el.querySelector<HTMLElement>(".wrapper")
       const swiperEl = el.querySelector<HTMLElement>(".swiper-container")
       const wrapperEl = swiperEl?.querySelector<HTMLElement>(".swiper-wrapper")
       const spacingEl = swiperEl?.querySelector<HTMLElement>(".swiper-column-gap")
       const mediaRef = el.querySelector<HTMLElement>(".media-container")
 
-      if (!swiperEl || !wrapperEl) return
+      if (!outerWrapperEl || !swiperEl || !wrapperEl) return
 
       const mdBreakpoint = cssVarNumeric(el, "--md-breakpoint") + 0.5
       const maxWrapperSize = cssVarNumeric(el, "--max-wrapper-size")
@@ -308,7 +309,7 @@ export function useScrollCarousel(
             onUpdate: () => updateSwiperByProgress(proxy.progress),
             scrollTrigger: {
               trigger: wrapperEl,
-              pin: swiperEl,
+              pin: outerWrapperEl,
               pinSpacing: true,
               scrub: true,
               invalidateOnRefresh: true,

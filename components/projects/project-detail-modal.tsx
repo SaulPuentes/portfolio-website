@@ -95,7 +95,7 @@ export function ProjectDetailModal({
           </div>
 
           {/* 4. Links */}
-          {project.liveUrls && project.liveUrls.length > 0 && (
+          {(project.liveUrl || (project.liveUrls && project.liveUrls.length > 0) || project.repoUrl) && (
             <div className="mt-4">
               <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-foreground">
                 {t.projects.links}
