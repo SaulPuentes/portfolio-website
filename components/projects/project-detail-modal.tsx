@@ -1,7 +1,6 @@
 "use client"
 
 import { useI18n } from "@/lib/i18n/context"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -35,72 +34,83 @@ export function ProjectDetailModal({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent
         showCloseButton={false}
-        className="flex max-h-[85vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl"
+        className="flex max-h-[88vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl"
       >
         {/* Sticky header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background px-6 py-4">
-          <div className="flex items-center gap-2">
-            {project.featured && (
-              <Star className="size-4 fill-accent text-accent" />
-            )}
-            <DialogTitle className="text-lg">
+        <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-border bg-background px-6 py-5">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+              {project.featured && (
+                <>
+                  <Star className="size-3 fill-accent text-accent" />
+                  <span className="text-accent">{t.projects.featured}</span>
+                  <span className="h-px w-3 bg-border" aria-hidden="true" />
+                </>
+              )}
+              <span>// project</span>
+            </div>
+            <DialogTitle
+              className="mt-1.5 font-medium text-xl md:text-2xl tracking-[-0.02em] leading-tight truncate"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
               {project.name[locale]}
             </DialogTitle>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-sm opacity-70 transition-opacity hover:opacity-100"
+            className="mt-1 rounded-sm p-1 text-muted-foreground opacity-80 transition-all hover:text-accent hover:opacity-100 flex-shrink-0"
+            aria-label={t.projects.close}
           >
-            <X className="size-4" />
-            <span className="sr-only">{t.projects.close}</span>
+            <X className="size-4" strokeWidth={1.75} />
           </button>
         </div>
 
         {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto px-6 py-4">
+        <div className="flex-1 overflow-y-auto px-6 py-6">
+
           {/* 1. Image carousel */}
           {images.length > 0 && (
             <ImageCarousel images={images} alt={project.name[locale]} />
           )}
 
           {/* 2. Tech stack */}
-          <div className="mt-4">
-            <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-foreground">
-              {t.projects.techStack}
-            </h4>
-            <div className="flex flex-wrap gap-1.5">
+          <section className="mt-8">
+            <SectionLabel>{t.projects.techStack}</SectionLabel>
+            <div className="mt-3 flex flex-wrap gap-1.5">
               {project.technologies.map((tech) => (
-                <Badge key={tech} variant="secondary" className="text-xs font-normal">
+                <span
+                  key={tech}
+                  className="inline-flex items-center border border-border bg-background px-2.5 py-1 font-mono text-[11px] text-foreground/80 transition-colors hover:border-accent/60 hover:text-accent"
+                >
                   {tech}
-                </Badge>
+                </span>
               ))}
             </div>
-          </div>
+          </section>
 
           {/* 3. Description */}
-          <div className="mt-6">
-            <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-foreground">
-              {t.projects.description}
-            </h4>
+          <section className="mt-8">
+            <SectionLabel>{t.projects.description}</SectionLabel>
             <DialogDescription asChild>
-              <div className="flex flex-col gap-3">
+              <div className="mt-3 flex flex-col gap-3">
                 {project.description[locale].map((paragraph, i) => (
-                  <p key={i} className="text-sm leading-relaxed text-muted-foreground">
+                  <p
+                    key={i}
+                    className="text-sm md:text-[15px] leading-relaxed text-foreground/80"
+                  >
                     {paragraph}
                   </p>
                 ))}
               </div>
             </DialogDescription>
-          </div>
+          </section>
 
           {/* 4. Links */}
           {(project.liveUrl || (project.liveUrls && project.liveUrls.length > 0) || project.repoUrl) && (
-            <div className="mt-4">
-              <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-foreground">
-                {t.projects.links}
-              </h4>
-              <div className="flex flex-wrap gap-3 rounded-lg bg-muted/50 px-4 py-2">
+            <section className="mt-8 pt-6 border-t border-border">
+              <SectionLabel>{t.projects.links}</SectionLabel>
+              <div className="mt-3 flex flex-wrap gap-3">
                 {project.liveUrls && project.liveUrls.length > 0 ? (
                   project.liveUrls.map((link) => (
                     <Button key={link.url} asChild>
@@ -127,10 +137,20 @@ export function ProjectDetailModal({
                   </Button>
                 )}
               </div>
-            </div>
+            </section>
           )}
         </div>
       </DialogContent>
     </Dialog>
+  )
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+      <span className="text-accent">//</span>
+      <span>{children}</span>
+      <span className="h-px flex-1 bg-border" aria-hidden="true" />
+    </div>
   )
 }
