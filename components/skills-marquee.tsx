@@ -40,7 +40,7 @@ function MarqueeRow({
         {doubled.map((name, i) => (
           <span
             key={`${name}-${i}`}
-            className={`whitespace-nowrap text-xl font-medium md:text-2xl ${
+            className={`whitespace-nowrap text-base sm:text-lg md:text-xl font-medium ${
               i % 2 === 0
                 ? "text-foreground/70"
                 : "text-muted-foreground/50"
@@ -63,8 +63,8 @@ export function SkillsMarquee() {
   }, [])
 
   return (
-    <div className="mt-auto shrink-0 w-full min-h-[60px] pb-12">
-      <div className="flex flex-col gap-4">
+    <div className="mt-auto shrink-0 w-full min-h-[48px] pb-6 sm:pb-10 md:pb-12">
+      <div className="flex flex-col gap-2 sm:gap-3 md:gap-4">
         <MarqueeRow items={row1} visible={visible} index={0} />
         <MarqueeRow items={row2} reverse visible={visible} index={1} />
       </div>
