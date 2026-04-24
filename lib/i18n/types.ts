@@ -6,6 +6,7 @@ export interface Translations {
     services: string
     projects: string
     contact: string
+    quote: string
   }
   hero: {
     title: string

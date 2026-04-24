@@ -5,7 +5,10 @@
     "de": "Dieser Kalkulator bietet eine ungefähre Schätzung basierend auf Ihren Antworten. Der endgültige Preis kann je nach den spezifischen Projektdetails variieren. Wir werden Sie für ein genaueres Angebot kontaktieren."
   },
   "currency": "MXN",
+  "currencyByLocale": { "es": "MXN", "en": "USD", "de": "EUR" },
+  "exchangeRates": { "MXN": 1, "USD": 18.50, "EUR": 20.50 },
   "variancePercent": 20,
+  "priceAdjustmentPercent": -5,
   "title": {
     "es": "Cotizador de Proyectos",
     "en": "Project Quoter",

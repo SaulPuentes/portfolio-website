@@ -73,7 +73,9 @@ export function useQuoter(locale: Locale) {
         }
       }
     }
-    return total
+    const priceAdjustmentPercent = quoterConfig.priceAdjustmentPercent ?? 0
+    const adjustmentMultiplier = 1 + priceAdjustmentPercent / 100
+    return Math.round(total * adjustmentMultiplier)
   }, [answers, sections])
 
   const priceRange = useMemo(() => {

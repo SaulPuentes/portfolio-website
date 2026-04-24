@@ -80,7 +80,7 @@ export function Header() {
               transitionDelay: `${(navItems.length + 1) * 80}ms`,
             }}
           >
-            Cotizar
+            {t.nav.quote}
           </Link>
 
           {/* Language Switcher */}
@@ -173,7 +173,7 @@ export function Header() {
               onClick={() => setMobileOpen(false)}
               className="mt-2 flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
-              Cotizar
+              {t.nav.quote}
             </Link>
             <div className="mt-2 border-t border-border pt-2">
               <p className="px-3 pb-1 text-xs text-muted-foreground">Theme</p>
