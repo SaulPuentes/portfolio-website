@@ -41,7 +41,8 @@ export function QuoterForm({ onShowResult }: QuoterFormProps) {
     return (
       <QuoterResult
         priceRange={quoter.priceRange}
-        currency={quoter.config.currency}
+        currency={quoter.currency}
+        locale={locale}
         config={quoter.config}
         sections={quoter.sections}
         answers={quoter.answers}
