@@ -55,8 +55,18 @@ export function useQuoter(locale: Locale) {
     setShowResult(false)
   }, [])
 
+  const currency = useMemo(() => {
+    const currencyByLocale = (quoterConfig.currencyByLocale ?? {}) as Record<string, string>
+    return currencyByLocale[locale] || quoterConfig.currency
+  }, [locale])
+
+  const exchangeRate = useMemo(() => {
+    const rates = (quoterConfig.exchangeRates ?? {}) as Record<string, number>
+    return rates[currency] || 1
+  }, [currency])
+
   const totalPrice = useMemo(() => {
-    let total = 0
+    let totalMxn = 0
     for (const section of sections) {
       for (const question of section.questions) {
         const answer = answers[question.id]
@@ -65,18 +75,18 @@ export function useQuoter(locale: Locale) {
         if (question.type === "multiple" && Array.isArray(answer)) {
           for (const val of answer) {
             const opt = question.options.find((o) => o.value === val)
-            if (opt) total += opt.price
+            if (opt) totalMxn += opt.price
           }
         } else if (typeof answer === "string") {
           const opt = question.options.find((o) => o.value === answer)
-          if (opt) total += opt.price
+          if (opt) totalMxn += opt.price
         }
       }
     }
     const priceAdjustmentPercent = quoterConfig.priceAdjustmentPercent ?? 0
     const adjustmentMultiplier = 1 + priceAdjustmentPercent / 100
-    return Math.round(total * adjustmentMultiplier)
-  }, [answers, sections])
+    return Math.round((totalMxn * adjustmentMultiplier) / exchangeRate)
+  }, [answers, sections, exchangeRate])
 
   const priceRange = useMemo(() => {
     const variance = quoterConfig.variancePercent / 100
@@ -104,6 +114,7 @@ export function useQuoter(locale: Locale) {
     restart,
     totalPrice,
     priceRange,
+    currency,
     config: quoterConfig,
     t,
   }

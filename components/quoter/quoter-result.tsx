@@ -4,6 +4,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { AlertTriangle, Mail, RotateCcw } from "lucide-react"
 import { siteConfig } from "@/lib/site-config"
+import type { Locale } from "@/lib/i18n/types"
+
+const numberFormatLocaleByLocale: Record<Locale, string> = {
+  es: "es-MX",
+  en: "en-US",
+  de: "de-DE",
+}
 
 interface QuestionOption {
   label: Record<string, string>
@@ -27,6 +34,7 @@ interface Section {
 interface QuoterResultProps {
   priceRange: { min: number; max: number }
   currency: string
+  locale: Locale
   config: {
     resultTitle: Record<string, string>
     resultDescription: Record<string, string>
@@ -40,8 +48,9 @@ interface QuoterResultProps {
   onRestart: () => void
 }
 
-function formatPrice(amount: number, currency: string) {
-  return new Intl.NumberFormat("es-MX", {
+function formatPrice(amount: number, currency: string, locale: Locale) {
+  const numberLocale = numberFormatLocaleByLocale[locale] ?? "es-MX"
+  return new Intl.NumberFormat(numberLocale, {
     style: "currency",
     currency,
     minimumFractionDigits: 0,
@@ -65,6 +74,7 @@ function getAnswerLabel(question: Question, answer: string | string[], t: (obj: 
 export function QuoterResult({
   priceRange,
   currency,
+  locale,
   config,
   sections,
   answers,
@@ -73,7 +83,7 @@ export function QuoterResult({
 }: QuoterResultProps) {
   const mailSubject = encodeURIComponent("Solicitud de cotización")
   const mailBody = encodeURIComponent(
-    `Hola, completé el cotizador en tu sitio web y obtuve un estimado de ${formatPrice(priceRange.min, currency)} - ${formatPrice(priceRange.max, currency)}. Me gustaría obtener una cotización formal.`
+    `Hola, completé el cotizador en tu sitio web y obtuve un estimado de ${formatPrice(priceRange.min, currency, locale)} - ${formatPrice(priceRange.max, currency, locale)}. Me gustaría obtener una cotización formal.`
   )
 
   return (
@@ -112,7 +122,7 @@ export function QuoterResult({
           <Card>
             <CardContent className="pt-6 text-center">
               <p className="text-4xl font-bold text-primary">
-                {formatPrice(priceRange.min, currency)} – {formatPrice(priceRange.max, currency)}
+                {formatPrice(priceRange.min, currency, locale)} – {formatPrice(priceRange.max, currency, locale)}
               </p>
               <p className="mt-1 text-sm text-muted-foreground">{currency}</p>
             </CardContent>
