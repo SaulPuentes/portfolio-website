@@ -8,18 +8,9 @@
   },
   "hero": {
     "title": "Software Engineer with 8+ years of experience.",
-    "description": "I build web applications and platforms for e-commerce, logistics, and SaaS — with a highly professional design and attention to detail. I work on complex products with clear, efficient solutions tailored to each brand.",
+    "description": "I build web applications and platforms for e-commerce, logistics, and SaaS with a strong focus on quality and detail. I use AI-enhanced workflows to speed up delivery, unlock new capabilities, and craft efficient, scalable solutions tailored to each product.",
     "downloadCv": "Download CV",
-    "viewProjects": "View Projects",
-    "salsaWorld": "Salsa World"
-  },
-  "about": {
-    "sectionTitle": "Profile",
-    "content": [
-      "Software Engineer with 8+ years of experience in full-stack web development, specializing in JavaScript and modern frameworks like React, Next.js, NestJS, and Node.js.",
-      "Proven track record building scalable applications for e-commerce, logistics, and SaaS. Experience includes headless CMS integration, Shopify inventory systems, and multilingual mobile-ready applications.",
-      "Background in e-commerce, IT consulting, and real estate. Comfortable in remote, multicultural environments. Agile/Scrum methodologies."
-    ]
+    "viewProjects": "View Projects"
   },
   "services": {
     "sectionTitle": "Services",

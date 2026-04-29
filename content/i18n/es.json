@@ -8,18 +8,9 @@
   },
   "hero": {
     "title": "Ingeniero de Software con + de 8 años de experiencia.",
-    "description": "Desarrollo aplicaciones y plataformas web para e-commerce, logística y SaaS, con un diseño muy profesional y cuidado al detalle. Trabajo en productos complejos con soluciones claras, eficientes y alineadas a cada marca.",
+    "description": "Desarrollo aplicaciones y plataformas web para e-commerce, logística y SaaS, con un fuerte enfoque en la calidad y el detalle. Uso flujos de trabajo potenciados por IA para acelerar la entrega, desbloquear nuevas capacidades y crear soluciones eficientes y escalables adaptadas a cada producto.",
     "downloadCv": "Descargar CV",
-    "viewProjects": "Ver Proyectos",
-    "salsaWorld": "Salsa World"
-  },
-  "about": {
-    "sectionTitle": "Perfil",
-    "content": [
-      "Ingeniero de Software con + de 8 años de experiencia en desarrollo web full-stack, especializado en JavaScript y frameworks modernos como React, Next.js, NestJS y Node.js.",
-      "Historial comprobado construyendo aplicaciones escalables para e-commerce, logística y SaaS. Experiencia en integración de headless CMS, sistemas de inventario con Shopify y aplicaciones multilingües listas para móvil.",
-      "Experiencia en e-commerce, consultoría IT y bienes raíces. Cómodo en entornos remotos y multiculturales. Metodologías Agile/Scrum."
-    ]
+    "viewProjects": "Ver Proyectos"
   },
   "services": {
     "sectionTitle": "Servicios",
