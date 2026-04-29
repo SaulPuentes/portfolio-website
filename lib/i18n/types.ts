@@ -13,11 +13,6 @@ export interface Translations {
     description: string
     downloadCv: string
     viewProjects: string
-    salsaWorld: string
-  }
-  about: {
-    sectionTitle: string
-    content: string[]
   }
   services: {
     sectionTitle: string
