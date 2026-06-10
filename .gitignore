@@ -16,8 +16,7 @@ content/data/*
 docs/curriculum.md
 docs/portfolio.md
 scripts/photo.jpg
-public/cv-de.pdf
-public/cv-tech.pdf
+public/Saul-Puentes-CV-*.pdf
 out/
 .env*.local
 .DS_Store

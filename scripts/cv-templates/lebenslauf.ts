@@ -1,5 +1,5 @@
 import { TemplateConfig, lebenslaufConfig } from "./config";
-import { cvData } from "./shared";
+import { getCvData, Variant } from "./shared";
 import path from "path";
 import fs from "fs";
 
@@ -18,10 +18,11 @@ function buildPhotoTag(photoPath: string | null): string {
 }
 
 export function buildLebenslaufHtml(
+  variant: Variant,
   overrides: Partial<TemplateConfig> = {},
 ): string {
   const c = { ...lebenslaufConfig, ...overrides };
-  const d = cvData;
+  const d = getCvData(variant, "de");
 
   const photo = buildPhotoTag(c.photoPath);
 
@@ -30,7 +31,6 @@ export function buildLebenslaufHtml(
 
     <div class="sidebar-section">
       <div class="sidebar-title">Persönliche Daten</div>
-      <div class="sidebar-item"><b>Geburtsjahr:</b> ${d.personal.birthDate}</div>
       <div class="sidebar-item"><b>Staatsangehörigkeit:</b> ${d.personal.nationality}</div>
       <div class="sidebar-item"><b>Adresse:</b> ${d.personal.address}</div>
       <div class="sidebar-item"><b>Telefon:</b> ${d.phone}</div>
@@ -51,9 +51,15 @@ export function buildLebenslaufHtml(
 
     <div class="sidebar-section">
       <div class="sidebar-title">Skills</div>
+      ${d.skills
+        .map(
+          (group) => `
+      <div class="skill-group-label">${group.label}</div>
       <div class="sidebar-skills">
-        ${[...d.skills.frontend, ...d.skills.backend, ...d.skills.tools].map((s) => `<span class="skill-chip">${s}</span>`).join("\n")}
-      </div>
+        ${group.values.map((s) => `<span class="skill-chip">${s}</span>`).join("\n")}
+      </div>`,
+        )
+        .join("\n")}
     </div>
 
     <div class="sidebar-section">
@@ -109,7 +115,13 @@ export function buildLebenslaufHtml(
     print-color-adjust: exact;
   }
 
-  body { margin: 0; padding: 0; }
+  body {
+    margin: 0;
+    padding: 0;
+    /* Paint the sidebar column across every printed page, even where
+       sidebar content ends before the main column does. */
+    background: linear-gradient(90deg, ${c.colorSidebarBg} 30%, #ffffff 30%);
+  }
 
   a { color: #93c5fd; text-decoration: none; }
 
@@ -122,7 +134,11 @@ export function buildLebenslaufHtml(
   /* ── Sidebar ── */
   .sidebar {
     background: ${c.colorSidebarBg};
-    padding: 10pt 14pt 16pt;
+    padding: 10pt 14pt 18pt;
+    /* Clone padding onto every page fragment so the second page gets
+       top padding too. */
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
   }
 
   .photo {
@@ -187,6 +203,15 @@ export function buildLebenslaufHtml(
 
   .sidebar-item b { font-weight: 700; color: #e0e7ff; }
 
+  .skill-group-label {
+    font-size: 7.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6pt;
+    color: #e0e7ff;
+    margin: 6pt 0 3pt;
+  }
+
   .sidebar-skills {
     display: flex;
     flex-wrap: wrap;
@@ -234,6 +259,13 @@ export function buildLebenslaufHtml(
     border: none;
     border-top: 2pt solid ${c.colorAccent};
     margin: 8pt 0;
+  }
+
+  .main-summary {
+    font-size: 8.5pt;
+    line-height: 1.55;
+    color: #374151;
+    margin-bottom: 4pt;
   }
 
   .main-section-title {
@@ -306,6 +338,10 @@ export function buildLebenslaufHtml(
   <div class="main">
     <div class="main-name">${d.name.toUpperCase()}</div>
     <div class="main-title">${d.title}</div>
+
+    <hr class="main-divider" />
+    <div class="main-section-title">Profil</div>
+    <p class="main-summary">${d.summary}</p>
 
     <hr class="main-divider" />
     <div class="main-section-title">Berufserfahrung</div>

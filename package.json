@@ -8,8 +8,10 @@
     "start": "next start",
     "lint": "eslint .",
     "generate:cv": "pnpm tsx scripts/generate-cv.ts",
-    "generate:cv:tech": "pnpm tsx scripts/generate-cv.ts --variant tech",
-    "generate:cv:de": "pnpm tsx scripts/generate-cv.ts --variant de"
+    "generate:cv:fullstack": "pnpm tsx scripts/generate-cv.ts --variant fullstack",
+    "generate:cv:frontend": "pnpm tsx scripts/generate-cv.ts --variant frontend",
+    "generate:cv:en": "pnpm tsx scripts/generate-cv.ts --lang en",
+    "generate:cv:de": "pnpm tsx scripts/generate-cv.ts --lang de"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "1.1.15",
