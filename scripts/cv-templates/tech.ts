@@ -1,20 +1,42 @@
 import { TemplateConfig, techConfig } from "./config";
-import { cvData } from "./shared";
+import { getCvData, Variant } from "./shared";
 
-export function buildTechHtml(overrides: Partial<TemplateConfig> = {}): string {
+export function buildTechHtml(
+  variant: Variant,
+  overrides: Partial<TemplateConfig> = {},
+): string {
   const c = { ...techConfig, ...overrides };
-  const d = cvData;
+  const d = getCvData(variant, "en");
 
-  const skillsSection = [
-    { label: "Frontend", values: d.skills.frontend },
-    { label: "Backend &amp; CMS", values: d.skills.backend },
-    { label: "Tools &amp; Infra", values: d.skills.tools },
-  ]
+  const icon = {
+    pin: `<svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`,
+    mail: `<svg viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>`,
+    phone: `<svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>`,
+    linkedin: `<svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>`,
+    github: `<svg viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>`,
+    globe: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/></svg>`,
+  };
+
+  const phoneTel = d.phone.replace(/[^\d+]/g, "");
+
+  const skillsSection = d.skills
     .map(
       ({ label, values }) =>
-        `<div class="skill-row"><span class="skill-cat">${label}</span><span class="skill-vals">${values.join(" · ")}</span></div>`,
+        `<div class="skill-row"><span class="skill-cat">${label}</span><span class="skill-vals">${values
+          .map((v) => `<span class="skill-chip">${v}</span>`)
+          .join("")}</span></div>`,
     )
     .join("\n");
+
+  const certBadge = `<svg viewBox="0 0 24 24"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>`;
+
+  const certsList = d.certifications
+    .map((cert) => `<span class="cert-item">${certBadge}${cert}</span>`)
+    .join("");
+
+  const languagesLine = d.languages
+    .map((l) => `${l.name} <span class="lang-level">${l.level}</span>`)
+    .join(`<span class="lang-sep">·</span>`);
 
   const experienceEntries = d.experience.map((exp, i) => {
     const isOldRole = i >= d.experience.length - 2;
@@ -96,16 +118,32 @@ export function buildTechHtml(overrides: Partial<TemplateConfig> = {}): string {
   }
 
   .contact {
-    font-size: 8pt;
-    color: var(--text-soft);
     display: flex;
     flex-wrap: wrap;
-    gap: 0;
+    gap: 3pt 11pt;
+    font-size: 8pt;
+    color: var(--text-mid);
+    margin-top: 1pt;
   }
 
-  .contact span { white-space: nowrap; }
-  .contact span + span::before { content: " · "; color: #d1d5db; }
-  .contact a { color: var(--accent); }
+  .contact-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 3.5pt;
+    white-space: nowrap;
+    color: var(--text-mid);
+  }
+
+  .contact-item svg {
+    width: 8.5pt;
+    height: 8.5pt;
+    flex-shrink: 0;
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
 
   /* ── Body ── */
   .body { padding: 0; }
@@ -142,10 +180,11 @@ export function buildTechHtml(overrides: Partial<TemplateConfig> = {}): string {
   /* ── Skills ── */
   .skill-row {
     display: flex;
-    gap: 6pt;
-    margin-bottom: 2.5pt;
+    gap: 8pt;
+    margin-bottom: 5pt;
     font-size: 8.5pt;
     line-height: 1.45;
+    align-items: flex-start;
   }
 
   .skill-cat {
@@ -153,10 +192,25 @@ export function buildTechHtml(overrides: Partial<TemplateConfig> = {}): string {
     color: var(--text);
     white-space: nowrap;
     min-width: 70pt;
+    padding-top: 2pt;
   }
 
   .skill-vals {
-    color: var(--text-mid);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4pt;
+  }
+
+  .skill-chip {
+    font-size: 7.5pt;
+    font-weight: 500;
+    color: var(--accent);
+    background: var(--accent-lt);
+    border: 0.5pt solid #bfdbfe;
+    border-radius: 3pt;
+    padding: 1.5pt 6pt;
+    line-height: 1.35;
+    white-space: nowrap;
   }
 
   /* ── Experience ── */
@@ -238,13 +292,59 @@ export function buildTechHtml(overrides: Partial<TemplateConfig> = {}): string {
     font-weight: 300;
   }
 
-  .certs {
-    font-size: 8pt;
-    color: var(--text-mid);
-    margin-top: 5pt;
+  .certs-label {
+    font-size: 7pt;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.9pt;
+    color: var(--text-soft);
+    margin: 8pt 0 4pt;
   }
 
-  .certs b { font-weight: 600; color: var(--text); }
+  .certs-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4pt 6pt;
+  }
+
+  .cert-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4pt;
+    font-size: 7.8pt;
+    color: var(--text-mid);
+    border: 0.5pt solid var(--rule);
+    border-radius: 3pt;
+    padding: 2pt 7pt;
+    white-space: nowrap;
+  }
+
+  .cert-item svg {
+    width: 8.5pt;
+    height: 8.5pt;
+    flex-shrink: 0;
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .lang-line {
+    font-size: 8.2pt;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .lang-level {
+    color: var(--text-soft);
+    font-weight: 400;
+  }
+
+  .lang-sep {
+    color: #d1d5db;
+    margin: 0 5pt;
+  }
 </style>
 </head>
 <body>
@@ -253,11 +353,12 @@ export function buildTechHtml(overrides: Partial<TemplateConfig> = {}): string {
   <div class="name">${d.name.toUpperCase()}</div>
   <div class="subtitle">${d.title}</div>
   <div class="contact">
-    <span>${d.email}</span>
-    <span>${d.phone}</span>
-    <span><a href="https://${d.linkedin}">${d.linkedin}</a></span>
-    <span><a href="https://${d.github}">${d.github}</a></span>
-    <span><a href="https://${d.portfolio}">${d.portfolio}</a></span>
+    <span class="contact-item">${icon.pin}${d.location}</span>
+    <a class="contact-item" href="mailto:${d.email}">${icon.mail}${d.email}</a>
+    <a class="contact-item" href="tel:${phoneTel}">${icon.phone}${d.phone}</a>
+    <a class="contact-item" href="https://${d.linkedin}">${icon.linkedin}${d.linkedin}</a>
+    <a class="contact-item" href="https://${d.github}">${icon.github}${d.github}</a>
+    <a class="contact-item" href="https://${d.portfolio}">${icon.globe}${d.portfolio}</a>
   </div>
 </div>
 
@@ -293,7 +394,10 @@ export function buildTechHtml(overrides: Partial<TemplateConfig> = {}): string {
       </div>
       <div class="edu-period">${d.education.period}</div>
     </div>
-    <div class="certs"><b>Certifications:</b> ${d.certifications.join(" · ")}</div>
+    <div class="certs-label">Certifications</div>
+    <div class="certs-list">${certsList}</div>
+    <div class="certs-label">Languages</div>
+    <div class="lang-line">${languagesLine}</div>
   </div>
 
 </div>
