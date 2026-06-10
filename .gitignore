@@ -14,6 +14,10 @@ content/data/*
 !content/data/quoter-config.json
 !content/data/quoter-questions.md
 docs/curriculum.md
+docs/portfolio.md
+scripts/photo.jpg
+public/cv-de.pdf
+public/cv-tech.pdf
 out/
 .env*.local
 .DS_Store

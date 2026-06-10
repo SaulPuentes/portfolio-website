@@ -39,9 +39,9 @@ export function buildLebenslaufHtml(
 
     <div class="sidebar-section">
       <div class="sidebar-title">Links</div>
-      <div class="sidebar-item"><a href="https://${d.linkedin}">${d.linkedin}</a></div>
-      <div class="sidebar-item"><a href="https://${d.github}">${d.github}</a></div>
       <div class="sidebar-item"><a href="https://${d.portfolio}">${d.portfolio}</a></div>
+      <div class="sidebar-item"><a href="https://${d.github}">${d.github}</a></div>
+      <div class="sidebar-item"><a href="https://${d.linkedin}">${d.linkedin}</a></div>
     </div>
 
     <div class="sidebar-section">
@@ -51,7 +51,9 @@ export function buildLebenslaufHtml(
 
     <div class="sidebar-section">
       <div class="sidebar-title">Skills</div>
-      ${[...d.skills.frontend, ...d.skills.backend, ...d.skills.tools].map((s) => `<div class="sidebar-item">${s}</div>`).join("\n")}
+      <div class="sidebar-skills">
+        ${[...d.skills.frontend, ...d.skills.backend, ...d.skills.tools].map((s) => `<span class="skill-chip">${s}</span>`).join("\n")}
+      </div>
     </div>
 
     <div class="sidebar-section">
@@ -185,6 +187,22 @@ export function buildLebenslaufHtml(
 
   .sidebar-item b { font-weight: 700; color: #e0e7ff; }
 
+  .sidebar-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4pt;
+  }
+
+  .skill-chip {
+    font-size: 7.5pt;
+    color: #dbeafe;
+    background: rgba(255, 255, 255, 0.07);
+    border: 0.5pt solid rgba(255, 255, 255, 0.16);
+    border-radius: 3pt;
+    padding: 1.5pt 5pt;
+    line-height: 1.3;
+  }
+
   /* ── Main ── */
   .main {
     padding: 10pt 20pt 18pt 18pt;
@@ -252,15 +270,29 @@ export function buildLebenslaufHtml(
   }
 
   ul {
-    margin: 3pt 0 0 13pt;
+    list-style: none;
+    margin: 3pt 0 0 0;
     padding: 0;
   }
 
   li {
+    position: relative;
+    padding-left: 9pt;
     margin-bottom: 2pt;
     line-height: 1.45;
     font-size: 8.5pt;
     color: #374151;
+  }
+
+  li::before {
+    content: "";
+    position: absolute;
+    left: 1pt;
+    top: 4.5pt;
+    width: 2.5pt;
+    height: 2.5pt;
+    border-radius: 50%;
+    background: ${c.colorAccent};
   }
 </style>
 </head>
