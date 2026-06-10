@@ -99,20 +99,12 @@ export function HeroSection() {
             data-hero
             className="opacity-0 translate-y-6 lg:col-span-7 min-w-0"
           >
-            <div className="flex gap-4">
-              <span
-                className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground pt-1.5 flex-shrink-0 hidden sm:block"
-                aria-hidden="true"
-              >
-                // bio
-              </span>
-              <p
-                className="leading-relaxed text-foreground/80 max-w-xl"
-                style={{ fontSize: "clamp(0.9rem, 1.6vh, 1.125rem)" }}
-              >
-                {t.hero.description}
-              </p>
-            </div>
+            <p
+              className="leading-relaxed text-foreground/80 max-w-xl"
+              style={{ fontSize: "clamp(0.9rem, 1.6vh, 1.125rem)" }}
+            >
+              {t.hero.description}
+            </p>
           </div>
 
           {/* CTAs */}

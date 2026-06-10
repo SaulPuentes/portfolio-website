@@ -85,7 +85,12 @@ export function buildLebenslaufHtml(
 <head>
 <meta charset="utf-8" />
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+  /* Consistent top/bottom margin on every printed page — fixes missing padding on page 2 */
+  @page {
+    margin: 14pt 0;
+  }
 
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -111,69 +116,76 @@ export function buildLebenslaufHtml(
   /* ── Sidebar ── */
   .sidebar {
     background: ${c.colorSidebarBg};
-    padding: 20pt 14pt;
+    padding: 10pt 14pt 16pt;
   }
 
   .photo {
     width: 100%;
-    max-width: 120pt;
-    border-radius: 4pt;
+    max-width: 118pt;
+    border-radius: 3pt;
     margin-bottom: 14pt;
     display: block;
+    box-shadow: 0 2pt 6pt rgba(30, 58, 95, 0.15);
   }
 
   .photo-placeholder {
     width: 100%;
-    max-width: 120pt;
+    max-width: 118pt;
     aspect-ratio: 1;
-    background: #e5e7eb;
-    border-radius: 4pt;
+    background: #d8e0eb;
+    border-radius: 3pt;
     margin-bottom: 14pt;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #999;
+    color: #7a8fa8;
     font-size: 9pt;
   }
 
-  .sidebar-section { margin-bottom: 14pt; }
+  .sidebar-section { margin-bottom: 13pt; }
 
   .sidebar-title {
     font-size: ${c.headingSize};
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.6pt;
+    letter-spacing: 0.8pt;
     border-bottom: 1.5pt solid ${c.colorAccent};
     padding-bottom: 3pt;
-    margin-bottom: 6pt;
-    color: ${c.colorText};
+    margin-bottom: 7pt;
+    color: ${c.colorAccent};
   }
 
   .sidebar-item {
-    font-size: 8.5pt;
+    font-size: 8pt;
     margin-bottom: 2.5pt;
-    line-height: 1.45;
+    line-height: 1.5;
     word-break: break-word;
+    color: #354358;
   }
 
-  .sidebar-item b { font-weight: 600; }
+  .sidebar-item b { font-weight: 600; color: ${c.colorText}; }
 
   /* ── Main ── */
   .main {
-    padding: 20pt 18pt 20pt 16pt;
+    padding: 10pt 20pt 16pt 16pt;
+    border-left: 1pt solid #dce6f0;
   }
 
   .main-name {
     font-size: ${c.nameSize};
     font-weight: 700;
-    letter-spacing: 0.5pt;
+    letter-spacing: 1.5pt;
     margin-bottom: 2pt;
+    color: ${c.colorAccent};
+    text-transform: uppercase;
   }
 
   .main-title {
-    font-size: 10pt;
-    color: #555;
+    font-size: 9.5pt;
+    color: #4a5d73;
     margin-bottom: 10pt;
+    font-weight: 300;
+    letter-spacing: 0.4pt;
   }
 
   .main-divider {
@@ -187,37 +199,41 @@ export function buildLebenslaufHtml(
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.8pt;
-    margin-bottom: 6pt;
-    color: ${c.colorText};
+    margin-bottom: 7pt;
+    color: ${c.colorAccent};
   }
 
   .main-exp-entry { margin-bottom: 10pt; }
 
   .main-exp-company {
     font-weight: 700;
-    font-size: 10pt;
+    font-size: 9.5pt;
+    color: ${c.colorText};
   }
 
   .main-exp-title {
-    font-size: 9pt;
-    color: #555;
+    font-size: 8.5pt;
+    color: #4a5d73;
+    font-weight: 400;
   }
 
   .main-exp-period {
-    font-size: 8pt;
-    color: #888;
+    font-size: 7.5pt;
+    color: #6b7d92;
     margin-bottom: 3pt;
+    margin-top: 1pt;
   }
 
   ul {
-    margin: 3pt 0 0 14pt;
+    margin: 3pt 0 0 13pt;
     padding: 0;
   }
 
   li {
     margin-bottom: 2pt;
-    line-height: 1.4;
+    line-height: 1.45;
     font-size: 8.5pt;
+    color: #354358;
   }
 </style>
 </head>

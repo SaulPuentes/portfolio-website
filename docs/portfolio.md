@@ -10,7 +10,7 @@ Lista resumida de proyectos para documentar lo más relevante: qué se hizo, tip
 
 **Link del sitios:**
 
-- [Evalor](https://saulpuentes.com/evalor)
+- [Evalor](https://evalor.mx)
 - [Grupo DAGS](https://grupodags.com/)
 - [Monteleva](https://monteleva.mx)
 
