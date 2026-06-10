@@ -35,8 +35,13 @@ export function buildLebenslaufHtml(
       <div class="sidebar-item"><b>Adresse:</b> ${d.personal.address}</div>
       <div class="sidebar-item"><b>Telefon:</b> ${d.phone}</div>
       <div class="sidebar-item"><b>E-Mail:</b> <a href="mailto:${d.email}">${d.email}</a></div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Links</div>
       <div class="sidebar-item"><a href="https://${d.linkedin}">${d.linkedin}</a></div>
       <div class="sidebar-item"><a href="https://${d.github}">${d.github}</a></div>
+      <div class="sidebar-item"><a href="https://${d.portfolio}">${d.portfolio}</a></div>
     </div>
 
     <div class="sidebar-section">
@@ -85,17 +90,16 @@ export function buildLebenslaufHtml(
 <head>
 <meta charset="utf-8" />
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Lato:wght@300;400;700&display=swap');
 
-  /* Consistent top/bottom margin on every printed page — fixes missing padding on page 2 */
   @page {
-    margin: 14pt 0;
+    margin: 0;
   }
 
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
   html {
-    font-family: ${c.font};
+    font-family: 'Lato', ${c.font};
     font-size: ${c.bodySize};
     color: ${c.colorText};
     line-height: 1.4;
@@ -105,7 +109,7 @@ export function buildLebenslaufHtml(
 
   body { margin: 0; padding: 0; }
 
-  a { color: ${c.colorAccent}; text-decoration: none; }
+  a { color: #93c5fd; text-decoration: none; }
 
   .page {
     display: grid;
@@ -125,21 +129,23 @@ export function buildLebenslaufHtml(
     border-radius: 3pt;
     margin-bottom: 14pt;
     display: block;
-    box-shadow: 0 2pt 6pt rgba(30, 58, 95, 0.15);
+    box-shadow: 0 3pt 10pt rgba(0, 0, 0, 0.4);
+    border: 1.5pt solid rgba(255,255,255,0.15);
   }
 
   .photo-placeholder {
     width: 100%;
     max-width: 118pt;
     aspect-ratio: 1;
-    background: #d8e0eb;
+    background: #1e3a8a;
     border-radius: 3pt;
     margin-bottom: 14pt;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #7a8fa8;
+    color: #bfdbfe;
     font-size: 9pt;
+    border: 1pt solid rgba(255,255,255,0.2);
   }
 
   .sidebar-section { margin-bottom: 13pt; }
@@ -148,11 +154,11 @@ export function buildLebenslaufHtml(
     font-size: ${c.headingSize};
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.8pt;
-    border-bottom: 1.5pt solid ${c.colorAccent};
+    letter-spacing: 1pt;
+    border-bottom: 1pt solid rgba(255,255,255,0.25);
     padding-bottom: 3pt;
     margin-bottom: 7pt;
-    color: ${c.colorAccent};
+    color: #ffffff;
   }
 
   .sidebar-item {
@@ -160,15 +166,33 @@ export function buildLebenslaufHtml(
     margin-bottom: 2.5pt;
     line-height: 1.5;
     word-break: break-word;
-    color: #354358;
+    color: #bfdbfe;
   }
 
-  .sidebar-item b { font-weight: 600; color: ${c.colorText}; }
+  .sidebar-item a { color: #93c5fd; }
+
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 4pt;
+  }
+
+  .sidebar-link svg {
+    flex-shrink: 0;
+    fill: #93c5fd;
+    opacity: 0.9;
+  }
+
+  .sidebar-item b { font-weight: 700; color: #e0e7ff; }
 
   /* ── Main ── */
   .main {
-    padding: 10pt 20pt 16pt 16pt;
-    border-left: 1pt solid #dce6f0;
+    padding: 10pt 20pt 18pt 18pt;
+    background: #ffffff;
+    /* Clone padding onto every page fragment so the second page gets
+       top padding and page breaks keep bottom padding. */
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
   }
 
   .main-name {
@@ -182,7 +206,7 @@ export function buildLebenslaufHtml(
 
   .main-title {
     font-size: 9.5pt;
-    color: #4a5d73;
+    color: #1e3a8a;
     margin-bottom: 10pt;
     font-weight: 300;
     letter-spacing: 0.4pt;
@@ -190,7 +214,7 @@ export function buildLebenslaufHtml(
 
   .main-divider {
     border: none;
-    border-top: 1.5pt solid ${c.colorAccent};
+    border-top: 2pt solid ${c.colorAccent};
     margin: 8pt 0;
   }
 
@@ -213,15 +237,18 @@ export function buildLebenslaufHtml(
 
   .main-exp-title {
     font-size: 8.5pt;
-    color: #4a5d73;
+    color: #334155;
     font-weight: 400;
+    font-style: italic;
   }
 
   .main-exp-period {
     font-size: 7.5pt;
-    color: #6b7d92;
+    color: #475569;
     margin-bottom: 3pt;
     margin-top: 1pt;
+    font-weight: 300;
+    letter-spacing: 0.2pt;
   }
 
   ul {
@@ -233,7 +260,7 @@ export function buildLebenslaufHtml(
     margin-bottom: 2pt;
     line-height: 1.45;
     font-size: 8.5pt;
-    color: #354358;
+    color: #374151;
   }
 </style>
 </head>
