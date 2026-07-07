@@ -32,10 +32,10 @@ export const lebenslaufConfig: TemplateConfig = {
   nameSize: "15pt",
   headingSize: "9pt",
   colorText: "#0f172a",
-  colorAccent: "#1e3a8a",
-  colorSidebarBg: "#172554",
+  colorAccent: "#213d57",
+  colorSidebarBg: "#152230",
   marginTop: "15mm",
   marginBottom: "15mm",
   marginSide: "15mm",
-  photoPath: "scripts/photo.jpg",
+  photoPath: "scripts/profile-pic.png",
 };
