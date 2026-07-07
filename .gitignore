@@ -16,6 +16,7 @@ content/data/*
 docs/curriculum.md
 docs/portfolio.md
 scripts/photo.jpg
+scripts/profile-pic.png
 public/Saul-Puentes-CV-*.pdf
 out/
 .env*.local

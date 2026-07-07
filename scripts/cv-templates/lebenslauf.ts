@@ -123,7 +123,7 @@ export function buildLebenslaufHtml(
     background: linear-gradient(90deg, ${c.colorSidebarBg} 30%, #ffffff 30%);
   }
 
-  a { color: #93c5fd; text-decoration: none; }
+  a { color: #8fb2cf; text-decoration: none; }
 
   .page {
     display: grid;
@@ -155,13 +155,13 @@ export function buildLebenslaufHtml(
     width: 100%;
     max-width: 118pt;
     aspect-ratio: 1;
-    background: #1e3a8a;
+    background: #213d57;
     border-radius: 3pt;
     margin-bottom: 14pt;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #bfdbfe;
+    color: #bccbd9;
     font-size: 9pt;
     border: 1pt solid rgba(255,255,255,0.2);
   }
@@ -184,10 +184,10 @@ export function buildLebenslaufHtml(
     margin-bottom: 2.5pt;
     line-height: 1.5;
     word-break: break-word;
-    color: #bfdbfe;
+    color: #bccbd9;
   }
 
-  .sidebar-item a { color: #93c5fd; }
+  .sidebar-item a { color: #8fb2cf; }
 
   .sidebar-link {
     display: flex;
@@ -197,18 +197,18 @@ export function buildLebenslaufHtml(
 
   .sidebar-link svg {
     flex-shrink: 0;
-    fill: #93c5fd;
+    fill: #8fb2cf;
     opacity: 0.9;
   }
 
-  .sidebar-item b { font-weight: 700; color: #e0e7ff; }
+  .sidebar-item b { font-weight: 700; color: #dde5ee; }
 
   .skill-group-label {
     font-size: 7.5pt;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.6pt;
-    color: #e0e7ff;
+    color: #dde5ee;
     margin: 6pt 0 3pt;
   }
 
@@ -220,7 +220,7 @@ export function buildLebenslaufHtml(
 
   .skill-chip {
     font-size: 7.5pt;
-    color: #dbeafe;
+    color: #d3dde6;
     background: rgba(255, 255, 255, 0.07);
     border: 0.5pt solid rgba(255, 255, 255, 0.16);
     border-radius: 3pt;
@@ -249,7 +249,7 @@ export function buildLebenslaufHtml(
 
   .main-title {
     font-size: 9.5pt;
-    color: #1e3a8a;
+    color: #213d57;
     margin-bottom: 10pt;
     font-weight: 300;
     letter-spacing: 0.4pt;

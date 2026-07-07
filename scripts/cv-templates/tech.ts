@@ -156,7 +156,7 @@ export function buildTechHtml(
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1.2pt;
-    color: var(--accent);
+    color: var(--text);
     border-left: 2.5pt solid var(--accent);
     padding-left: 5pt;
     margin-bottom: 6pt;
