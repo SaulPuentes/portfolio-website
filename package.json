@@ -10,6 +10,7 @@
     "generate:cv": "pnpm tsx scripts/generate-cv.ts",
     "generate:cv:fullstack": "pnpm tsx scripts/generate-cv.ts --variant fullstack",
     "generate:cv:frontend": "pnpm tsx scripts/generate-cv.ts --variant frontend",
+    "generate:cv:reactnative": "pnpm tsx scripts/generate-cv.ts --variant reactnative",
     "generate:cv:en": "pnpm tsx scripts/generate-cv.ts --lang en",
     "generate:cv:de": "pnpm tsx scripts/generate-cv.ts --lang de"
   },
