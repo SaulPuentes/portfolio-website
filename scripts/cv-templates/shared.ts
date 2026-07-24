@@ -1,4 +1,4 @@
-export type Variant = "fullstack" | "frontend";
+export type Variant = "fullstack" | "frontend" | "reactnative" | "dotnet";
 export type Lang = "en" | "de";
 
 export interface ExperienceEntry {
@@ -44,6 +44,8 @@ type Localized<T> = Record<Lang, T>;
 const titles: Record<Variant, string> = {
   fullstack: "Senior Full Stack Developer",
   frontend: "Senior Frontend Developer",
+  reactnative: "Senior Full Stack Developer — Mobile",
+  dotnet: "Senior Full Stack Developer — .NET",
 };
 
 const summaries: Record<Variant, Localized<string>> = {
@@ -54,6 +56,11 @@ const summaries: Record<Variant, Localized<string>> = {
   frontend: {
     en: "Senior Frontend Developer with 8+ years crafting fast, conversion-focused interfaces for e-commerce and SaaS brands. Deep expertise in React, Next.js, and TypeScript with a sharp eye for design systems, animation, and performance. Pairs hands-on UI craft with an AI-augmented workflow — Claude Code, Claude Design, Cursor, and custom agents — to move from prototype to polished production at exceptional speed. Delivered customer-facing platforms for Grupo Xcaret, NordicTrack, and Galerías.",
     de: "Senior Frontend Developer mit über 8 Jahren Erfahrung in der Entwicklung schneller, conversion-orientierter Interfaces für E-Commerce- und SaaS-Marken. Tiefe Expertise in React, Next.js und TypeScript, mit ausgeprägtem Gespür für Designsysteme, Animation und Performance. Kombiniert UI-Handwerk mit einem KI-gestützten Workflow — Claude Code, Claude Design, Cursor und eigene Agents — vom Prototyp bis zur ausgereiften Produktion. Kundenplattformen für Grupo Xcaret, NordicTrack und Galerías umgesetzt.",
+  },
+  reactnative: {
+    en: "Senior Full Stack Developer with a mobile focus and 8+ years shipping cross-platform apps with React Native, delivered end to end to the iOS App Store and Google Play. Strong across the JavaScript/TypeScript ecosystem — React, Next.js, Node.js, AWS serverless — with native mobile integrations such as push notifications, authentication, and offline support. Works with an AI-augmented workflow (Claude Code, Claude Design, Cursor, custom agents) to move from idea to store-ready builds at exceptional speed. Built mobile and web products for Grupo Xcaret, VMware, NordicTrack, and Galerías.",
+    // ponytail: reactnative is EN-only; de duplicates en and is never rendered
+    de: "Senior Full Stack Developer with a mobile focus and 8+ years shipping cross-platform apps with React Native, delivered end to end to the iOS App Store and Google Play. Strong across the JavaScript/TypeScript ecosystem — React, Next.js, Node.js, AWS serverless — with native mobile integrations such as push notifications, authentication, and offline support. Works with an AI-augmented workflow (Claude Code, Claude Design, Cursor, custom agents) to move from idea to store-ready builds at exceptional speed. Built mobile and web products for Grupo Xcaret, VMware, NordicTrack, and Galerías.",
   },
 };
 
@@ -184,6 +191,53 @@ const skills: Record<Variant, Record<Lang, SkillGroup[]>> = {
       {
         label: "Tools",
         values: ["Node.js", "Python", "REST / GraphQL", "Git", "CI/CD"],
+      },
+    ],
+  },
+  reactnative: {
+    en: [
+      {
+        label: "Mobile",
+        values: ["React Native", "Expo", "iOS (App Store)", "Android (Play Store)", "Push Notifications"],
+      },
+      {
+        label: "Frontend",
+        values: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
+      },
+      {
+        label: "Backend",
+        values: ["Node.js", "NestJS", "REST / GraphQL", "MongoDB"],
+      },
+      {
+        label: "Cloud & DevOps",
+        values: ["AWS (Lambda, Cognito, S3, DynamoDB)", "Docker", "CI/CD", "Git"],
+      },
+      {
+        label: "AI Tooling",
+        values: ["Claude Code", "Claude Design", "AI Agents (MCP)", "Cursor"],
+      },
+    ],
+    // ponytail: reactnative is EN-only; de duplicates en and is never rendered
+    de: [
+      {
+        label: "Mobile",
+        values: ["React Native", "Expo", "iOS (App Store)", "Android (Play Store)", "Push Notifications"],
+      },
+      {
+        label: "Frontend",
+        values: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
+      },
+      {
+        label: "Backend",
+        values: ["Node.js", "NestJS", "REST / GraphQL", "MongoDB"],
+      },
+      {
+        label: "Cloud & DevOps",
+        values: ["AWS (Lambda, Cognito, S3, DynamoDB)", "Docker", "CI/CD", "Git"],
+      },
+      {
+        label: "AI Tooling",
+        values: ["Claude Code", "Claude Design", "AI Agents (MCP)", "Cursor"],
       },
     ],
   },

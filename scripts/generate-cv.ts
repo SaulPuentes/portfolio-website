@@ -5,8 +5,16 @@ import { buildTechHtml } from "./cv-templates/tech";
 import { buildLebenslaufHtml } from "./cv-templates/lebenslauf";
 import { Variant, Lang } from "./cv-templates/shared";
 
-const VARIANTS: Variant[] = ["fullstack", "frontend"];
+const VARIANTS: Variant[] = ["fullstack", "frontend", "reactnative"];
+const EN_ONLY: Variant[] = ["reactnative"];
 const LANGS: Lang[] = ["en", "de"];
+
+const variantLabels: Record<Variant, string> = {
+  fullstack: "Fullstack",
+  frontend: "Frontend",
+  reactnative: "ReactNative",
+  dotnet: "DotNet",
+};
 
 function parseFlag<T extends string>(
   flag: string,
@@ -29,10 +37,6 @@ interface PdfJob {
   margins: { top: string; bottom: string; left: string; right: string };
 }
 
-function fileLabel(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
 async function main() {
   const variantArg = parseFlag("--variant", VARIANTS);
   const langArg = parseFlag("--lang", LANGS);
@@ -45,18 +49,21 @@ async function main() {
   const jobs: PdfJob[] = [];
 
   for (const variant of variants) {
-    for (const lang of langs) {
-      const fileName = `Saul-Puentes-CV-${fileLabel(variant)}-${lang.toUpperCase()}.pdf`;
+    const variantLangs = EN_ONLY.includes(variant)
+      ? langs.filter((l) => l === "en")
+      : langs;
+    for (const lang of variantLangs) {
+      const fileName = `Saul-Puentes-CV-${variantLabels[variant]}-${lang.toUpperCase()}.pdf`;
       jobs.push(
         lang === "en"
           ? {
-              name: `${fileLabel(variant)} EN (ATS)`,
+              name: `${variantLabels[variant]} EN (ATS)`,
               html: buildTechHtml(variant),
               outPath: path.join(outDir, fileName),
               margins: { top: "20mm", bottom: "20mm", left: "18mm", right: "18mm" },
             }
           : {
-              name: `${fileLabel(variant)} DE (Lebenslauf)`,
+              name: `${variantLabels[variant]} DE (Lebenslauf)`,
               html: buildLebenslaufHtml(variant),
               outPath: path.join(outDir, fileName),
               margins: { top: "0", bottom: "0", left: "0", right: "0" },

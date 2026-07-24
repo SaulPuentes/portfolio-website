@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { buildTechHtml } from "./tech";
-import { Variant } from "./shared";
+import { getCvData, Variant } from "./shared";
 
 // ── Shared experience facts (present in every variant that renders full bullets) ──
 const sharedFactVariants: Variant[] = ["fullstack", "frontend"];
@@ -19,5 +19,14 @@ for (const v of sharedFactVariants) {
     `${v}: missing Gluo GCP cloud bullet`,
   );
 }
+
+// ── React Native variant ──
+const rn = buildTechHtml("reactnative");
+assert(
+  getCvData("reactnative", "en").title === "Senior Full Stack Developer — Mobile",
+  "reactnative: wrong title",
+);
+assert(/React Native/.test(rn), "reactnative: skills missing React Native");
+assert(/App Store/.test(rn) && /Play Store/.test(rn), "reactnative: skills missing iOS/Android stores");
 
 console.log("CV checks passed.");
