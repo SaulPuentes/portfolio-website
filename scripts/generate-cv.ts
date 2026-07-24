@@ -5,8 +5,8 @@ import { buildTechHtml } from "./cv-templates/tech";
 import { buildLebenslaufHtml } from "./cv-templates/lebenslauf";
 import { Variant, Lang } from "./cv-templates/shared";
 
-const VARIANTS: Variant[] = ["fullstack", "frontend", "reactnative"];
-const EN_ONLY: Variant[] = ["reactnative"];
+const VARIANTS: Variant[] = ["fullstack", "frontend", "reactnative", "dotnet"];
+const EN_ONLY: Variant[] = ["reactnative", "dotnet"];
 const LANGS: Lang[] = ["en", "de"];
 
 const variantLabels: Record<Variant, string> = {
