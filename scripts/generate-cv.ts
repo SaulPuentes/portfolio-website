@@ -6,8 +6,14 @@ import { buildLebenslaufHtml } from "./cv-templates/lebenslauf";
 import { Variant, Lang } from "./cv-templates/shared";
 
 const VARIANTS: Variant[] = ["fullstack", "frontend", "reactnative", "dotnet"];
-const EN_ONLY: Variant[] = ["reactnative", "dotnet"];
 const LANGS: Lang[] = ["en", "de"];
+
+const LANGS_BY_VARIANT: Record<Variant, Lang[]> = {
+  fullstack: ["en", "de"],
+  frontend: ["en", "de"],
+  reactnative: ["en"],
+  dotnet: ["en"],
+};
 
 const variantLabels: Record<Variant, string> = {
   fullstack: "Fullstack",
@@ -49,9 +55,7 @@ async function main() {
   const jobs: PdfJob[] = [];
 
   for (const variant of variants) {
-    const variantLangs = EN_ONLY.includes(variant)
-      ? langs.filter((l) => l === "en")
-      : langs;
+    const variantLangs = langs.filter((l) => LANGS_BY_VARIANT[variant].includes(l));
     for (const lang of variantLangs) {
       const fileName = `Saul-Puentes-CV-${variantLabels[variant]}-${lang.toUpperCase()}.pdf`;
       jobs.push(
