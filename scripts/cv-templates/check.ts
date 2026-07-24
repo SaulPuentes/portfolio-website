@@ -29,4 +29,13 @@ assert(
 assert(/React Native/.test(rn), "reactnative: skills missing React Native");
 assert(/App Store/.test(rn) && /Play Store/.test(rn), "reactnative: skills missing iOS/Android stores");
 
+// ── .NET variant ──
+const net = buildTechHtml("dotnet");
+assert(
+  getCvData("dotnet", "en").title === "Senior Full Stack Developer — .NET",
+  "dotnet: wrong title",
+);
+assert(/\.NET \/ C#/.test(net), "dotnet: skills missing .NET / C#");
+assert(/Vue\.js/.test(net), "dotnet: skills missing Vue.js");
+
 console.log("CV checks passed.");
