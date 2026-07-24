@@ -214,7 +214,7 @@ const experience: ExperienceSource[] = [
   {
     company: "Freelance",
     title: "Software Developer",
-    period: "Apr 2025 – Present",
+    period: "Mar 2026 – Present",
     bullets: {
       en: [
         "Run an AI-augmented delivery workflow (Claude Code, Claude Design, Cursor, custom agents) to ship client work dramatically faster without sacrificing quality.",
@@ -255,12 +255,14 @@ const experience: ExperienceSource[] = [
       en: [
         "Built Galerías' (galerias.com) nationwide shopping-mall platform with user auth, interactive maps, and a fully customizable CMS.",
         "Redesigned NordicTrack's e-commerce site with dynamic components, light/dark themes, and CMS-integrated content.",
+        "Provisioned and deployed application services on Google Cloud Platform (GCP), managing cloud infrastructure for production client applications.",
         "Automated product-variant imports into CommerceTools with custom data pipelines, eliminating hours of manual catalog work.",
         "Drove code quality through code reviews and unit tests for data transformation logic.",
       ],
       de: [
         "Entwicklung der landesweiten Shopping-Center-Plattform von Galerías (galerias.com) mit Authentifizierung, interaktiven Karten und voll anpassbarem CMS.",
         "Redesign des E-Commerce-Shops von NordicTrack mit dynamischen Komponenten, Light/Dark-Themes und CMS-integrierten Inhalten.",
+        "Bereitstellung und Deployment von Anwendungsdiensten auf der Google Cloud Platform (GCP), inkl. Verwaltung der Cloud-Infrastruktur für produktive Kundenanwendungen.",
         "Automatisierung von Produktvarianten-Importen in CommerceTools durch eigene Daten-Pipelines — Wegfall stundenlanger manueller Katalogpflege.",
         "Sicherung der Codequalität durch Code-Reviews und Unit-Tests für Datentransformationslogik.",
       ],
@@ -273,12 +275,14 @@ const experience: ExperienceSource[] = [
     bullets: {
       en: [
         "Led development of a serverless SaaS logistics platform on AWS, applying SOLID principles and architecture best practices.",
-        "Built and shipped React Native apps (food ordering, event scheduling) to the App Store and Play Store, including push notifications and auth.",
+        "Built and shipped React Native apps (food ordering, event scheduling), delivering to both the iOS App Store and Google Play with push notifications and authentication.",
+        "Maintained and extended a project-management platform built with .NET and Vue.js — resolving production issues and adding features across the C# backend and Vue frontend.",
         "Integrated AWS end to end: Cognito, Lambda, API Gateway, SNS, SES, S3, DynamoDB, and CloudFormation.",
       ],
       de: [
         "Leitung der Entwicklung einer serverlosen SaaS-Logistikplattform auf AWS nach SOLID-Prinzipien und Architektur-Best-Practices.",
-        "Entwicklung und Veröffentlichung von React-Native-Apps (Essensbestellung, Event-Planung) im App Store und Play Store, inkl. Push-Benachrichtigungen und Authentifizierung.",
+        "Entwicklung und Veröffentlichung von React-Native-Apps (Essensbestellung, Event-Planung) im iOS App Store und bei Google Play, inkl. Push-Benachrichtigungen und Authentifizierung.",
+        "Wartung und Erweiterung einer Projektmanagement-Plattform mit .NET und Vue.js — Behebung von Produktionsfehlern und neue Features im C#-Backend und Vue-Frontend.",
         "End-to-End-Integration von AWS: Cognito, Lambda, API Gateway, SNS, SES, S3, DynamoDB und CloudFormation.",
       ],
     },
