@@ -58,14 +58,14 @@ const summaries: Record<Variant, Localized<string>> = {
     de: "Senior Frontend Developer mit über 8 Jahren Erfahrung in der Entwicklung schneller, conversion-orientierter Interfaces für E-Commerce- und SaaS-Marken. Tiefe Expertise in React, Next.js und TypeScript, mit ausgeprägtem Gespür für Designsysteme, Animation und Performance. Kombiniert UI-Handwerk mit einem KI-gestützten Workflow — Claude Code, Claude Design, Cursor und eigene Agents — vom Prototyp bis zur ausgereiften Produktion. Kundenplattformen für Grupo Xcaret, NordicTrack und Galerías umgesetzt.",
   },
   reactnative: {
-    en: "Senior Full Stack Developer with a mobile focus and 8+ years shipping cross-platform apps with React Native, delivered end to end to the iOS App Store and Google Play. Strong across the JavaScript/TypeScript ecosystem — React, Next.js, Node.js, AWS serverless — with native mobile integrations such as push notifications, authentication, and offline support. Works with an AI-augmented workflow (Claude Code, Claude Design, Cursor, custom agents) to move from idea to store-ready builds at exceptional speed. Built mobile and web products for Grupo Xcaret, VMware, NordicTrack, and Galerías.",
+    en: "Senior Full Stack Developer with 8+ years across web and mobile, including three-plus years shipping cross-platform React Native apps end to end to the iOS App Store and Google Play. Strong across the JavaScript/TypeScript ecosystem — React, Next.js, Node.js, AWS serverless — with native mobile integrations such as push notifications and authentication. Works with an AI-augmented workflow (Claude Code, Claude Design, Cursor, custom agents) to move from idea to store-ready builds at exceptional speed. Shipped React Native apps for US enterprise clients and web platforms for Grupo Xcaret, VMware, NordicTrack, and Galerías.",
     // ponytail: reactnative is EN-only; de duplicates en and is never rendered
-    de: "Senior Full Stack Developer with a mobile focus and 8+ years shipping cross-platform apps with React Native, delivered end to end to the iOS App Store and Google Play. Strong across the JavaScript/TypeScript ecosystem — React, Next.js, Node.js, AWS serverless — with native mobile integrations such as push notifications, authentication, and offline support. Works with an AI-augmented workflow (Claude Code, Claude Design, Cursor, custom agents) to move from idea to store-ready builds at exceptional speed. Built mobile and web products for Grupo Xcaret, VMware, NordicTrack, and Galerías.",
+    de: "Senior Full Stack Developer with 8+ years across web and mobile, including three-plus years shipping cross-platform React Native apps end to end to the iOS App Store and Google Play. Strong across the JavaScript/TypeScript ecosystem — React, Next.js, Node.js, AWS serverless — with native mobile integrations such as push notifications and authentication. Works with an AI-augmented workflow (Claude Code, Claude Design, Cursor, custom agents) to move from idea to store-ready builds at exceptional speed. Shipped React Native apps for US enterprise clients and web platforms for Grupo Xcaret, VMware, NordicTrack, and Galerías.",
   },
   dotnet: {
-    en: "Senior Full Stack Developer with 8+ years building web and mobile products, experienced across .NET/C# and Vue.js alongside the JavaScript/TypeScript ecosystem — React, Next.js, Node.js. Comfortable maintaining and extending production platforms on both .NET backends and modern JS frontends, backed by AWS and GCP cloud and Python automation. Works with an AI-augmented workflow (Claude Code, Claude Design, Cursor, custom agents) to deliver at exceptional speed. Delivered enterprise platforms for Grupo Xcaret, VMware, NordicTrack, and Galerías.",
+    en: "Senior Full Stack Developer with 8+ years building web and mobile products, experienced across .NET/C# and Vue.js alongside the JavaScript/TypeScript ecosystem — React, Next.js, Node.js. Comfortable maintaining and extending production platforms on both .NET backends and modern JS frontends, backed by AWS and GCP cloud plus Python automation. Works with an AI-augmented workflow (Claude Code, Claude Design, Cursor, custom agents) to deliver at exceptional speed. Delivered enterprise platforms for Grupo Xcaret, VMware, NordicTrack, and Galerías.",
     // ponytail: dotnet is EN-only; de duplicates en and is never rendered
-    de: "Senior Full Stack Developer with 8+ years building web and mobile products, experienced across .NET/C# and Vue.js alongside the JavaScript/TypeScript ecosystem — React, Next.js, Node.js. Comfortable maintaining and extending production platforms on both .NET backends and modern JS frontends, backed by AWS and GCP cloud and Python automation. Works with an AI-augmented workflow (Claude Code, Claude Design, Cursor, custom agents) to deliver at exceptional speed. Delivered enterprise platforms for Grupo Xcaret, VMware, NordicTrack, and Galerías.",
+    de: "Senior Full Stack Developer with 8+ years building web and mobile products, experienced across .NET/C# and Vue.js alongside the JavaScript/TypeScript ecosystem — React, Next.js, Node.js. Comfortable maintaining and extending production platforms on both .NET backends and modern JS frontends, backed by AWS and GCP cloud plus Python automation. Works with an AI-augmented workflow (Claude Code, Claude Design, Cursor, custom agents) to deliver at exceptional speed. Delivered enterprise platforms for Grupo Xcaret, VMware, NordicTrack, and Galerías.",
   },
 };
 
@@ -250,7 +250,7 @@ const skills: Record<Variant, Record<Lang, SkillGroup[]>> = {
     en: [
       {
         label: ".NET & Backend",
-        values: [".NET / C#", "ASP.NET", "Node.js", "REST / GraphQL", "MongoDB"],
+        values: [".NET / C#", "ASP.NET", "Node.js", "Python", "REST / GraphQL", "MongoDB"],
       },
       {
         label: "Frontend",
@@ -273,7 +273,7 @@ const skills: Record<Variant, Record<Lang, SkillGroup[]>> = {
     de: [
       {
         label: ".NET & Backend",
-        values: [".NET / C#", "ASP.NET", "Node.js", "REST / GraphQL", "MongoDB"],
+        values: [".NET / C#", "ASP.NET", "Node.js", "Python", "REST / GraphQL", "MongoDB"],
       },
       {
         label: "Frontend",
@@ -320,7 +320,7 @@ const experience: ExperienceSource[] = [
   {
     company: "Freelance",
     title: "Software Developer",
-    period: "Mar 2026 – Present",
+    period: "Apr 2025 – Present",
     bullets: {
       en: [
         "Run an AI-augmented delivery workflow (Claude Code, Claude Design, Cursor, custom agents) to ship client work dramatically faster without sacrificing quality.",
