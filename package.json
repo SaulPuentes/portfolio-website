@@ -14,7 +14,8 @@
     "generate:cv:dotnet": "pnpm tsx scripts/generate-cv.ts --variant dotnet",
     "generate:cv:en": "pnpm tsx scripts/generate-cv.ts --lang en",
     "generate:cv:de": "pnpm tsx scripts/generate-cv.ts --lang de",
-    "check:cv": "pnpm tsx scripts/cv-templates/check.ts"
+    "check:cv": "pnpm tsx scripts/cv-templates/check.ts",
+    "generate:cover-letter": "pnpm tsx scripts/generate-cover-letter.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "1.1.15",

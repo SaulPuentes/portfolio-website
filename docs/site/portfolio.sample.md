@@ -2,7 +2,7 @@
 
 Lista resumida de proyectos para documentar lo más relevante: qué se hizo, tipo de proyecto, tecnologías y resultados.
 
-> Plantilla. Copia este archivo a `docs/portfolio.md` (gitignored) y reemplaza los marcadores con tus datos reales.
+> Plantilla. Copia este archivo a `docs/site/portfolio.md` (gitignored) y reemplaza los marcadores con tus datos reales.
 
 ---
 

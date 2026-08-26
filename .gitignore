@@ -13,11 +13,16 @@ content/data/*
 !content/data/*.sample.*
 !content/data/quoter-config.json
 !content/data/quoter-questions.md
-docs/curriculum.md
-docs/portfolio.md
+docs/cv/curriculum.md
+docs/site/portfolio.md
+docs/cover-letters/*.md
+!docs/cover-letters/_template.md
+# Job-search material: personal strategy, third-party postings and lists.
+docs/applications/
+docs/job-search/
 scripts/photo.jpg
 scripts/profile-pic.png
-public/Saul-Puentes-CV-*.pdf
+public/*-CV-*.pdf
 out/
 .env*.local
 .DS_Store

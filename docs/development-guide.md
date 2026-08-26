@@ -22,6 +22,11 @@ hooks/            → Custom React hooks
 styles/           → Global styles
 public/           → Static assets
 docs/             → Documentation
+docs/applications/  → Per-company job descriptions and interview prep (gitignored)
+docs/cover-letters/ → Cover letter sources, input to `generate:cover-letter` (gitignored except _template.md)
+docs/cv/            → CV source content (curriculum.md gitignored, sample committed)
+docs/job-search/    → Job search strategy, pitch, source lists (gitignored)
+docs/site/          → Portfolio site content notes (portfolio.md gitignored, sample committed)
 tasks/            → Development task specs
 ```
 
@@ -41,3 +46,11 @@ tasks/            → Development task specs
 - Use shadcn/ui components from `components/ui/` — add new ones via `npx shadcn@latest add <component>`
 - Translations go in `content/i18n/` with one file per language
 - Keep components focused on rendering; logic goes in `hooks/` or `lib/`
+
+## Personal data
+
+This repository is public. Names, phone numbers, addresses, emails and job-search material
+never get committed. Contact details for the generated CV and cover letters live in
+`content/data/cv-contact.json`, which is gitignored; `content/data/cv-contact.sample.json`
+is the committed template. `scripts/cv-templates/shared.ts` falls back to the sample when
+the real file is absent, so the generators still run on a fresh clone.
