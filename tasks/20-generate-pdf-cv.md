@@ -20,9 +20,9 @@ ATS-safe: single column, no tables, no graphics. Clean, scannable by recruiters 
 ```
 ┌─────────────────────────────────────────────────┐
 │                                                 │
-│  SAÚL PUENTES                                   │
+│  YOUR NAME                                      │
 │  Senior Full Stack Developer | Solutions Eng.   │
-│  saul.puentess@gmail.com · +52 812 401 8274     │
+│  your.email@example.com · +00 000 000 0000      │
 │  LinkedIn · GitHub · Portfolio                  │
 │                                                 │
 │  ═══════════════════════════════════════════     │

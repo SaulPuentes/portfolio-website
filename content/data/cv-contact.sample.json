@@ -1,0 +1,15 @@
+{
+  "name": "Your Name",
+  "fileSlug": "Your-Name",
+  "location": "City, Region, Country",
+  "phone": "+00 000 000 0000",
+  "email": "your.email@example.com",
+  "linkedin": "linkedin.com/in/your-handle",
+  "github": "github.com/your-handle",
+  "portfolio": { "en": "example.com", "de": "example.com/de" },
+  "nationality": { "en": "Nationality", "de": "Staatsangehörigkeit" },
+  "address": {
+    "en": "Street, City, Country",
+    "de": "Straße, Stadt, Land"
+  }
+}

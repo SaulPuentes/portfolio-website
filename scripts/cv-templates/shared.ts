@@ -1,5 +1,35 @@
+import fs from "fs";
+import path from "path";
+
 export type Variant = "fullstack" | "frontend" | "reactnative" | "dotnet";
 export type Lang = "en" | "de";
+
+export interface Contact {
+  name: string;
+  fileSlug: string;
+  location: string;
+  phone: string;
+  email: string;
+  linkedin: string;
+  github: string;
+  portfolio: Record<Lang, string>;
+  nationality: Record<Lang, string>;
+  address: Record<Lang, string>;
+}
+
+// Contact details live outside git so the public repo carries no personal data.
+// Copy cv-contact.sample.json to cv-contact.json and fill it in.
+const CONTACT_DIR = path.resolve("content/data");
+const contactPath = path.join(CONTACT_DIR, "cv-contact.json");
+
+export const contact: Contact = JSON.parse(
+  fs.readFileSync(
+    fs.existsSync(contactPath)
+      ? contactPath
+      : path.join(CONTACT_DIR, "cv-contact.sample.json"),
+    "utf8",
+  ),
+);
 
 export interface ExperienceEntry {
   company: string;
@@ -467,27 +497,16 @@ const certifications: string[] = [
   "Goethe-Zertifikat A2 — Goethe-Institut",
 ];
 
-const personal: Localized<CvData["personal"]> = {
-  en: {
-    nationality: "Mexican",
-    address: "Via Burgos, Monterrey, México",
-  },
-  de: {
-    nationality: "Mexikanisch",
-    address: "Via Burgos, Monterrey, Mexiko",
-  },
-};
-
 export function getCvData(variant: Variant, lang: Lang): CvData {
   return {
-    name: "Saúl Puentes",
+    name: contact.name,
     title: titles[variant],
-    location: "Monterrey, Nuevo León, México",
-    phone: "+52 812 401 8274",
-    email: "saul.puentess@gmail.com",
-    linkedin: "linkedin.com/in/saul-puentes",
-    github: "github.com/SaulPuentes",
-    portfolio: lang === "de" ? "saulpuentes.com/de" : "saulpuentes.com",
+    location: contact.location,
+    phone: contact.phone,
+    email: contact.email,
+    linkedin: contact.linkedin,
+    github: contact.github,
+    portfolio: contact.portfolio[lang],
     summary: summaries[variant][lang],
     skills: skills[variant][lang],
     languages: languages[lang],
@@ -500,6 +519,9 @@ export function getCvData(variant: Variant, lang: Lang): CvData {
     })),
     education: education[lang],
     certifications,
-    personal: personal[lang],
+    personal: {
+      nationality: contact.nationality[lang],
+      address: contact.address[lang],
+    },
   };
 }

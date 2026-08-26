@@ -3,7 +3,7 @@ import path from "path";
 import fs from "fs";
 import { buildTechHtml } from "./cv-templates/tech";
 import { buildLebenslaufHtml } from "./cv-templates/lebenslauf";
-import { Variant, Lang } from "./cv-templates/shared";
+import { Variant, Lang, contact } from "./cv-templates/shared";
 
 const VARIANTS: Variant[] = ["fullstack", "frontend", "reactnative", "dotnet"];
 const LANGS: Lang[] = ["en", "de"];
@@ -57,7 +57,7 @@ async function main() {
   for (const variant of variants) {
     const variantLangs = langs.filter((l) => LANGS_BY_VARIANT[variant].includes(l));
     for (const lang of variantLangs) {
-      const fileName = `Saul-Puentes-CV-${variantLabels[variant]}-${lang.toUpperCase()}.pdf`;
+      const fileName = `${contact.fileSlug}-CV-${variantLabels[variant]}-${lang.toUpperCase()}.pdf`;
       jobs.push(
         lang === "en"
           ? {
