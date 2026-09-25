@@ -30,7 +30,7 @@ Fields:
 - title: the CV headline role, matching the posting's role at the candidate's real seniority (e.g. "Senior Backend Developer"). At most 60 characters.
 - summary: 3–4 sentences, at most 90 words, no "I" — same voice as the summaries in FACTS. Lead with what the posting values most.
 - skills: 5–7 groups of 3–6 values. Only technologies and practices named in FACTS, spelled as in FACTS. Posting must-haves first.
-- experience: every company in FACTS exactly once, in the same order. 3–5 bullets for the roles most relevant to the posting, 1–2 for the rest. One sentence per bullet, at most 35 words, starting with a verb — present tense for the current role, past tense otherwise.
+- experience: every company in FACTS exactly once, in the same order. 3–5 bullets for the roles most relevant to the posting, 1–2 for the rest. One sentence per bullet, at most 35 words, starting with a verb — present tense only for roles whose period ends in "Present", past tense for every other role, even if its dates overlap a current one.
 
 The result must fit on two A4 pages.`;
 
