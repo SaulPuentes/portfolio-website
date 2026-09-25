@@ -105,9 +105,12 @@ async function main() {
   const outDir = path.resolve("docs/cv");
   fs.mkdirSync(outDir, { recursive: true });
 
+  const jobPath = flagValue("--job");
+
   // The site links CVs via site.json `cvFiles`; those must also be served from public/.
+  // A job-tailored CV never is, even if its name collides with one.
   const sitePath = path.resolve("content/site.json");
-  const sitePdfs: string[] = [...new Set<string>(fs.existsSync(sitePath)
+  const sitePdfs: string[] = [...new Set<string>(!jobPath && fs.existsSync(sitePath)
     ? Object.values(JSON.parse(fs.readFileSync(sitePath, "utf8")).cvFiles ?? {})
     : [])];
 
@@ -115,7 +118,6 @@ async function main() {
   const langs = langArg === "all" ? LANGS : [langArg];
 
   const jobs: PdfJob[] = [];
-  const jobPath = flagValue("--job");
   if (jobPath) jobs.push(await jobPdf(jobPath, process.argv.includes("--regenerate")));
 
   for (const variant of jobPath ? [] : variants) {
