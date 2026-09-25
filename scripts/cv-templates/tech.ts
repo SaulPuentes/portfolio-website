@@ -1,12 +1,14 @@
 import { TemplateConfig, techConfig } from "./config";
 import { getCvData, Variant } from "./shared";
+import { applyDraft, CvDraft } from "./ai";
 
 export function buildTechHtml(
   variant: Variant,
   overrides: Partial<TemplateConfig> = {},
+  draft?: CvDraft,
 ): string {
   const c = { ...techConfig, ...overrides };
-  const d = getCvData(variant, "en");
+  const d = draft ? applyDraft(getCvData(variant, "en"), draft) : getCvData(variant, "en");
 
   const icon = {
     pin: `<svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`,
@@ -39,8 +41,9 @@ export function buildTechHtml(
     .join(`<span class="lang-sep">·</span>`);
 
   const experienceEntries = d.experience.map((exp, i) => {
-    // ponytail: backend keeps full Helicon bullets (manufacturing is its selling point)
-    const isOldRole = i >= d.experience.length - (variant === "backend" ? 1 : 2);
+    // ponytail: backend keeps full Helicon bullets (manufacturing is its selling point);
+    // an AI draft already chose its bullet counts, so it is never cut down
+    const isOldRole = !draft && i >= d.experience.length - (variant === "backend" ? 1 : 2);
 
     const header =
       exp.company === "Freelance"
