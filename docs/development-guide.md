@@ -24,7 +24,7 @@ public/           → Static assets
 docs/             → Documentation
 docs/applications/  → Per-company job descriptions and interview prep (gitignored)
 docs/cover-letters/ → Cover letter sources, input to `generate:cover-letter` (gitignored except _template.md)
-docs/cv/            → CV source content (curriculum.md gitignored, sample committed)
+docs/cv/            → CV source content (curriculum.md gitignored, sample committed), generated PDFs (gitignored), AI drafts in docs/cv/drafts/ (gitignored)
 docs/job-search/    → Job search strategy, pitch, source lists (gitignored)
 docs/site/          → Portfolio site content notes (portfolio.md gitignored, sample committed)
 tasks/            → Development task specs
@@ -37,6 +37,8 @@ tasks/            → Development task specs
 | `npm run dev` | Start dev server (`localhost:3000`) |
 | `npm run build` | Production build |
 | `npm run lint` | Run ESLint |
+| `pnpm generate:cv` | Render every CV variant to PDF in `docs/cv/` |
+| `pnpm generate:cv:job <posting.md>` | Tailor the English CV to a job posting with OpenAI `gpt-6-sol` (needs `OPENAI_API_KEY` in `.env`). Writes an editable draft to `docs/cv/drafts/<posting>.json`, then the PDF. Re-run after editing the draft to re-render without an API call; add `--regenerate` for a fresh draft. |
 
 ## Conventions
 

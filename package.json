@@ -15,6 +15,7 @@
     "generate:cv:backend": "pnpm tsx scripts/generate-cv.ts --variant backend",
     "generate:cv:en": "pnpm tsx scripts/generate-cv.ts --lang en",
     "generate:cv:de": "pnpm tsx scripts/generate-cv.ts --lang de",
+    "generate:cv:job": "pnpm tsx scripts/generate-cv.ts --job",
     "check:cv": "pnpm tsx scripts/cv-templates/check.ts",
     "generate:cover-letter": "pnpm tsx scripts/generate-cover-letter.ts"
   },
