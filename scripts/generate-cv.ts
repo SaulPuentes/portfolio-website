@@ -5,7 +5,7 @@ import { buildTechHtml } from "./cv-templates/tech";
 import { buildLebenslaufHtml } from "./cv-templates/lebenslauf";
 import { Variant, Lang, contact } from "./cv-templates/shared";
 
-const VARIANTS: Variant[] = ["fullstack", "frontend", "reactnative", "dotnet"];
+const VARIANTS: Variant[] = ["fullstack", "frontend", "reactnative", "dotnet", "backend"];
 const LANGS: Lang[] = ["en", "de"];
 
 const LANGS_BY_VARIANT: Record<Variant, Lang[]> = {
@@ -13,6 +13,7 @@ const LANGS_BY_VARIANT: Record<Variant, Lang[]> = {
   frontend: ["en", "de"],
   reactnative: ["en"],
   dotnet: ["en"],
+  backend: ["en"],
 };
 
 const variantLabels: Record<Variant, string> = {
@@ -20,6 +21,7 @@ const variantLabels: Record<Variant, string> = {
   frontend: "Frontend",
   reactnative: "ReactNative",
   dotnet: "DotNet",
+  backend: "Backend",
 };
 
 function parseFlag<T extends string>(
@@ -46,8 +48,14 @@ interface PdfJob {
 async function main() {
   const variantArg = parseFlag("--variant", VARIANTS);
   const langArg = parseFlag("--lang", LANGS);
-  const outDir = path.resolve("public");
+  const outDir = path.resolve("docs/cv");
   fs.mkdirSync(outDir, { recursive: true });
+
+  // The site links CVs via site.json `cvFiles`; those must also be served from public/.
+  const sitePath = path.resolve("content/site.json");
+  const sitePdfs: string[] = [...new Set<string>(fs.existsSync(sitePath)
+    ? Object.values(JSON.parse(fs.readFileSync(sitePath, "utf8")).cvFiles ?? {})
+    : [])];
 
   const variants = variantArg === "all" ? VARIANTS : [variantArg];
   const langs = langArg === "all" ? LANGS : [langArg];
@@ -95,6 +103,13 @@ async function main() {
     });
     await page.close();
     console.log(`✓ ${job.name} → ${path.relative(process.cwd(), job.outPath)}`);
+    for (const url of sitePdfs) {
+      if (path.basename(url) !== path.basename(job.outPath)) continue;
+      const publicPath = path.join(path.resolve("public"), url);
+      fs.mkdirSync(path.dirname(publicPath), { recursive: true });
+      fs.copyFileSync(job.outPath, publicPath);
+      console.log(`  ↳ copied to ${path.relative(process.cwd(), publicPath)}`);
+    }
   }
 
   await browser.close();

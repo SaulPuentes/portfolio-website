@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-export type Variant = "fullstack" | "frontend" | "reactnative" | "dotnet";
+export type Variant = "fullstack" | "frontend" | "reactnative" | "dotnet" | "backend";
 export type Lang = "en" | "de";
 
 export interface Contact {
@@ -76,6 +76,7 @@ const titles: Record<Variant, string> = {
   frontend: "Senior Frontend Developer",
   reactnative: "Senior Full Stack Developer — Mobile",
   dotnet: "Senior Full Stack Developer — .NET",
+  backend: "Senior Backend Developer",
 };
 
 const summaries: Record<Variant, Localized<string>> = {
@@ -97,7 +98,54 @@ const summaries: Record<Variant, Localized<string>> = {
     // ponytail: dotnet is EN-only; de duplicates en and is never rendered
     de: "Senior Full Stack Developer with 8+ years building web and mobile products, experienced across .NET/C# and Vue.js alongside the JavaScript/TypeScript ecosystem — React, Next.js, Node.js. Comfortable maintaining and extending production platforms on both .NET backends and modern JS frontends, backed by AWS and GCP cloud plus Python automation. Works with an AI-augmented workflow (Claude Code, Claude Design, Cursor, custom agents) to deliver at exceptional speed. Delivered enterprise platforms for Grupo Xcaret, VMware, NordicTrack, and Galerías.",
   },
+  backend: {
+    en: "Senior Backend Developer with 8+ years building services, business logic, and system integrations in Node.js, TypeScript, Python, and .NET/C#. Hands-on manufacturing background: automated a full packaging production line for Mexico's leading pharmacy chain — barcode-driven production control with a custom state machine, station-level camera logging for full traceability, and shipment tracking. Builds cloud backends on AWS serverless and GCP, integrates third-party platforms (Stripe, Salesforce, CommerceTools), and backs every delivery with unit testing, code reviews, and production troubleshooting. Experienced in remote, multicultural Agile teams with C2 English.",
+    // ponytail: backend is EN-only; de duplicates en and is never rendered
+    de: "Senior Backend Developer with 8+ years building services, business logic, and system integrations in Node.js, TypeScript, Python, and .NET/C#. Hands-on manufacturing background: automated a full packaging production line for Mexico's leading pharmacy chain — barcode-driven production control with a custom state machine, station-level camera logging for full traceability, and shipment tracking. Builds cloud backends on AWS serverless and GCP, integrates third-party platforms (Stripe, Salesforce, CommerceTools), and backs every delivery with unit testing, code reviews, and production troubleshooting. Experienced in remote, multicultural Agile teams with C2 English.",
+  },
 };
+
+const backendSkills: SkillGroup[] = [
+  {
+    label: "Backend",
+    values: ["Node.js", "TypeScript", "Python", ".NET / C#", "REST / GraphQL"],
+  },
+  {
+    label: "Data",
+    values: ["DynamoDB", "MongoDB", "Data pipelines", "Query optimization"],
+  },
+  {
+    label: "Manufacturing",
+    values: [
+      "Production-line automation",
+      "Barcode / hardware integration",
+      "State machines",
+      "Traceability",
+    ],
+  },
+  {
+    label: "Integrations",
+    values: ["Stripe", "Salesforce (Apex)", "CommerceTools", "Headless CMS"],
+  },
+  {
+    label: "Cloud & DevOps",
+    values: [
+      "AWS (Lambda, API Gateway, SNS, SES, S3, CloudFormation)",
+      "GCP",
+      "Docker",
+      "CI/CD",
+      "Git",
+    ],
+  },
+  {
+    label: "Quality",
+    values: ["Unit testing", "Code review", "SOLID", "Debugging & troubleshooting"],
+  },
+  {
+    label: "AI Tooling",
+    values: ["Claude Code", "AI Agents", "Harness Engineering", "MCP", "RAG", "LLM", "OpenAI API", "n8n", "Cursor"],
+  },
+];
 
 const skills: Record<Variant, Record<Lang, SkillGroup[]>> = {
   fullstack: {
@@ -132,7 +180,7 @@ const skills: Record<Variant, Record<Lang, SkillGroup[]>> = {
       },
       {
         label: "AI Tooling",
-        values: ["Claude Code", "Claude Design", "AI Agents (MCP)", "Cursor"],
+        values: ["Claude Code", "Claude Design", "AI Agents", "Harness Engineering", "MCP", "RAG", "LLM", "OpenAI API", "n8n", "Cursor"],
       },
     ],
     de: [
@@ -161,7 +209,7 @@ const skills: Record<Variant, Record<Lang, SkillGroup[]>> = {
       },
       {
         label: "KI-Tools",
-        values: ["Claude Code", "Claude Design", "AI Agents (MCP)", "Cursor"],
+        values: ["Claude Code", "Claude Design", "AI Agents", "Harness Engineering", "MCP", "RAG", "LLM", "OpenAI API", "n8n", "Cursor"],
       },
     ],
   },
@@ -193,7 +241,7 @@ const skills: Record<Variant, Record<Lang, SkillGroup[]>> = {
       },
       {
         label: "AI Tooling",
-        values: ["Claude Code", "Claude Design", "AI Agents (MCP)", "Cursor"],
+        values: ["Claude Code", "Claude Design", "AI Agents", "Harness Engineering", "MCP", "RAG", "LLM", "OpenAI API", "n8n", "Cursor"],
       },
       {
         label: "Tools",
@@ -221,7 +269,7 @@ const skills: Record<Variant, Record<Lang, SkillGroup[]>> = {
       },
       {
         label: "KI-Tools",
-        values: ["Claude Code", "Claude Design", "AI Agents (MCP)", "Cursor"],
+        values: ["Claude Code", "Claude Design", "AI Agents", "Harness Engineering", "MCP", "RAG", "LLM", "OpenAI API", "n8n", "Cursor"],
       },
       {
         label: "Tools",
@@ -249,7 +297,7 @@ const skills: Record<Variant, Record<Lang, SkillGroup[]>> = {
       },
       {
         label: "AI Tooling",
-        values: ["Claude Code", "Claude Design", "AI Agents (MCP)", "Cursor"],
+        values: ["Claude Code", "Claude Design", "AI Agents", "Harness Engineering", "MCP", "RAG", "LLM", "OpenAI API", "n8n", "Cursor"],
       },
     ],
     // ponytail: reactnative is EN-only; de duplicates en and is never rendered
@@ -272,7 +320,7 @@ const skills: Record<Variant, Record<Lang, SkillGroup[]>> = {
       },
       {
         label: "AI Tooling",
-        values: ["Claude Code", "Claude Design", "AI Agents (MCP)", "Cursor"],
+        values: ["Claude Code", "Claude Design", "AI Agents", "Harness Engineering", "MCP", "RAG", "LLM", "OpenAI API", "n8n", "Cursor"],
       },
     ],
   },
@@ -296,7 +344,7 @@ const skills: Record<Variant, Record<Lang, SkillGroup[]>> = {
       },
       {
         label: "AI Tooling",
-        values: ["Claude Code", "Claude Design", "AI Agents (MCP)", "Cursor"],
+        values: ["Claude Code", "Claude Design", "AI Agents", "Harness Engineering", "MCP", "RAG", "LLM", "OpenAI API", "n8n", "Cursor"],
       },
     ],
     // ponytail: dotnet is EN-only; de duplicates en and is never rendered
@@ -319,10 +367,12 @@ const skills: Record<Variant, Record<Lang, SkillGroup[]>> = {
       },
       {
         label: "AI Tooling",
-        values: ["Claude Code", "Claude Design", "AI Agents (MCP)", "Cursor"],
+        values: ["Claude Code", "Claude Design", "AI Agents", "Harness Engineering", "MCP", "RAG", "LLM", "OpenAI API", "n8n", "Cursor"],
       },
     ],
   },
+  // ponytail: backend is EN-only; de reuses en and is never rendered
+  backend: { en: backendSkills, de: backendSkills },
 };
 
 const languages: Localized<{ name: string; level: string }[]> = {
@@ -344,6 +394,8 @@ interface ExperienceSource {
   period: string;
   location?: string;
   bullets: Localized<string[]>;
+  // EN-only bullets that replace the shared ones for a given variant
+  variantBullets?: Partial<Record<Variant, string[]>>;
 }
 
 const experience: ExperienceSource[] = [
@@ -367,6 +419,13 @@ const experience: ExperienceSource[] = [
         "Aufbau einer landesweiten, mehrsprachigen Event-Plattform mit Payload CMS und Next.js.",
       ],
     },
+    variantBullets: {
+      backend: [
+        "Building the backend of a nationwide multilingual events platform with Payload CMS and Next.js — data models, content collections, and editor workflows.",
+        "Delivered CMS-driven sites (WordPress/PHP custom post types, Shopify) with structured content models so business owners manage data without a developer.",
+        "Run an AI-augmented delivery workflow (Claude Code, Cursor, custom agents) to ship client work faster without sacrificing quality.",
+      ],
+    },
   },
   {
     company: "Orium",
@@ -380,6 +439,12 @@ const experience: ExperienceSource[] = [
       de: [
         "Implementierung sicherer digitaler Zahlungen mit Stripe für Grupo Xcaret, Mexikos führendes Tourismusunternehmen — PCI-konforme Checkout-Flows im großen Maßstab.",
         "Design und Prototyping hochwertiger UI-Oberflächen zur Optimierung des Buchungs- und Kauferlebnisses.",
+      ],
+    },
+    variantBullets: {
+      backend: [
+        "Implemented backend payment logic for Grupo Xcaret, Mexico's leading tourism company — Stripe integrated with Salesforce (Apex, Platform Events) to process PCI-compliant transactions from data capture to payment confirmation.",
+        "Designed the card-payment flow and prototyped it to validate business rules before development.",
       ],
     },
   },
@@ -403,6 +468,14 @@ const experience: ExperienceSource[] = [
         "Sicherung der Codequalität durch Code-Reviews und Unit-Tests für Datentransformationslogik.",
       ],
     },
+    variantBullets: {
+      backend: [
+        "Automated product-variant imports into CommerceTools with custom data pipelines, eliminating hours of manual catalog work.",
+        "Provisioned and deployed application services on Google Cloud Platform (GCP), managing cloud infrastructure for production client applications.",
+        "Built Galerías' (galerias.com) nationwide shopping-mall platform, integrating user authentication, Google Maps API, and a ContentStack headless CMS.",
+        "Wrote unit tests for data formatting and transformation logic and performed code reviews under strict quality standards.",
+      ],
+    },
   },
   {
     company: "Blue People",
@@ -422,6 +495,14 @@ const experience: ExperienceSource[] = [
         "End-to-End-Integration von AWS: Cognito, Lambda, API Gateway, SNS, SES, S3, DynamoDB und CloudFormation.",
       ],
     },
+    variantBullets: {
+      backend: [
+        "Led development of a serverless SaaS logistics platform on AWS, applying SOLID principles and architecture best practices.",
+        "Integrated AWS end to end: IAM, Cognito, Lambda, API Gateway, SNS, SES, S3, DynamoDB, and CloudFormation (infrastructure as code).",
+        "Maintained and extended a project-management platform built with .NET and Vue.js — resolving production issues and adding features in the C# backend.",
+        "Built authentication and push-notification services for React Native apps shipped to the iOS App Store and Google Play.",
+      ],
+    },
   },
   {
     company: "Enroute",
@@ -439,6 +520,13 @@ const experience: ExperienceSource[] = [
         "Entwicklung institutioneller React-Native-Apps für US-Kunden sowie Leitung von Frontend-Verbesserungen (Dashboards, Charts).",
       ],
     },
+    variantBullets: {
+      backend: [
+        "Collaborated on redesigning VMware's global validation system, optimizing queries over large data-center datasets.",
+        "Refactored and optimized a high-volume automated email system driven by complex business rules.",
+        "Built institutional apps and reporting dashboards for US-based clients.",
+      ],
+    },
   },
   {
     company: "Helicon",
@@ -454,6 +542,14 @@ const experience: ExperienceSource[] = [
         "Automatisierung einer kompletten Verpackungslinie für Mexikos führende landesweite Apothekenkette — weniger manuelle Fehler, Echtzeit-Monitoring.",
         "Entwicklung von Produktionslinien-Interfaces mit Barcode-Scannern und eigener State Machine zur Verfolgung jedes Prozessschritts.",
         "Python-Skripte zur Optimierung von Kampagnenkonfigurationen — höhere Geschwindigkeit und Genauigkeit der Verpackung.",
+      ],
+    },
+    variantBullets: {
+      backend: [
+        "Automated a full packaging production line for Mexico's leading nationwide pharmacy chain — fewer manual errors and real-time process monitoring.",
+        "Built shop-floor production-control software: barcode-scanner integration and a custom state machine tracking every step of the process flow.",
+        "Developed a camera service recording each station's activity and storing logs for full production traceability across major brands.",
+        "Built admin dashboards and a ticketing system for shipment tracking; wrote Python scripts optimizing campaign configurations for faster, more accurate packaging.",
       ],
     },
   },
@@ -515,7 +611,7 @@ export function getCvData(variant: Variant, lang: Lang): CvData {
       title: exp.title,
       period: exp.period,
       location: exp.location,
-      bullets: exp.bullets[lang],
+      bullets: exp.variantBullets?.[variant] ?? exp.bullets[lang],
     })),
     education: education[lang],
     certifications,

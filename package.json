@@ -12,6 +12,7 @@
     "generate:cv:frontend": "pnpm tsx scripts/generate-cv.ts --variant frontend",
     "generate:cv:reactnative": "pnpm tsx scripts/generate-cv.ts --variant reactnative",
     "generate:cv:dotnet": "pnpm tsx scripts/generate-cv.ts --variant dotnet",
+    "generate:cv:backend": "pnpm tsx scripts/generate-cv.ts --variant backend",
     "generate:cv:en": "pnpm tsx scripts/generate-cv.ts --lang en",
     "generate:cv:de": "pnpm tsx scripts/generate-cv.ts --lang de",
     "check:cv": "pnpm tsx scripts/cv-templates/check.ts",
