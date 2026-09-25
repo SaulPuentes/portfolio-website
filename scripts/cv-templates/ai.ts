@@ -114,10 +114,14 @@ export function parseResponse(res: OpenAIResponse): CvDraft {
   return validateDraft(JSON.parse(text));
 }
 
-// ponytail: substring match against the facts, so "Node" passes via "Node.js"; it's a review hint, not a gate
+const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+// ponytail: whole-word match against the facts ("Go" ≠ "Google", "Node" passes via "Node.js"); a review hint, not a gate
 export function unknownSkills(draft: CvDraft): string[] {
   const facts = JSON.stringify(getCvFacts()).toLowerCase();
-  return draft.skills.flatMap((g) => g.values).filter((v) => !facts.includes(v.toLowerCase()));
+  return draft.skills
+    .flatMap((g) => g.values)
+    .filter((v) => !new RegExp(`(?<![a-z0-9])${escapeRe(v.toLowerCase())}(?![a-z0-9])`).test(facts));
 }
 
 export async function requestDraft(jobPosting: string, apiKey: string): Promise<CvDraft> {

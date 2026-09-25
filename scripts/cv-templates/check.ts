@@ -79,6 +79,16 @@ assert.throws(
 );
 assert.throws(() => validateDraft({ ...draft, title: " " }), /title/);
 assert.deepStrictEqual(unknownSkills(draft), ["Kubernetes"], "unknownSkills: wrong result");
+assert.deepStrictEqual(
+  unknownSkills({ ...draft, skills: [{ label: "Langs", values: ["Java", "Go", "Rust", "JavaScript", "Google Play"] }] }),
+  ["Java", "Go", "Rust"],
+  "unknownSkills: short names hidden inside longer words",
+);
+assert.deepStrictEqual(
+  unknownSkills({ ...draft, skills: [{ label: "All", values: facts.skills }] }),
+  [],
+  "unknownSkills: flags skills that are in the facts",
+);
 
 // ── AI draft: request ──
 const req = buildRequest("We need a Go engineer.");
