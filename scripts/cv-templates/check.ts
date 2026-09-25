@@ -114,4 +114,16 @@ assert.throws(
   /must be, in order/,
 );
 
+// ── AI draft: rendering ──
+const rendered = buildTechHtml("fullstack", {}, {
+  ...draft,
+  summary: "Cut p95 latency to <200ms & more.",
+  experience: draft.experience.map((e) => ({ ...e, bullets: [`${e.company} one.`, `${e.company} two.`] })),
+});
+assert(/<div class="subtitle">Senior Backend Developer<\/div>/.test(rendered), "draft: title not rendered");
+assert(rendered.includes("&lt;200ms &amp; more"), "draft: text not HTML-escaped");
+assert(rendered.includes('<span class="skill-chip">Kubernetes</span>'), "draft: skills not rendered");
+assert(rendered.includes("Grupo 4S two."), "draft: old roles still truncated");
+assert(!/Designed and prototyped high-fidelity UI/.test(rendered), "draft: variant bullets leaked through");
+
 console.log("CV checks passed.");

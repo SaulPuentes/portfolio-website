@@ -1,4 +1,4 @@
-import { getCvFacts, SkillGroup } from "./shared";
+import { CvData, getCvFacts, SkillGroup } from "./shared";
 
 export const MODEL = "gpt-6-sol";
 
@@ -129,4 +129,18 @@ export async function requestDraft(jobPosting: string, apiKey: string): Promise<
   const body = await res.text();
   if (!res.ok) throw new Error(`OpenAI API ${res.status}: ${body.slice(0, 500)}`);
   return parseResponse(JSON.parse(body));
+}
+
+const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+// Model text goes straight into the HTML template, so escape it.
+export function applyDraft(data: CvData, draft: CvDraft): CvData {
+  const bullets = new Map(draft.experience.map((e) => [e.company, e.bullets.map(esc)]));
+  return {
+    ...data,
+    title: esc(draft.title),
+    summary: esc(draft.summary),
+    skills: draft.skills.map((g) => ({ label: esc(g.label), values: g.values.map(esc) })),
+    experience: data.experience.map((e) => ({ ...e, bullets: bullets.get(e.company) ?? e.bullets })),
+  };
 }
