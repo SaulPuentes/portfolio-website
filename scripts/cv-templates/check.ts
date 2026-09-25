@@ -1,6 +1,7 @@
 import assert from "node:assert";
 import { buildTechHtml } from "./tech";
-import { getCvData, Variant } from "./shared";
+import { getCvData, getCvFacts, Variant } from "./shared";
+import { buildRequest, CvDraft, parseResponse, unknownSkills, validateDraft } from "./ai";
 
 // ── Shared experience facts (present in every variant that renders full bullets) ──
 const sharedFactVariants: Variant[] = ["fullstack", "frontend"];
@@ -44,5 +45,73 @@ assert(getCvData("backend", "en").title === "Senior Backend Developer", "backend
 assert(/custom state machine/.test(be), "backend: missing Helicon production-control bullet");
 assert(/production traceability/.test(be), "backend: Helicon bullets truncated");
 assert(!/Designed and prototyped high-fidelity UI/.test(be), "backend: shared bullets not overridden");
+
+// ── AI draft: facts ──
+const facts = getCvFacts();
+const companies = facts.experience.map((e) => e.company);
+assert.deepStrictEqual(
+  companies,
+  ["Freelance", "Orium", "Gluo", "Blue People", "Enroute", "Helicon", "Grupo 4S"],
+  "facts: company list or order changed",
+);
+assert(
+  facts.experience[5].bullets.some((b) => /custom state machine/.test(b)),
+  "facts: variant-only bullets missing",
+);
+assert(facts.skills.includes("Stripe"), "facts: skills missing");
+assert.strictEqual(new Set(facts.skills).size, facts.skills.length, "facts: skills not deduplicated");
+
+// ── AI draft: validation ──
+const draft: CvDraft = {
+  title: "Senior Backend Developer",
+  summary: "Backend developer with 8+ years.",
+  skills: [{ label: "Backend", values: ["Node.js", "Kubernetes"] }],
+  experience: companies.map((company) => ({ company, bullets: [`${company} bullet.`] })),
+};
+assert.deepStrictEqual(validateDraft(draft), draft);
+assert.throws(
+  () => validateDraft({ ...draft, experience: draft.experience.slice(1) }),
+  /must be, in order/,
+);
+assert.throws(
+  () => validateDraft({ ...draft, experience: draft.experience.map((e) => ({ ...e, bullets: Array(6).fill("x") })) }),
+  /1–5 bullets/,
+);
+assert.throws(() => validateDraft({ ...draft, title: " " }), /title/);
+assert.deepStrictEqual(unknownSkills(draft), ["Kubernetes"], "unknownSkills: wrong result");
+
+// ── AI draft: request ──
+const req = buildRequest("We need a Go engineer.");
+assert.strictEqual(req.model, "gpt-6-sol");
+assert.strictEqual(req.store, false, "request: must not be stored");
+assert.match(req.input, /JOB POSTING:\nWe need a Go engineer\./);
+assert.match(req.input, /custom state machine/, "request: facts not sent");
+assert.strictEqual(req.text.format.strict, true);
+assert.deepStrictEqual(req.text.format.schema.properties.experience.items.properties.company.enum, companies);
+
+// ── AI draft: response parsing ──
+const okResponse = {
+  status: "completed",
+  output: [
+    { type: "reasoning" },
+    { type: "message", content: [{ type: "output_text", text: JSON.stringify(draft) }] },
+  ],
+};
+assert.deepStrictEqual(parseResponse(okResponse), draft);
+assert.throws(
+  () => parseResponse({ status: "incomplete", incomplete_details: { reason: "max_output_tokens" }, output: [] }),
+  /max_output_tokens/,
+);
+assert.throws(
+  () => parseResponse({ status: "completed", output: [{ type: "message", content: [{ type: "refusal", refusal: "No." }] }] }),
+  /refused: No\./,
+);
+assert.throws(
+  () => parseResponse({
+    status: "completed",
+    output: [{ type: "message", content: [{ type: "output_text", text: JSON.stringify({ ...draft, experience: [] }) }] }],
+  }),
+  /must be, in order/,
+);
 
 console.log("CV checks passed.");
