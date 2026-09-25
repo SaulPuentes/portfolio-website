@@ -23,8 +23,10 @@ docs/job-search/
 scripts/photo.jpg
 scripts/profile-pic.png
 docs/cv/*.pdf
+docs/cv/drafts/
 public/*-CV-*.pdf
 out/
+.env
 .env*.local
 .DS_Store
 *.tsbuildinfo
