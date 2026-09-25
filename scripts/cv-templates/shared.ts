@@ -621,3 +621,23 @@ export function getCvData(variant: Variant, lang: Lang): CvData {
     },
   };
 }
+
+// Everything AI tailoring may draw from (EN only): each role's shared bullets plus every variant override.
+export function getCvFacts() {
+  return {
+    titles: Object.values(titles),
+    summaries: Object.values(summaries).map((s) => s.en),
+    skills: [...new Set(Object.values(skills).flatMap((s) => s.en.flatMap((g) => g.values)))],
+    experience: experience.map((e) => ({
+      company: e.company,
+      title: e.title,
+      period: e.period,
+      bullets: [
+        ...new Set([...e.bullets.en, ...Object.values(e.variantBullets ?? {}).flatMap((b) => b ?? [])]),
+      ],
+    })),
+    education: education.en,
+    certifications,
+    languages: languages.en,
+  };
+}
