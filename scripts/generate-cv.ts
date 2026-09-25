@@ -4,6 +4,7 @@ import fs from "fs";
 import { buildTechHtml } from "./cv-templates/tech";
 import { buildLebenslaufHtml } from "./cv-templates/lebenslauf";
 import { Variant, Lang, contact } from "./cv-templates/shared";
+import { CvDraft, MODEL, requestDraft, unknownSkills, validateDraft } from "./cv-templates/ai";
 
 const VARIANTS: Variant[] = ["fullstack", "frontend", "reactnative", "dotnet", "backend"];
 const LANGS: Lang[] = ["en", "de"];
@@ -38,11 +39,64 @@ function parseFlag<T extends string>(
   process.exit(1);
 }
 
+function flagValue(flag: string): string | undefined {
+  const idx = process.argv.indexOf(flag);
+  if (idx === -1) return undefined;
+  const val = process.argv[idx + 1];
+  if (!val || val.startsWith("--")) {
+    console.error(`${flag} needs a value, e.g. ${flag} docs/applications/acme.md`);
+    process.exit(1);
+  }
+  return val;
+}
+
 interface PdfJob {
   name: string;
   html: string;
   outPath: string;
   margins: { top: string; bottom: string; left: string; right: string };
+}
+
+const EN_MARGINS = { top: "20mm", bottom: "20mm", left: "18mm", right: "18mm" };
+
+function loadDraft(draftPath: string): CvDraft {
+  try {
+    return validateDraft(JSON.parse(fs.readFileSync(draftPath, "utf8")));
+  } catch (err) {
+    throw new Error(`${path.relative(process.cwd(), draftPath)}: ${(err as Error).message}`);
+  }
+}
+
+// Draft = the model's text for one posting. It's only (re)requested when missing or on --regenerate,
+// so hand edits survive re-runs.
+async function jobPdf(jobPath: string, regenerate: boolean): Promise<PdfJob> {
+  const slug = path.basename(jobPath, path.extname(jobPath));
+  const draftPath = path.resolve("docs/cv/drafts", `${slug}.json`);
+
+  if (regenerate || !fs.existsSync(draftPath)) {
+    const posting = fs.readFileSync(jobPath, "utf8");
+    if (!posting.trim()) throw new Error(`${jobPath} is empty`);
+    if (fs.existsSync(".env")) process.loadEnvFile(".env");
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) throw new Error("OPENAI_API_KEY is not set. Add it to .env.");
+
+    console.log(`Asking ${MODEL} to tailor the CV to ${jobPath}…`);
+    const draft = await requestDraft(posting, apiKey);
+    fs.mkdirSync(path.dirname(draftPath), { recursive: true });
+    fs.writeFileSync(draftPath, JSON.stringify(draft, null, 2) + "\n");
+    console.log(`✓ Draft → ${path.relative(process.cwd(), draftPath)} (edit it and re-run to re-render)`);
+  }
+
+  const draft = loadDraft(draftPath);
+  for (const skill of unknownSkills(draft)) {
+    console.warn(`  ⚠ Skill not found in CV facts, check it's true: ${skill}`);
+  }
+  return {
+    name: `${slug} EN (AI draft)`,
+    html: buildTechHtml("fullstack", {}, draft),
+    outPath: path.resolve("docs/cv", `${contact.fileSlug}-CV-${slug}-EN.pdf`),
+    margins: EN_MARGINS,
+  };
 }
 
 async function main() {
@@ -61,8 +115,10 @@ async function main() {
   const langs = langArg === "all" ? LANGS : [langArg];
 
   const jobs: PdfJob[] = [];
+  const jobPath = flagValue("--job");
+  if (jobPath) jobs.push(await jobPdf(jobPath, process.argv.includes("--regenerate")));
 
-  for (const variant of variants) {
+  for (const variant of jobPath ? [] : variants) {
     const variantLangs = langs.filter((l) => LANGS_BY_VARIANT[variant].includes(l));
     for (const lang of variantLangs) {
       const fileName = `${contact.fileSlug}-CV-${variantLabels[variant]}-${lang.toUpperCase()}.pdf`;
@@ -72,7 +128,7 @@ async function main() {
               name: `${variantLabels[variant]} EN (ATS)`,
               html: buildTechHtml(variant),
               outPath: path.join(outDir, fileName),
-              margins: { top: "20mm", bottom: "20mm", left: "18mm", right: "18mm" },
+              margins: EN_MARGINS,
             }
           : {
               name: `${variantLabels[variant]} DE (Lebenslauf)`,
