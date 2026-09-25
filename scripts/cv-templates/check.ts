@@ -97,6 +97,7 @@ assert.strictEqual(req.store, false, "request: must not be stored");
 assert.match(req.input, /JOB POSTING:\nWe need a Go engineer\./);
 assert.match(req.input, /custom state machine/, "request: facts not sent");
 assert.strictEqual(req.text.format.strict, true);
+assert.match(req.instructions, /present tense only for roles whose period ends in "Present"/, "request: tense rule ambiguous");
 assert.deepStrictEqual(req.text.format.schema.properties.experience.items.properties.company.enum, companies);
 
 // ── AI draft: response parsing ──
