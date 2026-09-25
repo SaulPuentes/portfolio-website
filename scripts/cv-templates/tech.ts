@@ -39,7 +39,8 @@ export function buildTechHtml(
     .join(`<span class="lang-sep">·</span>`);
 
   const experienceEntries = d.experience.map((exp, i) => {
-    const isOldRole = i >= d.experience.length - 2;
+    // ponytail: backend keeps full Helicon bullets (manufacturing is its selling point)
+    const isOldRole = i >= d.experience.length - (variant === "backend" ? 1 : 2);
 
     const header =
       exp.company === "Freelance"

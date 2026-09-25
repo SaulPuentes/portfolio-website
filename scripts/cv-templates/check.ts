@@ -38,4 +38,11 @@ assert(
 assert(/\.NET \/ C#/.test(net), "dotnet: skills missing .NET / C#");
 assert(/Vue\.js/.test(net), "dotnet: skills missing Vue.js");
 
+// ── Backend variant ──
+const be = buildTechHtml("backend");
+assert(getCvData("backend", "en").title === "Senior Backend Developer", "backend: wrong title");
+assert(/custom state machine/.test(be), "backend: missing Helicon production-control bullet");
+assert(/production traceability/.test(be), "backend: Helicon bullets truncated");
+assert(!/Designed and prototyped high-fidelity UI/.test(be), "backend: shared bullets not overridden");
+
 console.log("CV checks passed.");

@@ -22,6 +22,7 @@ docs/applications/
 docs/job-search/
 scripts/photo.jpg
 scripts/profile-pic.png
+docs/cv/*.pdf
 public/*-CV-*.pdf
 out/
 .env*.local
