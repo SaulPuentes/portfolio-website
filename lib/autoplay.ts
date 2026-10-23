@@ -118,7 +118,12 @@ export function createAutoplay(env: AutoplayEnv, onChange: (s: AutoplayState) =>
       if (stop.slide !== undefined) env.slideTo(stop.slide)
       if (stop.intro) env.playIntro()
       nextIndex = i + 1
-      cancel = env.wait((stop.intro ? HERO_INTRO_MS : 0) + PAUSE_MS / speed(), () => leg(i + 1))
+      const arrivedY = env.getScrollY()
+      cancel = env.wait((stop.intro ? HERO_INTRO_MS : 0) + PAUSE_MS / speed(), () => {
+        // A scrollbar drag or find-in-page fires no wheel/touch/key event: treat any drift as manual navigation
+        if (Math.abs(env.getScrollY() - arrivedY) > POS_TOLERANCE_PX) return pause()
+        leg(i + 1)
+      })
     })
     // An instant scroll (reduced motion) arrives before returning: keep the hold's cancel, not the spent one
     cancel ??= stopScroll
