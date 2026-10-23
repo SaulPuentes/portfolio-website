@@ -31,7 +31,8 @@ test("every project image exists", () => {
 test("client logos in the agreed order", () => {
   assert.deepEqual(clients.map((c) => c.name), [
     "Grupo Xcaret", "Galerías", "NordicTrack", "Simonett", "Uncommon Man", "Trust",
-    "Salsa World", "Nourpac", "Evalor", "Twelve Thirty Four", "Grupo DAGS", "Randia",
+    "Salsa World", "Nouparc", "Evalor", "Twelve Thirty Four", "Grupo DAGS", "Randia",
   ])
-  for (const c of clients) assert.ok(existsSync(`public${c.logo}`), c.logo)
+  for (const c of clients)
+    for (const src of [c.logo, c.logoDark].filter(Boolean)) assert.ok(existsSync(`public${src}`), src)
 })

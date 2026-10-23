@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Fragment, useEffect, useState } from "react"
 import { clients } from "@/lib/data"
 
 const doubled = [...clients, ...clients]
@@ -29,16 +29,25 @@ export function ClientLogos() {
         <div className="flex w-max items-center gap-10 sm:gap-14 animate-marquee-left hover:[animation-play-state:paused]">
           {doubled.map((c, i) => {
             const copy = i >= clients.length
-            return (
+            const cls =
+              "h-6 sm:h-7 w-auto max-w-none brightness-0 opacity-45 dark:invert transition hover:filter-none dark:hover:filter-none hover:opacity-100"
+            const alt = copy ? "" : c.name
+            const hidden = copy || undefined
+            const img = (src: string, extra: string) => (
               <img
-                key={`${c.name}-${i}`}
-                src={c.logo}
-                alt={copy ? "" : c.name}
-                aria-hidden={copy || undefined}
+                src={src}
+                alt={alt}
+                aria-hidden={hidden}
                 loading="lazy"
                 decoding="async"
-                className="h-6 sm:h-7 w-auto max-w-none brightness-0 opacity-45 dark:invert transition hover:filter-none hover:opacity-100 dark:hover:brightness-0 dark:hover:invert"
+                className={`${cls} ${extra}`}
               />
+            )
+            return (
+              <Fragment key={`${c.name}-${i}`}>
+                {img(c.logo, c.logoDark ? "dark:hidden" : "")}
+                {c.logoDark && img(c.logoDark, "hidden dark:block")}
+              </Fragment>
             )
           })}
         </div>
