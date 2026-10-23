@@ -4,7 +4,10 @@
     "services": "Servicios",
     "projects": "Proyectos",
     "contact": "Contacto",
-    "quote": "Cotizar"
+    "play": "Reproducir",
+    "pause": "Pausa",
+    "replay": "Ver de nuevo",
+    "speed": "Velocidad"
   },
   "hero": {
     "title": "Ingeniero de Software con + de 8 años de experiencia.",
