@@ -1,22 +1,46 @@
 export const SPEEDS = [1, 2, 0.5] as const
-export const VIEWPORTS_PER_SECOND = 0.4
+export const PAUSE_MS = 3000
+export const SCROLL_SECONDS = 1.2
+export const HERO_INTRO_MS = 2900 // marquee: 1800 delay + 200 row stagger + 900 transition
+export const HERO_INTRO_EVENT = "autoplay:hero-intro"
 
-const MAX_FRAME_MS = 100
-const MANUAL_SCROLL_PX = 3
-const END_TOLERANCE_PX = 2
+const POS_TOLERANCE_PX = 2
 const STOP_KEYS = new Set([
   "Escape", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight",
   "PageUp", "PageDown", "Home", "End", " ", "Spacebar",
 ])
 
+export interface TourStop {
+  y: number
+  hash?: string
+  slide?: number
+  intro?: boolean
+}
+
 export interface AutoplayEnv {
   getScrollY(): number
   getMaxScroll(): number
-  getViewportHeight(): number
-  scrollTo(y: number): void
-  requestFrame(cb: (now: number) => void): number
-  cancelFrame(id: number): void
-  now(): number
+  getStops(): TourStop[]
+  /** Returns a cancel function. */
+  scrollTo(y: number, seconds: number, done: () => void): () => void
+  /** Returns a cancel function. */
+  wait(ms: number, done: () => void): () => void
+  setHash(hash: string): void
+  slideTo(index: number): void
+  playIntro(): void
+}
+
+export interface PageMetrics {
+  vh: number
+  maxScroll: number
+  headerPx: number
+  servicesTop: number
+  servicesHeight: number
+  servicesSticky: boolean
+  projectsTop: number
+  projectCount: number
+  scrub: { start: number; end: number } | null
+  contactTop: number
 }
 
 export type AutoplayLabel = "play" | "pause" | "replay"
@@ -30,64 +54,97 @@ export function isStopKey(key: string, fromInsideControl: boolean): boolean {
   return !fromInsideControl && STOP_KEYS.has(key)
 }
 
+export function buildStops(m: PageMetrics): TourStop[] {
+  const clamp = (y: number) => Math.min(Math.max(y, 0), m.maxScroll)
+  const stops: TourStop[] = [
+    { y: 0, hash: "#about", intro: true },
+    {
+      // Sticky services reveal their cards while scrolling through 300vh: stop where all are shown
+      y: clamp(m.servicesSticky ? m.servicesTop + m.servicesHeight - m.vh : m.servicesTop - m.headerPx),
+      hash: "#services",
+    },
+  ]
+  for (let i = 0; i < m.projectCount; i++) {
+    const hash = i === 0 ? "#projects" : undefined
+    if (m.scrub) {
+      // The pinned carousel maps scroll progress to slides, so each project has its own scroll position
+      const t = m.projectCount > 1 ? i / (m.projectCount - 1) : 0
+      stops.push({ y: clamp(m.scrub.start + (m.scrub.end - m.scrub.start) * t), hash })
+    } else {
+      stops.push({ y: clamp(m.projectsTop - m.headerPx), hash, slide: i })
+    }
+  }
+  stops.push({ y: clamp(m.contactTop - m.headerPx), hash: "#contact" })
+  return stops
+}
+
 export function createAutoplay(env: AutoplayEnv, onChange: (s: AutoplayState) => void) {
   let playing = false
   let speedIndex = 0
-  let tracked = 0
-  let last = 0
-  let frameId: number | null = null
+  let nextIndex: number | null = null // null: no tour in progress
+  let done = false
+  let cancel: (() => void) | null = null
 
-  const atEnd = () => env.getScrollY() >= env.getMaxScroll() - END_TOLERANCE_PX
+  const atEnd = () => env.getScrollY() >= env.getMaxScroll() - POS_TOLERANCE_PX
+  const speed = () => SPEEDS[speedIndex]
 
   function getState(): AutoplayState {
-    const label: AutoplayLabel = playing ? "pause" : atEnd() ? "replay" : "play"
+    const label: AutoplayLabel = playing ? "pause" : done || atEnd() ? "replay" : "play"
     return { playing, speedIndex, label }
   }
   const emit = () => onChange(getState())
 
-  function stop() {
-    if (frameId !== null) env.cancelFrame(frameId)
-    frameId = null
+  function halt() {
+    cancel?.()
+    cancel = null
     playing = false
   }
 
-  function tick(now: number) {
-    frameId = null
-    // rAF timestamps are frame-start times and can precede the now() read taken in play().
-    const dt = Math.max(0, Math.min(now - last, MAX_FRAME_MS)) / 1000
-    last = now
-    if (Math.abs(env.getScrollY() - tracked) > MANUAL_SCROLL_PX) {
-      stop()
-      emit()
-      return
-    }
-    const max = env.getMaxScroll()
-    tracked = Math.min(
-      tracked + VIEWPORTS_PER_SECOND * SPEEDS[speedIndex] * env.getViewportHeight() * dt,
-      max,
-    )
-    env.scrollTo(tracked)
-    if (tracked >= max) {
-      stop()
-      emit()
-      return
-    }
-    frameId = env.requestFrame(tick)
+  function finish() {
+    halt()
+    nextIndex = null
+    done = true
+    emit()
+  }
+
+  function leg(i: number) {
+    // Re-read every leg: ScrollTrigger refreshes and late images move the stops
+    const stop = env.getStops()[i]
+    if (!stop) return finish()
+    nextIndex = i
+    cancel = null
+    const stopScroll = env.scrollTo(stop.y, SCROLL_SECONDS / speed(), () => {
+      if (stop.hash) env.setHash(stop.hash)
+      if (stop.slide !== undefined) env.slideTo(stop.slide)
+      if (stop.intro) env.playIntro()
+      nextIndex = i + 1
+      cancel = env.wait((stop.intro ? HERO_INTRO_MS : 0) + PAUSE_MS / speed(), () => leg(i + 1))
+    })
+    // An instant scroll (reduced motion) arrives before returning: keep the hold's cancel, not the spent one
+    cancel ??= stopScroll
+  }
+
+  function resumeIndex(): number {
+    const stops = env.getStops()
+    const y = env.getScrollY()
+    // Slide stops share one y, so prefer the remembered stop when we are still sitting on it
+    if (nextIndex !== null && Math.abs((stops[nextIndex]?.y ?? Infinity) - y) <= POS_TOLERANCE_PX) return nextIndex
+    const ahead = stops.findIndex((s) => s.y > y + POS_TOLERANCE_PX)
+    return ahead === -1 ? stops.length : ahead
   }
 
   function play() {
     if (playing) return
-    if (atEnd()) env.scrollTo(0)
-    tracked = env.getScrollY()
-    last = env.now()
+    const fresh = nextIndex === null || done || atEnd()
+    done = false
     playing = true
-    frameId = env.requestFrame(tick)
-    emit()
+    leg(fresh ? 0 : resumeIndex())
+    if (playing) emit()
   }
 
   function pause() {
     if (!playing) return
-    stop()
+    halt()
     emit()
   }
 
@@ -101,6 +158,6 @@ export function createAutoplay(env: AutoplayEnv, onChange: (s: AutoplayState) =>
     },
     refresh: emit,
     getState,
-    destroy: stop,
+    destroy: halt,
   }
 }
