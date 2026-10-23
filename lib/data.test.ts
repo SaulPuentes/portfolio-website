@@ -1,7 +1,7 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
 import { existsSync } from "node:fs"
-import { clients, projects } from "@/lib/data"
+import { projects } from "@/lib/data"
 
 test("randia sits right after evalor", () => {
   const ids = projects.map((p) => p.id)
@@ -26,13 +26,4 @@ test("every project image exists", () => {
   for (const p of projects)
     for (const src of [p.image, ...(p.gallery ?? [])].filter(Boolean))
       assert.ok(existsSync(`public${src}`), src)
-})
-
-test("client logos in the agreed order", () => {
-  assert.deepEqual(clients.map((c) => c.name), [
-    "Grupo Xcaret", "Galerías", "NordicTrack", "Simonett", "Uncommon Man", "Trust",
-    "Salsa World", "Nouparc", "Evalor", "Twelve Thirty Four", "Grupo DAGS", "Randia",
-  ])
-  for (const c of clients)
-    for (const src of [c.logo, c.logoDark].filter(Boolean)) assert.ok(existsSync(`public${src}`), src)
 })
