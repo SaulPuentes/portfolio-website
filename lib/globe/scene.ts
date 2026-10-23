@@ -39,15 +39,17 @@ export interface GlobeHandle {
   dispose(): void
 }
 
-type Palette = { bg: Color; fg: Color; muted: Color }
+// ocean: ocean-dot alpha; rim: alpha floor for dots turned away from the camera (the limb).
+// Dark dots on a light page read fainter than light dots on a dark one, so light raises both.
+type Palette = { bg: Color; fg: Color; muted: Color; ocean: number; rim: number }
 
 const ACCENT = new Color(0x3f80f2)
 const { degToRad: rad, radToDeg: deg, damp, smoothstep } = MathUtils
 
 const palette = (dark: boolean): Palette =>
   dark
-    ? { bg: new Color(0x0d0d0d), fg: new Color(0xe9e9e9), muted: new Color(0x6e6e6e) }
-    : { bg: new Color(0xfafafa), fg: new Color(0x1c1c1c), muted: new Color(0x9c9c9c) }
+    ? { bg: new Color(0x0d0d0d), fg: new Color(0xe9e9e9), muted: new Color(0x6e6e6e), ocean: 0.34, rim: 0.25 }
+    : { bg: new Color(0xfafafa), fg: new Color(0x1c1c1c), muted: new Color(0x6a6a6a), ocean: 0.6, rim: 0.5 }
 
 const fromLatLon = (lat: number, lon: number) => {
   const { x, y, z } = latLonToUnit(lat, lon)
@@ -164,7 +166,7 @@ function makeEarth({ R, n, oceanEvery, size, pixelRatio }: { R: number; n: numbe
         cloud.set(i, d.x * rr, d.y * rr, d.z * rr,
           (land[i] ? 1 : 0.7) * tw * (1 + g * 1.6),
           c.copy(land[i] ? pal.fg : pal.muted).lerp(ACCENT, Math.min(1, g * 1.5)),
-          ((land[i] ? 0.95 : 0.34) + g) * (0.25 + f * 0.75))
+          ((land[i] ? 0.95 : pal.ocean) + g) * (pal.rim + f * (1 - pal.rim)))
       }
       cloud.flush()
     },

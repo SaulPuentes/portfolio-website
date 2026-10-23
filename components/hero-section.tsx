@@ -19,7 +19,10 @@ export function HeroSection() {
   useEffect(() => {
     const el = sectionRef.current
     if (!el) return
-    const items = el.querySelectorAll<HTMLElement>("[data-hero]")
+    // Stagger in visual order: the phone layout moves the name above the eyebrow with `order`
+    const items = [...el.querySelectorAll<HTMLElement>("[data-hero]")].sort(
+      (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top,
+    )
     const delays = [100, 300, 500, 700, 900]
     items.forEach((item, i) => {
       setTimeout(() => {
@@ -55,13 +58,13 @@ export function HeroSection() {
       {/* Content — flex-1 with min-h-0 allows shrinking on short viewports */}
       <div
         ref={sectionRef}
-        className="relative z-[1] pointer-events-none [&_a]:pointer-events-auto [&_button]:pointer-events-auto mx-auto flex w-full max-w-7xl flex-1 min-h-0 flex-col justify-end [@media(min-aspect-ratio:9/10)]:justify-center px-6 sm:px-10 lg:px-14 py-4"
+        className="relative z-[1] pointer-events-none [&_a]:pointer-events-auto [&_button]:pointer-events-auto mx-auto flex w-full max-w-7xl flex-1 min-h-0 flex-col justify-end [@media(min-aspect-ratio:9/10)]:justify-center px-6 sm:px-10 lg:px-14 pt-4 pb-8 [@media(min-aspect-ratio:9/10)]:pb-4"
         style={{ rowGap: "clamp(0.75rem, 3vh, 2.25rem)" }}
       >
-        {/* Eyebrow — coordinate/status line */}
+        {/* Eyebrow — coordinate/status line. Phone: sits under the name and wraps instead of truncating */}
         <div
           data-hero
-          className="opacity-0 translate-y-4 flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground"
+          className="opacity-0 translate-y-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 font-mono text-[11px] uppercase leading-relaxed tracking-[0.2em] text-muted-foreground [@media(min-aspect-ratio:9/10)]:flex-nowrap"
         >
           <span className="flex items-center gap-2">
             <span
@@ -73,14 +76,16 @@ export function HeroSection() {
             </span>
             <span className="text-accent">available</span>
           </span>
-          <span className="h-px w-6 bg-border" aria-hidden="true" />
-          <span className="truncate">{t.hero.title}</span>
+          <span className="hidden [@media(min-aspect-ratio:9/10)]:block h-px w-6 bg-border" aria-hidden="true" />
+          <span className="basis-full [@media(min-aspect-ratio:9/10)]:basis-auto [@media(min-aspect-ratio:9/10)]:truncate">
+            {t.hero.title}
+          </span>
         </div>
 
         {/* Name — scales with viewport height to avoid collision */}
         <h1
           data-hero
-          className="opacity-0 translate-y-8 leading-[0.95] font-medium tracking-[-0.04em] text-foreground"
+          className="-order-1 [@media(min-aspect-ratio:9/10)]:order-none opacity-0 translate-y-8 leading-[0.95] font-medium tracking-[-0.04em] text-foreground"
           style={{
             fontFamily: "var(--font-display)",
             fontSize: "clamp(2.5rem, min(9vw, 11vh), 6rem)",
@@ -90,10 +95,10 @@ export function HeroSection() {
           <span className="block text-foreground/50">{lastName}</span>
         </h1>
 
-        {/* Thin accent rule */}
+        {/* Thin accent rule — desktop only; on a phone the globe above already separates */}
         <div
           data-hero
-          className="opacity-0 translate-y-4 flex items-center gap-4"
+          className="opacity-0 translate-y-4 hidden [@media(min-aspect-ratio:9/10)]:flex items-center gap-4"
         >
           <span
             className="h-px flex-1 bg-gradient-to-r from-border via-border to-transparent"
@@ -114,7 +119,7 @@ export function HeroSection() {
 
           <div
             data-hero
-            className="opacity-0 translate-y-6 flex flex-wrap justify-start gap-3"
+            className="opacity-0 translate-y-6 flex flex-wrap justify-start gap-3 [&>*]:flex-1 [@media(min-aspect-ratio:9/10)]:[&>*]:flex-none"
           >
             <Button asChild size="lg">
               <a href={cvFiles[locale]} download>
