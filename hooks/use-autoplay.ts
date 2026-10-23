@@ -5,6 +5,7 @@ import type Swiper from "swiper"
 import { buildStops, createAutoplay, isStopKey, HERO_INTRO_EVENT, type AutoplayState } from "@/lib/autoplay"
 
 const HEADER_PX = 64 // sections use scroll-mt-16
+const MANUAL_SCROLL_PX = 3
 const INITIAL: AutoplayState = { playing: false, speedIndex: 0, label: "play" }
 
 export function useAutoplay() {
@@ -47,10 +48,14 @@ export function useAutoplay() {
           }
           const from = window.scrollY
           const start = performance.now()
+          let written = from
           let id = requestAnimationFrame(function frame(now) {
+            // Someone else moved the page (scrollbar drag, find-in-page): stop fighting them
+            if (Math.abs(window.scrollY - written) > MANUAL_SCROLL_PX) return api.pause()
             const t = Math.min(Math.max((now - start) / (seconds * 1000), 0), 1)
             const eased = t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2
             window.scrollTo({ top: from + (y - from) * eased, behavior: "instant" })
+            written = window.scrollY
             if (t < 1) id = requestAnimationFrame(frame)
             else done()
           })

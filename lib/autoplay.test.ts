@@ -218,6 +218,20 @@ test("pause cancels the hold when the scroll finished synchronously", () => {
   assert.equal(s.hashes.length, 1)
 })
 
+test("manual scroll during a hold pauses instead of jumping", () => {
+  const { s, env, step } = fakeEnv()
+  const a = createAutoplay(env, () => {})
+  a.play()
+  step() // arrive hero, holding
+  s.scrollY = 600 // scrollbar drag: no wheel/touch/key event
+  step() // hold ends
+  assert.equal(s.scrolls.length, 1)
+  assert.equal(a.getState().playing, false)
+  assert.equal(a.getState().label, "play")
+  a.play()
+  assert.equal(s.scrolls[s.scrolls.length - 1].y, 1000)
+})
+
 test("isStopKey ignores keys from inside the control", () => {
   assert.equal(isStopKey(" ", true), false)
   assert.equal(isStopKey(" ", false), true)
