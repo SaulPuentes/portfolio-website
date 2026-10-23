@@ -35,11 +35,12 @@ function MarqueeRow({
       }}
     >
       <div
-        className={`flex w-max items-center gap-6 ${reverse ? "animate-marquee-right" : "animate-marquee-left"}`}
+        className={`flex w-max items-center gap-6 motion-reduce:animate-none ${reverse ? "animate-marquee-right" : "animate-marquee-left"}`}
       >
         {doubled.map((name, i) => (
           <span
             key={`${name}-${i}`}
+            aria-hidden={i >= items.length || undefined}
             className={`whitespace-nowrap text-base sm:text-lg md:text-xl font-medium ${
               i % 2 === 0
                 ? "text-foreground/70"
