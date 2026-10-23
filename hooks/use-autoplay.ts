@@ -1,8 +1,10 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { createAutoplay, isStopKey, type AutoplayState } from "@/lib/autoplay"
+import type Swiper from "swiper"
+import { buildStops, createAutoplay, isStopKey, HERO_INTRO_EVENT, type AutoplayState } from "@/lib/autoplay"
 
+const HEADER_PX = 64 // sections use scroll-mt-16
 const INITIAL: AutoplayState = { playing: false, speedIndex: 0, label: "play" }
 
 export function useAutoplay() {
@@ -10,15 +12,58 @@ export function useAutoplay() {
   const engine = useRef<ReturnType<typeof createAutoplay> | null>(null)
 
   useEffect(() => {
+    // Layout viewport, not innerHeight/innerWidth: those grow with pinch-zoom or horizontal overflow on phones
+    const root = document.documentElement
+    const getMaxScroll = () => root.scrollHeight - root.clientHeight
     const api = createAutoplay(
       {
         getScrollY: () => window.scrollY,
-        getMaxScroll: () => document.documentElement.scrollHeight - window.innerHeight,
-        getViewportHeight: () => window.innerHeight,
-        scrollTo: (top) => window.scrollTo({ top, behavior: "instant" }),
-        requestFrame: (cb) => requestAnimationFrame(cb),
-        cancelFrame: (id) => cancelAnimationFrame(id),
-        now: () => performance.now(),
+        getMaxScroll,
+        getStops: () => {
+          const top = (id: string) => (document.getElementById(id)?.getBoundingClientRect().top ?? 0) + window.scrollY
+          const services = document.getElementById("services")
+          const { scrubStart, scrubEnd } = document.getElementById("projects-carousel")?.dataset ?? {}
+          return buildStops({
+            vh: root.clientHeight,
+            maxScroll: getMaxScroll(),
+            headerPx: HEADER_PX,
+            servicesTop: top("services"),
+            servicesHeight: services?.offsetHeight ?? 0,
+            // Read what useScrollReveal rendered instead of repeating its breakpoint
+            servicesSticky: services?.firstElementChild ? getComputedStyle(services.firstElementChild).position === "sticky" : false,
+            projectsTop: top("projects"),
+            projectCount: document.querySelectorAll("#projects .swiper-slide").length,
+            scrub: scrubStart && scrubEnd ? { start: +scrubStart, end: +scrubEnd } : null,
+            contactTop: top("contact"),
+          })
+        },
+        scrollTo: (y, seconds, done) => {
+          // `html` has scroll-smooth, so every step must be "instant" or the browser fights the tween
+          // Touch slide stops share one y: arrive at once instead of tweening nowhere
+          if (Math.abs(y - window.scrollY) < 1 || matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            window.scrollTo({ top: y, behavior: "instant" })
+            done()
+            return () => {}
+          }
+          const from = window.scrollY
+          const start = performance.now()
+          let id = requestAnimationFrame(function frame(now) {
+            const t = Math.min(Math.max((now - start) / (seconds * 1000), 0), 1)
+            const eased = t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2
+            window.scrollTo({ top: from + (y - from) * eased, behavior: "instant" })
+            if (t < 1) id = requestAnimationFrame(frame)
+            else done()
+          })
+          return () => cancelAnimationFrame(id)
+        },
+        wait: (ms, done) => {
+          const id = setTimeout(done, ms)
+          return () => clearTimeout(id)
+        },
+        setHash: (hash) => history.replaceState(null, "", hash),
+        slideTo: (i) =>
+          (document.querySelector("#projects .swiper-container") as (Element & { swiper?: Swiper }) | null)?.swiper?.slideTo(i),
+        playIntro: () => window.dispatchEvent(new Event(HERO_INTRO_EVENT)),
       },
       (s) =>
         setState((prev) =>
