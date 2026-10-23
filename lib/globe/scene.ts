@@ -39,17 +39,19 @@ export interface GlobeHandle {
   dispose(): void
 }
 
+// core: sphere fill under the dots. Light mode makes it a step darker than the page (#f5f5f5)
+// so the globe reads as a disc instead of melting into the background.
 // ocean: ocean-dot alpha; rim: alpha floor for dots turned away from the camera (the limb).
 // Dark dots on a light page read fainter than light dots on a dark one, so light raises both.
-type Palette = { bg: Color; fg: Color; muted: Color; ocean: number; rim: number }
+type Palette = { core: Color; fg: Color; muted: Color; ocean: number; rim: number }
 
 const ACCENT = new Color(0x3f80f2)
 const { degToRad: rad, radToDeg: deg, damp, smoothstep } = MathUtils
 
 const palette = (dark: boolean): Palette =>
   dark
-    ? { bg: new Color(0x0d0d0d), fg: new Color(0xe9e9e9), muted: new Color(0x6e6e6e), ocean: 0.34, rim: 0.25 }
-    : { bg: new Color(0xfafafa), fg: new Color(0x1c1c1c), muted: new Color(0x6a6a6a), ocean: 0.6, rim: 0.5 }
+    ? { core: new Color(0x0d0d0d), fg: new Color(0xe9e9e9), muted: new Color(0x6e6e6e), ocean: 0.34, rim: 0.25 }
+    : { core: new Color(0xebebeb), fg: new Color(0x1c1c1c), muted: new Color(0x6a6a6a), ocean: 0.6, rim: 0.5 }
 
 const fromLatLon = (lat: number, lon: number) => {
   const { x, y, z } = latLonToUnit(lat, lon)
@@ -151,7 +153,7 @@ function makeEarth({ R, n, oceanEvery, size, pixelRatio }: { R: number; n: numbe
   return {
     group, spin, R, hitSphere,
     theme(p: Palette, dark: boolean) {
-      coreMat.color.copy(p.bg)
+      coreMat.color.copy(p.core)
       halo.material.opacity = dark ? 0.22 : 0.12
     },
     update(t: number, pal: Palette, hit: Vector3, hitAmt: number) {

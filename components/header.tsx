@@ -143,7 +143,7 @@ export function Header() {
 
         {/* Mobile controls */}
         <div className="flex items-center gap-2 md:hidden">
-          <AutoplayButton compact state={autoplay.state} onToggle={handleToggle} onSpeed={autoplay.cycleSpeed} />
+          <AutoplayButton state={autoplay.state} onToggle={handleToggle} onSpeed={autoplay.cycleSpeed} />
           <ThemeToggle />
           <button
             className="flex items-center"
