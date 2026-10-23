@@ -120,7 +120,7 @@ export function HeroSection() {
         {/* Thin accent rule — desktop only; on a phone the globe above already separates */}
         <div
           data-hero
-          className="opacity-0 translate-y-4 hidden [@media(min-aspect-ratio:9/10)]:flex items-center gap-4"
+          className="opacity-0 translate-y-4 hidden [@media(min-aspect-ratio:9/10)]:flex items-center gap-4 lg:[@media(min-aspect-ratio:9/10)]:max-w-[55%]"
         >
           <span
             className="h-px flex-1 bg-gradient-to-r from-border via-border to-transparent"
