@@ -1,18 +1,18 @@
 "use client"
 
-import Link from "next/link"
+import { useRef } from "react"
 import { cn } from "@/lib/utils"
 import { Menu, X, ChevronDown } from "lucide-react"
 import { siteConfig } from "@/lib/site-config"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { locales } from "@/lib/i18n"
 import { useHeader } from "@/hooks/use-header"
+import { useAutoplay } from "@/hooks/use-autoplay"
+import { AutoplayButton } from "@/components/autoplay-button"
 
 export function Header() {
   const {
     locale,
-    t,
-    localePrefix,
     currentLocale,
     navItems,
     mobileOpen,
@@ -27,10 +27,16 @@ export function Header() {
     handleSetLocale,
     scrollTo,
   } = useHeader()
+  const barRef = useRef<HTMLDivElement>(null)
+  const autoplay = useAutoplay(barRef)
+  const handleToggle = () => {
+    setMobileOpen(false)
+    autoplay.toggle()
+  }
 
   return (
     <header ref={headerRef} className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div ref={barRef} className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <a
           href="#"
           className="text-sm font-semibold tracking-tight text-foreground transition-all duration-700 ease-out"
@@ -71,17 +77,16 @@ export function Header() {
             </button>
           ))}
 
-          <Link
-            href={`${localePrefix}/cotizador`}
-            className="flex items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-all duration-700 ease-out hover:bg-primary/90"
+          <div
+            className="flex items-center gap-2 transition-all duration-700 ease-out"
             style={{
               opacity: headerReady ? 1 : 0,
               transform: headerReady ? "translateY(0)" : "translateY(-10px)",
               transitionDelay: `${(navItems.length + 1) * 80}ms`,
             }}
           >
-            {t.nav.quote}
-          </Link>
+            <AutoplayButton state={autoplay.state} onToggle={handleToggle} onSpeed={autoplay.cycleSpeed} />
+          </div>
 
           {/* Language Switcher */}
           <div
@@ -138,18 +143,22 @@ export function Header() {
           </div>
         </nav>
 
-        {/* Mobile menu button */}
-        <button
-          className="flex items-center md:hidden"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label={mobileOpen ? "Close menu" : "Open menu"}
-        >
-          {mobileOpen ? (
-            <X className="size-5 text-foreground" />
-          ) : (
-            <Menu className="size-5 text-foreground" />
-          )}
-        </button>
+        {/* Mobile controls */}
+        <div className="flex items-center gap-2 md:hidden">
+          <AutoplayButton compact state={autoplay.state} onToggle={handleToggle} onSpeed={autoplay.cycleSpeed} />
+          <ThemeToggle />
+          <button
+            className="flex items-center"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          >
+            {mobileOpen ? (
+              <X className="size-5 text-foreground" />
+            ) : (
+              <Menu className="size-5 text-foreground" />
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Mobile nav */}
@@ -168,13 +177,6 @@ export function Header() {
                 {item.label}
               </button>
             ))}
-            <Link
-              href={`${localePrefix}/cotizador`}
-              onClick={() => setMobileOpen(false)}
-              className="mt-2 flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-            >
-              {t.nav.quote}
-            </Link>
             <div className="mt-2 border-t border-border pt-2">
               <p className="px-3 pb-1 text-xs text-muted-foreground">Theme</p>
               <div className="px-3 pb-2">

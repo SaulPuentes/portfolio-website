@@ -4,7 +4,10 @@
     "services": "Services",
     "projects": "Projects",
     "contact": "Contact",
-    "quote": "Get a Quote"
+    "play": "Play",
+    "pause": "Pause",
+    "replay": "Watch again",
+    "speed": "Playback speed"
   },
   "hero": {
     "title": "Software Engineer with 8+ years of experience.",
