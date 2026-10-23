@@ -1,6 +1,6 @@
 export const SPEEDS = [1, 2, 0.5] as const
 export const PAUSE_MS = 3000
-export const SERVICE_PAUSE_MS = 1500 // per card: each card is short
+export const SERVICE_PAUSE_MS = 800 // per card: each card is short
 export const SCROLL_SECONDS = 1.2
 // Replay order once Play reaches the hero: globe backdrop → text stagger → skills marquee
 export const HERO_INTRO_TEXT_MS = 600 // globe is half faded in
