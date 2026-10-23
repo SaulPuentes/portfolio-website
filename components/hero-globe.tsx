@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react"
 import { useTheme } from "next-themes"
 import type { GlobeHandle } from "@/lib/globe/scene"
+import { HERO_INTRO_EVENT } from "@/lib/autoplay"
 
 // Decorative dotted Earth behind the hero. three.js is imported only after first paint and
 // an idle slot, so the hero text never waits on it; if WebGL is missing the canvas stays hidden.
@@ -55,6 +56,17 @@ export function HeroGlobe() {
       }
     }
 
+    // Autoplay replays the hero intro with the globe first: hide it at once, then reuse the 1 s fade-in
+    const replay = () => {
+      if (!globeRef.current) return // never shown: no WebGL, or not loaded yet
+      canvas.style.transition = "none"
+      canvas.style.opacity = "0"
+      void canvas.offsetHeight
+      canvas.style.transition = ""
+      canvas.style.opacity = "1"
+    }
+    window.addEventListener(HERO_INTRO_EVENT, replay)
+
     raf = requestAnimationFrame(() => {
       if (typeof requestIdleCallback === "function") idle = requestIdleCallback(init)
       else timer = window.setTimeout(init, 200)
@@ -67,6 +79,7 @@ export function HeroGlobe() {
       clearTimeout(timer)
       io?.disconnect()
       document.removeEventListener("visibilitychange", onVisibility)
+      window.removeEventListener(HERO_INTRO_EVENT, replay)
       globeRef.current?.dispose()
       globeRef.current = null
     }

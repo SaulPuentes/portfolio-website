@@ -32,6 +32,7 @@ export function useAutoplay() {
             servicesHeight: services?.offsetHeight ?? 0,
             // Read what useScrollReveal rendered instead of repeating its breakpoint
             servicesSticky: services?.firstElementChild ? getComputedStyle(services.firstElementChild).position === "sticky" : false,
+            serviceCount: services?.querySelectorAll(".grid > *").length ?? 0,
             projectsTop: top("projects"),
             projectCount: document.querySelectorAll("#projects .swiper-slide").length,
             scrub: scrubStart && scrubEnd ? { start: +scrubStart, end: +scrubEnd } : null,

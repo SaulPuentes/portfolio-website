@@ -1,7 +1,10 @@
 export const SPEEDS = [1, 2, 0.5] as const
 export const PAUSE_MS = 3000
 export const SCROLL_SECONDS = 1.2
-export const HERO_INTRO_MS = 2900 // marquee: 1800 delay + 200 row stagger + 900 transition
+// Replay order once Play reaches the hero: globe backdrop → text stagger → skills marquee
+export const HERO_INTRO_TEXT_MS = 600 // globe is half faded in
+export const HERO_INTRO_MARQUEE_MS = 2400 // last text item (900 stagger + 800 transition) has settled
+export const HERO_INTRO_MS = HERO_INTRO_MARQUEE_MS + 200 + 900 // second marquee row finishes
 export const HERO_INTRO_EVENT = "autoplay:hero-intro"
 
 const POS_TOLERANCE_PX = 2
@@ -37,6 +40,7 @@ export interface PageMetrics {
   servicesTop: number
   servicesHeight: number
   servicesSticky: boolean
+  serviceCount: number
   projectsTop: number
   projectCount: number
   scrub: { start: number; end: number } | null
@@ -56,14 +60,20 @@ export function isStopKey(key: string, fromInsideControl: boolean): boolean {
 
 export function buildStops(m: PageMetrics): TourStop[] {
   const clamp = (y: number) => Math.min(Math.max(y, 0), m.maxScroll)
-  const stops: TourStop[] = [
-    { y: 0, hash: "#about", intro: true },
-    {
-      // Sticky services reveal their cards while scrolling through 300vh: stop where all are shown
-      y: clamp(m.servicesSticky ? m.servicesTop + m.servicesHeight - m.vh : m.servicesTop - m.headerPx),
-      hash: "#services",
-    },
-  ]
+  const stops: TourStop[] = [{ y: 0, hash: "#about", intro: true }]
+  if (m.servicesSticky) {
+    // useScrollReveal shows card k once progress passes (k-1)/(n+1): stop mid-band so each card has landed
+    const n = m.serviceCount
+    for (let k = 1; k <= n; k++) {
+      const progress = (k - 0.5) / (n + 1)
+      stops.push({
+        y: clamp(m.servicesTop + (m.servicesHeight - m.vh) * progress),
+        hash: k === 1 ? "#services" : undefined,
+      })
+    }
+  } else {
+    stops.push({ y: clamp(m.servicesTop - m.headerPx), hash: "#services" })
+  }
   for (let i = 0; i < m.projectCount; i++) {
     const hash = i === 0 ? "#projects" : undefined
     if (m.scrub) {

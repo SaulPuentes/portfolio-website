@@ -8,7 +8,7 @@ import { siteConfig } from "@/lib/site-config"
 import { Button } from "@/components/ui/button"
 import { SkillsMarquee } from "@/components/skills-marquee"
 import { HeroGlobe } from "@/components/hero-globe"
-import { HERO_INTRO_EVENT } from "@/lib/autoplay"
+import { HERO_INTRO_EVENT, HERO_INTRO_TEXT_MS } from "@/lib/autoplay"
 
 const [firstName, ...rest] = siteConfig.name.split(" ")
 const lastName = rest.join(" ")
@@ -27,7 +27,7 @@ export function HeroSection() {
     const delays = [100, 300, 500, 700, 900]
     let timers: ReturnType<typeof setTimeout>[] = []
 
-    const runIntro = () => {
+    const runIntro = (offset: number) => {
       timers.forEach(clearTimeout)
       // Drop inline styles so the Tailwind start state (opacity-0, translate-y-*) applies again
       for (const item of items) {
@@ -42,15 +42,17 @@ export function HeroSection() {
           item.style.transition = "opacity 0.8s ease-out, translate 0.8s ease-out"
           item.style.opacity = "1"
           item.style.translate = "0 0"
-        }, delays[i] ?? 200 * i),
+        }, offset + (delays[i] ?? 200 * i)),
       )
     }
 
-    runIntro()
-    window.addEventListener(HERO_INTRO_EVENT, runIntro)
+    // On replay the globe fades in first (HeroGlobe), so the text waits for it
+    const replay = () => runIntro(HERO_INTRO_TEXT_MS)
+    runIntro(0)
+    window.addEventListener(HERO_INTRO_EVENT, replay)
     return () => {
       timers.forEach(clearTimeout)
-      window.removeEventListener(HERO_INTRO_EVENT, runIntro)
+      window.removeEventListener(HERO_INTRO_EVENT, replay)
     }
   }, [])
 

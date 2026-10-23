@@ -11,7 +11,7 @@ import {
 } from "./autoplay"
 
 const M: PageMetrics = {
-  vh: 1000, maxScroll: 7600, headerPx: 64, servicesTop: 1000, servicesHeight: 3000, servicesSticky: true,
+  vh: 1000, maxScroll: 7600, headerPx: 64, servicesTop: 1000, servicesHeight: 3000, servicesSticky: true, serviceCount: 4,
   projectsTop: 4100, projectCount: 3, scrub: { start: 4500, end: 6500 }, contactTop: 7400,
 }
 
@@ -75,8 +75,10 @@ function fakeEnv(stops: TourStop[] = STOPS, max = 2000) {
 
 test("buildStops with scrub", () => {
   const stops = buildStops(M)
-  assert.deepEqual(stops.map((x) => x.y), [0, 3000, 4500, 5500, 6500, 7336])
-  assert.deepEqual(stops.map((x) => x.hash), ["#about", "#services", "#projects", undefined, undefined, "#contact"])
+  assert.deepEqual(stops.map((x) => x.y), [0, 1200, 1600, 2000, 2400, 4500, 5500, 6500, 7336])
+  assert.deepEqual(stops.map((x) => x.hash), [
+    "#about", "#services", undefined, undefined, undefined, "#projects", undefined, undefined, "#contact",
+  ])
   assert.equal(stops[0].intro, true)
   assert.ok(stops.every((x) => x.slide === undefined))
 })
@@ -84,6 +86,7 @@ test("buildStops with scrub", () => {
 test("buildStops without scrub uses slide stops", () => {
   const stops = buildStops({ ...M, servicesSticky: false, scrub: null })
   assert.equal(stops[1].y, 936)
+  assert.equal(stops[2].slide, 0) // all cards show at once without the sticky reveal: one services stop
   const projects = stops.slice(2, 5)
   assert.deepEqual(projects.map((x) => x.y), [4036, 4036, 4036])
   assert.deepEqual(projects.map((x) => x.slide), [0, 1, 2])
