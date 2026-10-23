@@ -12,6 +12,7 @@ export interface Translations {
     speed: string
   }
   hero: {
+    available: string
     title: string
     description: string
     downloadCv: string

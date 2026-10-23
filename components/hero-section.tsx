@@ -96,7 +96,7 @@ export function HeroSection() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
             </span>
-            <span className="text-accent">available</span>
+            <span className="text-accent">{t.hero.available}</span>
           </span>
           <span className="hidden [@media(min-aspect-ratio:9/10)]:block h-px w-6 bg-border" aria-hidden="true" />
           <span className="basis-full [@media(min-aspect-ratio:9/10)]:basis-auto [@media(min-aspect-ratio:9/10)]:truncate">

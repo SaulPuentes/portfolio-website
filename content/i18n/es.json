@@ -10,7 +10,8 @@
     "speed": "Velocidad"
   },
   "hero": {
-    "title": "Ingeniero de Software con + de 8 años de experiencia.",
+    "available": "Disponible",
+    "title": "Ingeniero de software +8 años",
     "description": "Desarrollo aplicaciones y plataformas web para e-commerce, logística y empresas en crecimiento. Utilizo herramientas de IA para agilizar el desarrollo, entregar más rápido y crear soluciones eficientes y adaptadas a cada negocio.",
     "downloadCv": "Descargar CV",
     "autoplay": "Ver recorrido"
