@@ -82,7 +82,7 @@ test("buildStops with scrub", () => {
   assert.equal(stops[0].intro, true)
   assert.ok(stops.every((x) => x.slide === undefined))
   assert.deepEqual(stops.map((x) => x.pauseMs), [
-    undefined, 800, 800, 800, 800, undefined, undefined, undefined, undefined,
+    undefined, 400, 400, 400, 400, undefined, undefined, undefined, undefined,
   ])
 })
 
