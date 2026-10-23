@@ -7,6 +7,7 @@ import { Download, ArrowDown } from "lucide-react"
 import { siteConfig } from "@/lib/site-config"
 import { Button } from "@/components/ui/button"
 import { ClientLogos } from "@/components/client-logos"
+import { HeroGlobe } from "@/components/hero-globe"
 
 const [firstName, ...rest] = siteConfig.name.split(" ")
 const lastName = rest.join(" ")
@@ -22,9 +23,10 @@ export function HeroSection() {
     const delays = [100, 300, 500, 700, 900]
     items.forEach((item, i) => {
       setTimeout(() => {
-        item.style.transition = "opacity 0.8s ease-out, transform 0.8s ease-out"
+        // Tailwind 4's translate-y-* sets the `translate` property, so reset that (not transform)
+        item.style.transition = "opacity 0.8s ease-out, translate 0.8s ease-out"
         item.style.opacity = "1"
-        item.style.transform = "translateY(0)"
+        item.style.translate = "0 0"
       }, delays[i] ?? 200 * i)
     })
   }, [])
@@ -34,6 +36,12 @@ export function HeroSection() {
       id="about"
       className="scroll-mt-16 relative flex h-dvh min-h-[640px] flex-col overflow-hidden pt-14 sm:pt-16"
     >
+      <HeroGlobe />
+      {/* Veil — fades the globe out behind the text (bottom on phones, left on desktop) */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,var(--background)_8%,color-mix(in_oklch,var(--background)_80%,transparent)_45%,transparent_75%)] md:bg-[linear-gradient(90deg,var(--background)_0%,color-mix(in_oklch,var(--background)_70%,transparent)_30%,transparent_62%)]"
+      />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background/80 to-transparent z-10"
@@ -46,7 +54,7 @@ export function HeroSection() {
       {/* Content — flex-1 with min-h-0 allows shrinking on short viewports */}
       <div
         ref={sectionRef}
-        className="mx-auto flex w-full max-w-7xl flex-1 min-h-0 flex-col justify-center px-6 sm:px-10 lg:px-14 py-4"
+        className="relative z-[1] pointer-events-none [&_a]:pointer-events-auto [&_button]:pointer-events-auto mx-auto flex w-full max-w-7xl flex-1 min-h-0 flex-col justify-end md:justify-center px-6 sm:px-10 lg:px-14 py-4"
         style={{ rowGap: "clamp(0.75rem, 3vh, 2.25rem)" }}
       >
         {/* Eyebrow — coordinate/status line */}
@@ -92,13 +100,9 @@ export function HeroSection() {
           />
         </div>
 
-        {/* Bottom row — description + CTAs */}
-        <div className="grid gap-6 lg:grid-cols-12 lg:gap-16 items-start">
-          {/* Description */}
-          <div
-            data-hero
-            className="opacity-0 translate-y-6 lg:col-span-7 min-w-0"
-          >
+        {/* Description + CTAs — one column so the globe keeps the right side */}
+        <div className="flex flex-col gap-6 lg:max-w-[55%]">
+          <div data-hero className="opacity-0 translate-y-6 min-w-0">
             <p
               className="leading-relaxed text-foreground/80 max-w-xl"
               style={{ fontSize: "clamp(0.9rem, 1.6vh, 1.125rem)" }}
@@ -107,10 +111,9 @@ export function HeroSection() {
             </p>
           </div>
 
-          {/* CTAs */}
           <div
             data-hero
-            className="opacity-0 translate-y-6 flex flex-wrap gap-3 lg:col-span-5 lg:justify-end"
+            className="opacity-0 translate-y-6 flex flex-wrap justify-start gap-3"
           >
             <Button asChild size="lg">
               <a href={cvFiles[locale]} download>
@@ -134,7 +137,9 @@ export function HeroSection() {
         </div>
       </div>
 
-      <ClientLogos />
+      <div className="relative z-[1] mt-auto shrink-0">
+        <ClientLogos />
+      </div>
     </section>
   )
 }
