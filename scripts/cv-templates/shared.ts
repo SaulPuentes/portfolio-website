@@ -112,7 +112,11 @@ const backendSkills: SkillGroup[] = [
   },
   {
     label: "Data",
-    values: ["DynamoDB", "MongoDB", "Data pipelines", "Query optimization"],
+    values: ["SQL (PostgreSQL, MySQL)", "DynamoDB", "MongoDB", "Data pipelines", "Query optimization"],
+  },
+  {
+    label: "Web Scraping",
+    values: ["Web scraping", "Apify", "Data extraction & normalization", "Flask", "SQLite"],
   },
   {
     label: "Manufacturing",
@@ -125,7 +129,7 @@ const backendSkills: SkillGroup[] = [
   },
   {
     label: "Integrations",
-    values: ["Stripe", "Salesforce (Apex)", "CommerceTools", "Headless CMS"],
+    values: ["Stripe", "Salesforce (Apex)", "CommerceTools", "Headless CMS", "OAuth", "Postman"],
   },
   {
     label: "Cloud & DevOps",
@@ -139,7 +143,7 @@ const backendSkills: SkillGroup[] = [
   },
   {
     label: "Quality",
-    values: ["Unit testing", "Code review", "SOLID", "Debugging & troubleshooting"],
+    values: ["Unit testing", "Integration testing", "End-to-end testing", "Logging & tracing", "Code review", "SOLID", "Debugging & troubleshooting"],
   },
   {
     label: "AI Tooling",
@@ -422,6 +426,7 @@ const experience: ExperienceSource[] = [
     variantBullets: {
       backend: [
         "Building the backend of a nationwide multilingual events platform with Payload CMS and Next.js — data models, content collections, and editor workflows.",
+        "Built a Python web-scraping pipeline that collects dance events from Instagram daily via Apify — regex normalizers, a Flask review UI, SQLite storage, and bulk upload to the platform API.",
         "Delivered CMS-driven sites (WordPress/PHP custom post types, Shopify) with structured content models so business owners manage data without a developer.",
         "Run an AI-augmented delivery workflow (Claude Code, Cursor, custom agents) to ship client work faster without sacrificing quality.",
       ],
