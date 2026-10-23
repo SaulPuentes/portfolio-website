@@ -12,6 +12,7 @@ import {
 
 const M: PageMetrics = {
   vh: 1000, maxScroll: 7600, headerPx: 64, servicesTop: 1000, servicesHeight: 3000, servicesSticky: true, serviceCount: 4,
+  serviceBottoms: [],
   projectsTop: 4100, projectCount: 3, scrub: { start: 4500, end: 6500 }, contactTop: 7400,
 }
 
@@ -94,6 +95,14 @@ test("buildStops without scrub uses slide stops", () => {
   assert.deepEqual(projects.map((x) => x.y), [4036, 4036, 4036])
   assert.deepEqual(projects.map((x) => x.slide), [0, 1, 2])
   assert.deepEqual(projects.map((x) => x.hash), ["#projects", undefined, undefined])
+})
+
+test("buildStops steps stacked services until every card is on screen", () => {
+  const stops = buildStops({ ...M, servicesSticky: false, scrub: null, serviceBottoms: [1400, 1800, 2200, 2600] })
+  // First stop already shows cards 1-2; then one stop per card whose bottom is still below the fold
+  assert.deepEqual(stops.slice(1, 4).map((x) => x.y), [936, 1200, 1600])
+  assert.deepEqual(stops.slice(1, 4).map((x) => x.hash), ["#services", undefined, undefined])
+  assert.equal(stops[4].hash, "#projects")
 })
 
 test("buildStops clamps to maxScroll", () => {

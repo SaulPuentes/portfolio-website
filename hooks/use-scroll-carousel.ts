@@ -101,7 +101,6 @@ export function useScrollCarousel(
 
       if (!outerWrapperEl || !swiperEl || !wrapperEl) return
 
-      const mdBreakpoint = cssVarNumeric(el, "--md-breakpoint") + 0.5
       const maxWrapperSize = cssVarNumeric(el, "--max-wrapper-size")
 
       let cachedSpacing: number | null = null
@@ -121,7 +120,7 @@ export function useScrollCarousel(
         const centered = centeredRef.current
 
         if (vw < mw + 0.5) {
-          return centered && vw > mdBreakpoint ? 0 : spacing
+          return centered ? 0 : spacing
         }
         if (centered) return 0
         const ww = mw - spacing
@@ -209,8 +208,7 @@ export function useScrollCarousel(
         if (!initializedRef.current || !sw) return
         sw.transitionEnd?.()
 
-        const small = window.innerWidth < mdBreakpoint
-        centeredRef.current = small ? false : (opts.centeredSlides ?? true)
+        centeredRef.current = opts.centeredSlides ?? true
 
         cachedSpacing = spacingEl ? Math.ceil(spacingEl.offsetWidth) : 0
 

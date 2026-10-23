@@ -45,6 +45,8 @@ export interface PageMetrics {
   servicesHeight: number
   servicesSticky: boolean
   serviceCount: number
+  /** Page y of each service card's bottom edge; drives the stacked (non-sticky) layout. */
+  serviceBottoms: number[]
   projectsTop: number
   projectCount: number
   scrub: { start: number; end: number } | null
@@ -77,7 +79,14 @@ export function buildStops(m: PageMetrics): TourStop[] {
       })
     }
   } else {
-    stops.push({ y: clamp(m.servicesTop - m.headerPx), hash: "#services" })
+    // Stacked cards (phones) outgrow one screen: step until each card's bottom edge is on screen
+    let y = clamp(m.servicesTop - m.headerPx)
+    stops.push({ y, hash: "#services", pauseMs: SERVICE_PAUSE_MS })
+    for (const bottom of m.serviceBottoms) {
+      if (clamp(bottom - m.vh) <= y + POS_TOLERANCE_PX) continue
+      y = clamp(bottom - m.vh)
+      stops.push({ y, pauseMs: SERVICE_PAUSE_MS })
+    }
   }
   for (let i = 0; i < m.projectCount; i++) {
     const hash = i === 0 ? "#projects" : undefined
