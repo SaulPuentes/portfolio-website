@@ -15,7 +15,7 @@ export interface Translations {
     title: string
     description: string
     downloadCv: string
-    viewProjects: string
+    autoplay: string
   }
   services: {
     sectionTitle: string

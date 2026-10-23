@@ -7,6 +7,7 @@ export const HERO_INTRO_TEXT_MS = 600 // globe is half faded in
 export const HERO_INTRO_MARQUEE_MS = 2400 // last text item (900 stagger + 800 transition) has settled
 export const HERO_INTRO_MS = HERO_INTRO_MARQUEE_MS + 200 + 900 // second marquee row finishes
 export const HERO_INTRO_EVENT = "autoplay:hero-intro"
+export const AUTOPLAY_TOGGLE_EVENT = "autoplay:toggle" // hero CTA drives the header-owned engine
 
 const POS_TOLERANCE_PX = 2
 const STOP_KEYS = new Set([

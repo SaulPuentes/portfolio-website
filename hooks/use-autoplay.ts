@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import type Swiper from "swiper"
-import { buildStops, createAutoplay, isStopKey, HERO_INTRO_EVENT, type AutoplayState } from "@/lib/autoplay"
+import { buildStops, createAutoplay, isStopKey, HERO_INTRO_EVENT, AUTOPLAY_TOGGLE_EVENT, type AutoplayState } from "@/lib/autoplay"
 
 const HEADER_PX = 64 // sections use scroll-mt-16
 const MANUAL_SCROLL_PX = 3
@@ -91,6 +91,7 @@ export function useAutoplay() {
       if (document.visibilityState === "hidden") api.pause()
     }
     const onScroll = () => api.refresh()
+    const onToggle = () => api.toggle()
 
     window.addEventListener("wheel", pause, { passive: true })
     window.addEventListener("touchstart", pause, { passive: true })
@@ -98,6 +99,7 @@ export function useAutoplay() {
     window.addEventListener("keydown", onKey)
     window.addEventListener("scroll", onScroll, { passive: true })
     document.addEventListener("visibilitychange", onVisibility)
+    window.addEventListener(AUTOPLAY_TOGGLE_EVENT, onToggle)
     api.refresh()
 
     return () => {
@@ -107,6 +109,7 @@ export function useAutoplay() {
       window.removeEventListener("keydown", onKey)
       window.removeEventListener("scroll", onScroll)
       document.removeEventListener("visibilitychange", onVisibility)
+      window.removeEventListener(AUTOPLAY_TOGGLE_EVENT, onToggle)
       api.destroy()
       engine.current = null
     }

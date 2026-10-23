@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Light Globe Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --background: oklch(0.985 0 0);
+    --foreground: oklch(0.17 0 0);
+    --muted: oklch(0.955 0 0);
+    --muted-foreground: oklch(0.50 0 0);
+    --border: oklch(0.91 0 0);
+    --primary: oklch(0.17 0 0);
+    --primary-foreground: oklch(0.985 0 0);
+    --accent: oklch(0.6231 0.188 259.81);
+    --card: oklch(1 0 0);
+  }
+  .dark {
+    --background: oklch(0.14 0 0);
+    --foreground: oklch(0.93 0 0);
+    --muted: oklch(0.22 0 0);
+    --muted-foreground: oklch(0.60 0 0);
+    --border: oklch(0.26 0 0);
+    --primary: oklch(0.93 0 0);
+    --primary-foreground: oklch(0.14 0 0);
+    --card: oklch(0.18 0 0);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: Inter, system-ui, sans-serif;
+    overflow-x: hidden;
+    transition: background-color .4s, color .4s;
+  }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+
+  /* Header — mirrors components/header.tsx */
+  header {
+    position: fixed; inset: 0 0 auto 0; z-index: 50;
+    border-bottom: 1px solid var(--border);
+    background: color-mix(in oklch, var(--background) 80%, transparent);
+    backdrop-filter: blur(12px);
+  }
+  .bar { max-width: 80rem; margin: 0 auto; height: 3.5rem; padding: 0 1rem;
+    display: flex; align-items: center; justify-content: space-between; }
+  .brand { font-size: .875rem; font-weight: 600; letter-spacing: -.01em; }
+  nav { display: flex; align-items: center; gap: 1.5rem; font-size: .875rem; }
+  nav .link { color: var(--muted-foreground); }
+  nav .link:first-child { color: var(--foreground); }
+  .play {
+    display: inline-flex; align-items: center; gap: .4rem;
+    border: 0; border-radius: .375rem; padding: .375rem .75rem;
+    background: var(--primary); color: var(--primary-foreground);
+    font: 500 .75rem Inter, sans-serif; cursor: pointer;
+  }
+  .play .speed { opacity: .55; font-family: "JetBrains Mono", monospace; font-size: .7rem; }
+  .icon-btn { width: 2rem; height: 2rem; display: grid; place-items: center;
+    border: 1px solid var(--border); border-radius: .375rem; background: transparent;
+    color: var(--foreground); cursor: pointer; }
+  @media (max-width: 767px) { nav .link, nav .lang { display: none; } nav { gap: .5rem; } }
+
+  /* Hero — mirrors components/hero-section.tsx */
+  .hero { position: relative; height: 100dvh; min-height: 640px; overflow: hidden;
+    display: flex; flex-direction: column; padding-top: 3.5rem; }
+  #gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
+  .veil { position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(90deg, var(--background) 0%, color-mix(in oklch, var(--background) 70%, transparent) 30%, transparent 62%); }
+  @media (max-width: 767px) {
+    .veil { background: linear-gradient(0deg, var(--background) 8%, color-mix(in oklch, var(--background) 80%, transparent) 45%, transparent 75%); }
+  }
+  .content { position: relative; z-index: 1; pointer-events: none;
+    max-width: 80rem; width: 100%; margin: 0 auto; flex: 1; min-height: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 1rem 1.5rem; row-gap: clamp(.75rem, 3vh, 2.25rem); }
+  @media (min-width: 640px) { .content { padding: 1rem 2.5rem; } }
+  @media (min-width: 1024px) { .content { padding: 1rem 3.5rem; } }
+  @media (max-width: 767px) { .content { justify-content: flex-end; padding-bottom: 1.5rem; } }
+  .content a, .content button { pointer-events: auto; }
+  .eyebrow { display: flex; align-items: center; gap: .75rem; font-size: 11px;
+    text-transform: uppercase; letter-spacing: .2em; color: var(--muted-foreground); }
+  .dot { width: 6px; height: 6px; border-radius: 99px; background: var(--accent); box-shadow: 0 0 0 0 var(--accent);
+    animation: ping 2s infinite; }
+  @keyframes ping { 0% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--accent) 60%, transparent); } 100% { box-shadow: 0 0 0 8px transparent; } }
+  .rule-s { height: 1px; width: 1.5rem; background: var(--border); }
+  h1 { margin: 0; font-family: Geist, sans-serif; font-weight: 500; letter-spacing: -.04em; line-height: .95;
+    font-size: clamp(2.5rem, min(9vw, 11vh), 6rem); }
+  h1 span { display: block; }
+  h1 span + span { color: color-mix(in oklch, var(--foreground) 50%, transparent); }
+  .rule { height: 1px; background: linear-gradient(90deg, var(--border), var(--border), transparent); max-width: 40rem; }
+  .bottom { display: grid; gap: 1.5rem; align-items: start; }
+  .bottom p { margin: 0; max-width: 34rem; line-height: 1.65; font-size: clamp(.9rem, 1.6vh, 1.125rem);
+    color: color-mix(in oklch, var(--foreground) 80%, transparent); }
+  .ctas { display: flex; flex-wrap: wrap; gap: .75rem; }
+  .btn { height: 2.5rem; padding: 0 1.25rem; border-radius: .375rem; display: inline-flex; align-items: center; gap: .5rem;
+    font: 500 .875rem Inter, sans-serif; cursor: pointer; border: 1px solid transparent; text-decoration: none; }
+  .btn-primary { background: var(--primary); color: var(--primary-foreground); }
+  .btn-outline { background: var(--background); color: var(--foreground); border-color: var(--border); }
+
+  /* Logo strip placeholder */
+  .strip { position: relative; z-index: 1; padding-bottom: 2.5rem; overflow: hidden; pointer-events: none;
+    mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent); }
+  .strip .row { display: flex; width: max-content; gap: 3.5rem; animation: marquee 40s linear infinite; }
+  .strip span { font-family: Geist, sans-serif; font-weight: 600; font-size: 1.05rem; letter-spacing: -.01em;
+    color: color-mix(in oklch, var(--foreground) 40%, transparent); white-space: nowrap; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+
+  /* Direction switcher (demo only) */
+  .switcher { position: fixed; z-index: 60; left: 50%; bottom: 1rem; transform: translateX(-50%);
+    width: min(44rem, calc(100% - 2rem)); padding: .75rem; border-radius: .75rem;
+    background: color-mix(in oklch, var(--card) 88%, transparent); border: 1px solid var(--border);
+    backdrop-filter: blur(14px); box-shadow: 0 10px 40px -10px rgb(0 0 0 / .35); }
+  .switcher .top { display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+    font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted-foreground); margin-bottom: .5rem; }
+  .opts { display: grid; grid-template-columns: repeat(4, 1fr); gap: .375rem; }
+  .opt { text-align: left; padding: .5rem .625rem; border-radius: .5rem; border: 1px solid var(--border);
+    background: transparent; color: var(--foreground); cursor: pointer; font: 500 .8rem Inter, sans-serif; }
+  .opt b { display: block; font: 500 10px "JetBrains Mono", monospace; color: var(--muted-foreground); letter-spacing: .15em; margin-bottom: .15rem; }
+  .opt[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in oklch, var(--accent) 12%, transparent); }
+  .opt[aria-pressed="true"] b { color: var(--accent); }
+  .refs { display: flex; align-items: center; gap: .375rem; margin-top: .375rem; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted-foreground); }
+  .refs span { margin-right: .25rem; }
+  .opt.ref { padding: .25rem .5rem; font-size: .7rem; display: inline-flex; gap: .4rem; align-items: baseline; }
+  .opt.ref b { display: inline; margin: 0; }
+  .desc { margin: .55rem .1rem 0; font-size: .78rem; line-height: 1.5; color: var(--muted-foreground); min-height: 2.3em; }
+  @media (max-width: 560px) { .opt { padding: .4rem; font-size: .7rem; } .desc, .switcher .top span:first-child { display: none; } .switcher { bottom: .5rem; padding: .5rem; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <span class="brand">Saúl Puentes</span>
+    <nav>
+      <span class="link">Profile</span><span class="link">Services</span><span class="link">Projects</span><span class="link">Contact</span>
+      <button class="play" type="button" title="New Play button (placement preview)">
+        <svg width="10" height="10" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M4 2.5v11l9-5.5z"/></svg>
+        Play <span class="speed">1×</span>
+      </button>
+      <span class="lang mono" style="font-size:.75rem;color:var(--muted-foreground)">EN</span>
+      <button class="icon-btn" id="theme" type="button" aria-label="Toggle theme">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <canvas id="gl" aria-hidden="true"></canvas>
+  <div class="veil"></div>
+  <div class="content">
+    <div class="eyebrow mono">
+      <span style="display:flex;align-items:center;gap:.5rem"><span class="dot"></span><span style="color:var(--accent)">available</span></span>
+      <span class="rule-s"></span>
+      <span>Software Engineer with 8+ years of experience.</span>
+    </div>
+    <h1><span>Saúl</span><span>Puentes</span></h1>
+    <div class="rule"></div>
+    <div class="bottom">
+      <p>I build web applications and platforms for e-commerce, logistics, and SaaS with a strong focus on quality and detail.</p>
+      <div class="ctas">
+        <a class="btn btn-primary" href="#">↓ Download CV</a>
+        <a class="btn btn-outline" href="#">View Projects</a>
+      </div>
+    </div>
+  </div>
+  <div class="strip" aria-hidden="true">
+    <div class="row" id="logos"></div>
+  </div>
+</section>
+
+<div class="switcher">
+  <div class="top"><span>Light-mode globe · keys 1–4, T toggles theme</span><span class="mono" id="fps">— fps</span></div>
+  <div class="opts" style="grid-template-columns: repeat(4, 1fr)">
+    <button class="opt" data-key="0"><b>L0</b>Current</button>
+    <button class="opt" data-key="1"><b>G1</b>f5 / eb</button>
+    <button class="opt" data-key="2"><b>G2</b>f0 / e4</button>
+    <button class="opt" data-key="3"><b>G3</b>eb / dd</button>
+  </div>
+  <p class="desc" id="desc"></p>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three'
+
+const names = ['Grupo Xcaret','Galerías','NordicTrack','Simonett','Uncommon Man','Trust','Salsa World','Nourpac','Evalor','Twelve Thirty Four','Grupo DAGS']
+document.getElementById('logos').innerHTML = [...names, ...names].map(n => `<span>${n}</span>`).join('')
+
+/* ------------------------------------------------------------------ */
+/*  Light-mode proposals. Dark mode is unchanged (production palette). */
+/*  core: sphere fill under the dots; rim/rimAmt/rimPow: fresnel edge;  */
+/*  shadow: soft grey disc under the globe; halo: accent glow opacity.  */
+/* ------------------------------------------------------------------ */
+const C = (h) => new THREE.Color(h)
+const DARK = { bg: C(0x0d0d0d), core: C(0x0d0d0d), fg: C(0xe9e9e9), muted: C(0x6e6e6e), ocean: 0.34, rim: 0.25,
+  rimC: C(0x3f80f2), rimAmt: 0, rimPow: 3, halo: 0.22, shadow: 0, stars: C(0x6e6e6e) }
+const LIGHT = [
+  { name: 'L0 — Current. Page and globe core are both #fafafa, so only the dots separate the globe from the background.',
+    css: '#fafafa', core: C(0xfafafa), fg: C(0x1c1c1c), muted: C(0x6a6a6a), ocean: 0.6, rim: 0.5,
+    rimC: C(0x3f80f2), rimAmt: 0, rimPow: 3, halo: 0.12, shadow: 0, stars: C(0x6a6a6a) },
+  { name: 'G1 — Page #f5f5f5, globe core #ebebeb. Subtle: the globe reads as a slightly darker grey disc.',
+    css: '#f5f5f5', core: C(0xebebeb), fg: C(0x1c1c1c), muted: C(0x6a6a6a), ocean: 0.6, rim: 0.5,
+    rimC: C(0x3f80f2), rimAmt: 0, rimPow: 3, halo: 0.12, shadow: 0, stars: C(0x6a6a6a) },
+  { name: 'G2 — Page #f0f0f0 (same as --muted), globe core #e4e4e4. Clear grey disc, page still reads as white-ish.',
+    css: '#f0f0f0', core: C(0xe4e4e4), fg: C(0x1c1c1c), muted: C(0x6a6a6a), ocean: 0.6, rim: 0.5,
+    rimC: C(0x3f80f2), rimAmt: 0, rimPow: 3, halo: 0.12, shadow: 0, stars: C(0x6a6a6a) },
+  { name: 'G3 — Page #ebebeb, globe core #dddddd. Strongest separation; everything reads as grey.',
+    css: '#ebebeb', core: C(0xdddddd), fg: C(0x1c1c1c), muted: C(0x6a6a6a), ocean: 0.6, rim: 0.5,
+    rimC: C(0x3f80f2), rimAmt: 0, rimPow: 3, halo: 0.12, shadow: 0, stars: C(0x6a6a6a) },
+]
+
+const MASK = Uint8Array.from(atob('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+P8PAID//wcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4//+P/////38QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAODZ///4//////8fAAAAAAAAAAAwAAAAAB4AAAAAAAAAAAAAAAAAAAAAAAAAAPDf/w/4//////8BAAAAED8AAAAAAAAAAH8AAAAAAAAAAAAAAAAAAAAAAAAA8ID//8H//////38AAAAA/wAAAAAAAAAAAEAOAAAAAAAAAAAAAAAAAAAAAAAwABDgP+D//////38AAAAAOAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAADDwH4D///////8AAAAAEAAAAAAAwAAAAAB+AAAAAAAAAAAAAAAAAAAAAADPgycHBgAA/v////8AAAAAAAAAAACADwAAAP//HwAA4AsAAAAAAAAAAAAAAAA4ACD+DwAA+P////8AAAAAAAAAAADwAAAA+P//DwAAQAAAAAAAAAAAAAAAAP8AAOIhAAAA8P///38AAAAAAAAAAAAcAAAA/v//HAAAAAAAAAAAAAAAAAAAgP9Ph+e4/wAA4P///x8AAAAAAAAAAAAOAA7g//////8fAAYAAAAAAAAAAAAAAM//Bye8/wMA4P///x8AAAAAAAAAAAAPAE/e//////8fgP8BAAAAAADAAwAAAID/D/Dw/z8AAP///zMAAAAAAJABAAAMgM//////////////BwAAAAD8/z8AvgD/P/CAg/8AwP7//w8AAAAAgP8HAAAAgM//////////////D8APAYD///////95AcyPA/4AAP7//wMAAAAA4P//AQBAf57/////////////////DwD///////9jn+/Pg/EHgP//BwAAAAAA+P//D+P//9///////////////////wH8//////f/////A9g/gP//AwAAAAAA/v//H////+f//////////////////eP//////8P///8/APwZgP8/AGA/AAAA/+c/8P//////////////////////wMD////////////fw/8DAP8PAMA/AACA/+F/8v////////////////////9/AAD4///////////DBPAHAP4HAIADAADA//j///////////////////////8/AAD///////////8AAMADAPwDAAAAAAD4P/7///////////////////////9/AID////////5/38AwA8AAPgDAAAAAAD+H/5/////////////////////Of8BAID/7/z//////z8AwD8AAMABAAAAAAD+H/7j//////////////////9/gH8AAAD8JwD//////x8AgD8IAAAAAAAAAAD+fwD///////////////////89YAAAAADAAwD4/////z8AwH8cAAAAAAAAAACcH/D//////////////////wEAOAAAAACADQDw/////38AgP8/AAAAAAAAwAEAH/D//////////////////wAAPgAAAABgAADA//////8HAP9/AAAAAAAAwAMwDv7/////////////////PwAAfwAAAAAAAACA//////8/gP//AAAAAAAAgAMwAv7/////////////////DwCAPwAAAAAAAAAA/P//////4///AwAAAAAAMAcgIP///////////////v//DwCAHwAAAAAAAAAA/P////3/4///BwAAAAAAPA7w//////////////9//v//3wAADwAAAAAAAAAA+P////n/4///DwAAAAAAPB/+//////////////+//////wcAAwAAAAAAAAAA8P//////5///DwAAAAAABB///////////////////////wUAAwAAAAAAAAAA8P//////////CQAAAAAAAMH//////////////////////wQAAAAAAAAAAAAA4P////////8BDAAAAAAAAOD//////////////////////wwAAAAAAAAAAAAAgP3////P/38PPgAAAAAAAP3//////////////////////wAAAAAAAAAAAAAAAP////+D//8HfAAAAAAAAP7/////////////////////fwAAAAAAAAAAAAAAAP////+d//8HAAAAAAAAAPz//////D/+////////////PwQAAAAAAAAAAAAAAP////+f8P9/AAAAAAAAAPj///9j/A9+////////////HwAAAAAAAAAAAAAAAP/////f8f8dAAAAAAAAAPj/+P8B/Id/////////////DwYAAAAAAAAAAAAAAP/////PHT8EAAAAAAAAAPzH8f8A8If/////////////Bx4AAAAAAAAAAAAAAP/////P5x8AAAAAAAAA+H+Aw/8A4A////////////9/AAcAAAAAAAAAAAAAAP//////+R8AAAAAAAAA+H8Aj//w4B/8//////////8/AAAAAAAAAAAAAAAAAP///////wMAAAAAAAAA+B8wmM/+/x/+/////////98fAAEAAAAAAAAAAAAAAP///////wMAAAAAAAAA+A8wEMf//x/+/////////2cGAAMAAAAAAAAAAAAAAP7//////wEAAAAAAAAA+A8AAI7//x/8/////////wEOgAEAAAAAAAAAAAAAAPz//////wAAAAAAAAAA+AcABob//x/8/////////xccwAEAAAAAAAAAAAAAAPz//////wAAAAAAAAAAQIB/AAA2/3///////////x8c8AAAAAAAAAAAAAAAAPj//////wAAAAAAAAAAQPh/AAAA/////////////wcc/AAAAAAAAAAAAAAAAPD/////fwAAAAAAAAAAwP9/AAAA/////////////weEDwAAAAAAAAAAAAAAAMD/////HwAAAAAAAAAA8P9/AACA/////////////w9AAwAAAAAAAAAAAAAAAID/////DwAAAAAAAAAA+P//AwaA/////////////x9AAAAAAAAAAAAAAAAAAAD/////BwAAAAAAAAAA/P//Dx/A/////////////x9AAAAAAAAAAAAAAAAAAAD7////BwAAAAAAAAAA/P//P////////////////x8AAAAAAAAAAAAAAAAAAADy/z8CBgAAAAAAAAAA/P///////8///////////z8AAAAAAAAAAAAAAAAAAADk/w8ABgAAAAAAAAAA/v///////4///////////x8AAAAAAAAAAAAAAAAAAADM/wcADAAAAAAAAACA//////+//x///////////w8AAAAAAAAAAAAAAAAAAACY/wcADAAAAAAAAADA//////8//z/g/////////w8AAAAAAAAAAAAAAAAAAACQ/wcACAAAAAAAAADg//////9//n+A/////////wcAAAAAAAAAAAAAAAAAAAAw/wMAAAAAAAAAAADg//////9//n8MgP///////zMAAAAAAAAAAAAAAAAAAABA/AMAAAAAAAAAAADw//////9//P8/AP///////xEAAAAAAAAAAAAAAAAAAAAA/AMAHQAAAAAAAADw////////+P9/AP7/////PxAAAAAAAAAAAAAAAAAAAAAA+AcAYAAAAAAAAAD4////////+f9/APz/B///BgAAAAAAAAAAAAAAAAAAAAAA+AccgAEAAAAAAADw////////8f8/AOD/B/8/AAAAAAAAAAAAAAAAAAAAAAAA+A8eADgAAAAAAADw////////4f8/AOD/Af4/BgAAAAAAAAAAAAAAAAAAAAAA4B8PAHAAAAAAAADw////////4/8fAOD/APw/AgAAAAAAAAAAAAAAAAAAAAAAgP8PAAAAAAAAAADw////////x/8HAOB/APw/ADAAAAAAAAAAAAAAAAAAAAAAAP4PAAAAAAAAAADw////////h/8BAOA/AOx/ADAAAAAAAAAAAAAAAAAAAAAAAID/AAAAAAAAAAD4////////j/8AAMAPAMD/ABAAAAAAAAAAAAAAAAAAAAAAAAD/AQAAAAAAAAD4////////nx8AAMAPAMD/ARAAAAAAAAAAAAAAAAAAAAAAAAD4AQAAAAAAAAD4////////vwcAAIAPAMD/AQAAAAAAAAAAAAAAAAAAAAAAAADgAQAAAAAAAAD4////////fwAAAIAPAMD8AQAAAAAAAAAAAAAAAAAAAAAAAACAAEgAAAAAAADg////////f0AAAIAPAED4AQABAAAAAAAAAAAAAAAAAAAAAADAAf4SAAAAAADg/////////34AAAAHAEBwAEAAAAAAAAAAAAAAAAAAAAAAAAAAA+9/AAAAAADA/////////38AAAAHAEAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAzv//AAAAAACA/////////z8AAAASAMAAAAADAAAAAAAAAAAAAAAAAAAAAAAAyP//AQAAAAAA/////////z8AAAAwAIAAAAADAAAAAAAAAAAAAAAAAAAAAAAAgP//AwAAAAAA/v///////x8AAAAQAAADAAEBAAAAAAAAAAAAAAAAAAAAAAAAgP//fwAAAAAA/A/+/////w8AAAAAAAAHgAMAAAAAAAAAAAAAAAAAAAAAAAAAgP///wAAAAAAEADk/////w8AAAAAADAHwAMAAAAAAAAAAAAAAAAAAAAAAAAAgP///wEAAAAAAADA/////wcAAAAAAGAG4AEAAAAAAAAAAAAAAAAAAAAAAAAAwP///wEAAAAAAADA/////wMAAAAAAMAM+AMAAAAAAAAAAAAAAAAAAAAAAAAA4P///wMAAAAAAADA/////wAAAAAAAIAL/gMAAAAAAAAAAAAAAAAAAAAAAAAA8P///wMAAAAAAADg////fwAAAAAAAIAH/gEAAAAAAAAAAAAAAAAAAAAAAAAA8P///wcAAAAAAADg///PPwAAAAAAAAAH/gEAAQAAAAAAAAAAAAAAAAAAAAAA+P///38AAAAAAADg///PHwAAAAAAAAAP/DiAAwAAAAAAAAAAAAAAAAAAAAAA8P////8BAAAAAADA////DwAAAAAAAAA+/DgA8wAAAAAAAAAAAAAAAAAAAAAA8P////8fAAAAAACA////DwAAAAAAAAA8wCgA/gcAAAAAAAAAAAAAAAAAAAAA+P////8/AAAAAAAA////BwAAAAAAAAA4AEgA8B8AAAAAAAAAAAAAAAAAAAAA+P//////AQAAAAAA///9BwAAAAAAAAAQAAAAwD8GAAAAAAAAAAAAAAAAAAAA8P//////AQAAAAAA/v//BwAAAAAAAADAAAAAwH8AAAAAAAAAAAAAAAAAAAAA4P//////AQAAAAAA/v//BwAAAAAAAACAHwAAwH8AAAAAAAAAAAAAAAAAAAAA4P//////AQAAAAAA/v//BwAAAAAAAAAAAAAAAMcAAAAAAAAAAAAAAAAAAAAAwP//////AAAAAAAA/v//DwAAAAAAAAAAAAABAIABAAAAAAAAAAAAAAAAAAAAwP////9/AAAAAAAA/P//DwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP////9/AAAAAAAA/P+/DwAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAgP////8/AAAAAAAA/v+/DwAAAAAAAAAAAADADwYAAAAAAAAAAAAAAAAAAAAAAP////8fAAAAAAAA/v//DzAAAAAAAAAAAADADwYAAAAAAAAAAAAAAAAAAAAAAP////8fAAAAAAAA////HzAAAAAAAAAAAADuBw4AAAAAAAAAAAAAAAAAAAAAAP7///8fAAAAAAAA////DzwAAAAAAAAAAAD/Dx4AAAAAAAAAAAAAAAAAAAAAAPj///8fAAAAAAAA////Bz8AAAAAAAAAAID/Px4AAAAAAAAAAAAAAAAAAAAAAOD///8fAAAAAAAA////AR8AAAAAAAAAAMD//z8AAAAgAAAAAAAAAAAAAAAAAMD///8PAAAAAAAA////AB8AAAAAAAAAAMD//z8AAAAAAAAAAAAAAAAAAAAAAMD///8PAAAAAAAA/v9/AB8AAAAAAAAAAOD//38AAAAAAAAAAAAAAAAAAAAAAMD///8PAAAAAAAA/v9/AA8AAAAAAAAAAP7///8AAAAAAAAAAAAAAAAAAAAAAMD///8HAAAAAAAA/P9/gA8AAAAAAAAAgP////8BAAAAAAAAAAAAAAAAAAAAAMD///8DAAAAAAAA/P9/gA8AAAAAAAAAwP////8DAAAAAAAAAAAAAAAAAAAAAMD//38AAAAAAAAA/P9/AAcAAAAAAAAA4P////8HAAAAAAAAAAAAAAAAAAAAAMD//x8AAAAAAAAA+P9/AAcAAAAAAAAA4P////8PAAAAAAAAAAAAAAAAAAAAAMD//w8AAAAAAAAA+P8fAAAAAAAAAAAAwP////8fAAAAAAAAAAAAAAAAAAAAAOD//wcAAAAAAAAA+P8fAAAAAAAAAAAAwP////8fAAAAAAAAAAAAAAAAAAAAAOD//w8AAAAAAAAA8P8fAAAAAAAAAAAAwP////8fAAAAAAAAAAAAAAAAAAAAAOD//wcAAAAAAAAA8P8PAAAAAAAAAAAAwP////8fAAAAAAAAAAAAAAAAAAAAAOD//wMAAAAAAAAA4P8HAAAAAAAAAAAAgP////8fAAAAAAAAAAAAAAAAAAAAAOD//wEAAAAAAAAA4P8DAAAAAAAAAAAAgP////8fAAAAAAAAAAAAAAAAAAAAAOD//wAAAAAAAAAAwP8BAAAAAAAAAAAAgP+f//8PAAAAAAAAAAAAAAAAAAAAAOD/fwAAAAAAAAAAwP8AAAAAAAAAAAAAgP8B/P8PAAAAAAAAAAAAAAAAAAAAAPD/fwAAAAAAAAAAwD8AAAAAAAAAAAAAgH8A+P8HAAAAAAAAAAAAAAAAAAAAAPD/OwAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAwP8DAAAAAAAAAAAAAAAAAAAAAPD/BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP8DAAACAAAAAAAAAAAAAAAAAPj/BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP8DAAAAAAAAAAAAAAAAAAAAAPj/BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8BAAAMAAAAAAAAAAAAAAAAAPj/AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAAAAPg/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAPw/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAPwHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOAAAIADAAAAAAAAAAAAAAAAAPgHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAIABAAAAAAAAAAAAAAAAAPgHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOAAAAAAAAAAAAAAAAAAAPwDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHgAAAAAAAAAAAAAAAAAAPwBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAAAAAAAAAAAAAAAAP4BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPwDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP4BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHwAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB4AAAAAAAAAAAAAAAAAAAAAAAAAPgPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8AAAAAAAAAAAAAAAAAMAfAADA////fuDn/wEAAAAAAAAAAAAAAAAAAAAAAAB+AAAAAAAAAAAAAAAAAP7//wDg/////////z8AAAAAAAAAAAAAAAAAAAAAAAB+AAAAAAAAAAAAAAAg8P///z/8//////////9/AAAAAAAAAAAAAAAAAAAAAPx/AAAAAAAAABwAPgD/+///////////////////DwAAAAAAAAAAAAAAAAAAAPx/AAAAAAAA/P///////////////////////////wcAAAAAAAAAAAAAAAwAAPz/AAAAAACA/////////////////////////////z8AAAAAAAAAAAAA4P8f4Pn/AAAAAAD+/////////////////////////////x8AAAAAAAAA4C8AwP//+/9/AAAAAID//////////////////////////////wEAAAAAAADw//8/gP////9/AAAAAPD//////////////////////////////wAAAAAAAPz/////////////BwAAAP7/////////////////////////////PwAAAAAAwP//////////////fwAA4P//////////////////////////////fwAAAADA/////////////////z84/v////////////////////////////////wf////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////'), (c) => c.charCodeAt(0))
+const isLand = (lat, lon) => {
+  const x = Math.min(359, Math.floor(((lon + 180) / 360) * 360)), y = Math.min(179, Math.max(0, Math.floor(((90 - lat) / 180) * 180)))
+  const i = y * 360 + x
+  return (MASK[i >> 3] >> (i & 7)) & 1
+}
+const rad = THREE.MathUtils.degToRad, deg = THREE.MathUtils.radToDeg, damp = THREE.MathUtils.damp, smooth = THREE.MathUtils.smoothstep
+const fromLatLon = (lat, lon) => new THREE.Vector3(Math.cos(rad(lat)) * Math.sin(rad(lon)), Math.sin(rad(lat)), Math.cos(rad(lat)) * Math.cos(rad(lon)))
+
+const canvas = document.getElementById('gl')
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true })
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2))
+const PR = renderer.getPixelRatio()
+const motion = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0.15 : 1
+const ACCENT = new THREE.Color(0x3f80f2)
+
+const dotVertex = /* glsl */`
+  uniform float uSize; uniform float uPR;
+  attribute float aSize; attribute vec3 aColor; attribute float aAlpha;
+  varying vec3 vColor; varying float vAlpha;
+  void main() {
+    vec4 mv = modelViewMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix * mv;
+    gl_PointSize = uSize * aSize * uPR * (10.0 / -mv.z);
+    vColor = aColor; vAlpha = aAlpha;
+  }`
+const dotFragment = /* glsl */`
+  varying vec3 vColor; varying float vAlpha;
+  void main() {
+    float r = length(gl_PointCoord - 0.5);
+    if (r > 0.5) discard;
+    gl_FragColor = vec4(vColor, vAlpha * smoothstep(0.5, 0.15, r));
+    #include <colorspace_fragment>
+  }`
+// New: core sphere with a fresnel rim (replaces MeshBasicMaterial in scene.ts)
+const coreVertex = /* glsl */`
+  varying vec3 vN; varying vec3 vV;
+  void main() {
+    vec4 mv = modelViewMatrix * vec4(position, 1.0);
+    vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz);
+    gl_Position = projectionMatrix * mv;
+  }`
+const coreFragment = /* glsl */`
+  uniform vec3 uCore; uniform vec3 uRim; uniform float uRimAmt; uniform float uRimPow;
+  varying vec3 vN; varying vec3 vV;
+  void main() {
+    float f = pow(1.0 - max(dot(normalize(vN), normalize(vV)), 0.0), uRimPow);
+    gl_FragColor = vec4(mix(uCore, uRim, f * uRimAmt), 1.0);
+    #include <colorspace_fragment>
+  }`
+
+function dotCloud(n, size) {
+  const pos = new Float32Array(n * 3), sz = new Float32Array(n), cl = new Float32Array(n * 3), al = new Float32Array(n)
+  const geo = new THREE.BufferGeometry()
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3))
+  geo.setAttribute('aSize', new THREE.BufferAttribute(sz, 1))
+  geo.setAttribute('aColor', new THREE.BufferAttribute(cl, 3))
+  geo.setAttribute('aAlpha', new THREE.BufferAttribute(al, 1))
+  const mat = new THREE.ShaderMaterial({ vertexShader: dotVertex, fragmentShader: dotFragment, transparent: true, depthWrite: false,
+    uniforms: { uSize: { value: size }, uPR: { value: PR } } })
+  const points = new THREE.Points(geo, mat); points.frustumCulled = false
+  return {
+    points,
+    set(i, x, y, z, s, c, a) { pos[i * 3] = x; pos[i * 3 + 1] = y; pos[i * 3 + 2] = z; sz[i] = s; cl[i * 3] = c.r; cl[i * 3 + 1] = c.g; cl[i * 3 + 2] = c.b; al[i] = a },
+    flush() { for (const k of ['position', 'aSize', 'aColor', 'aAlpha']) geo.attributes[k].needsUpdate = true },
+  }
+}
+const fib = (n) => Array.from({ length: n }, (_, i) => {
+  const y = 1 - (i / (n - 1)) * 2, r = Math.sqrt(1 - y * y), th = i * Math.PI * (3 - Math.sqrt(5))
+  return new THREE.Vector3(Math.cos(th) * r, y, Math.sin(th) * r)
+})
+function radialSprite(size, color, stops) {
+  const c = document.createElement('canvas'); c.width = c.height = 128
+  const g = c.getContext('2d'), grd = g.createRadialGradient(64, 64, 0, 64, 64, 64)
+  for (const [o, a] of stops) grd.addColorStop(o, `rgba(255,255,255,${a})`)
+  g.fillStyle = grd; g.fillRect(0, 0, 128, 128)
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), color, transparent: true, depthWrite: false }))
+  sp.scale.setScalar(size)
+  return sp
+}
+
+const scene = new THREE.Scene()
+const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100); camera.position.set(0, 0, 10)
+const root = new THREE.Group(); scene.add(root)
+const R = 1.95
+const group = new THREE.Group(); group.rotation.z = rad(-23.4); root.add(group)
+const spin = new THREE.Group(); spin.rotation.y = rad(72); group.add(spin)
+const dirs = [], land = []
+fib(innerWidth < 768 ? 14000 : 22000).forEach((v, i) => {
+  const l = isLand(deg(Math.asin(v.y)), deg(Math.atan2(v.x, v.z)))
+  if (l || i % 7 === 0) { dirs.push(v); land.push(!!l) }
+})
+const cloud = dotCloud(dirs.length, 2.4); spin.add(cloud.points)
+const coreMat = new THREE.ShaderMaterial({ vertexShader: coreVertex, fragmentShader: coreFragment,
+  uniforms: { uCore: { value: new THREE.Color() }, uRim: { value: new THREE.Color() }, uRimAmt: { value: 0 }, uRimPow: { value: 3 } } })
+spin.add(new THREE.Mesh(new THREE.SphereGeometry(R * 0.985, 64, 32), coreMat))
+const halo = radialSprite(R * 3.1, ACCENT, [[0, 1], [0.45, 0.35], [1, 0]]); halo.renderOrder = -1; group.add(halo)
+// Contact shadow: lives in root (untilted), below and behind the globe
+const shadow = radialSprite(R * 2.6, new THREE.Color(0x000000), [[0, 1], [0.5, 0.45], [1, 0]])
+shadow.position.set(0.15, -0.35, -R); shadow.renderOrder = -2; root.add(shadow)
+const hitSphere = new THREE.Mesh(new THREE.SphereGeometry(R, 32, 16), new THREE.MeshBasicMaterial({ visible: false })); spin.add(hitSphere)
+
+const CITIES = [[19.43, -99.13], [38.91, -77.04], [45.42, -75.7], [4.71, -74.07], [-12.05, -77.04], [-15.79, -47.88], [-34.6, -58.38], [51.51, -0.13], [48.86, 2.35], [40.42, -3.7], [52.52, 13.4], [41.9, 12.5], [30.04, 31.24], [-1.29, 36.82], [-25.75, 28.19], [55.76, 37.62], [28.61, 77.21], [39.9, 116.4], [35.68, 139.69], [37.57, 126.98], [-35.28, 149.13], [1.35, 103.82]]
+const cityDirs = CITIES.map(([a, b]) => fromLatLon(a, b))
+const markers = dotCloud(cityDirs.length, 7); spin.add(markers.points)
+const arcMat = new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.9 })
+const SEG = 72
+const arcs = Array.from({ length: 8 }, (_, k) => { const line = new THREE.Line(new THREE.BufferGeometry(), arcMat); spin.add(line); return { line, t0: k * 0.7, dur: 2.6 } })
+const resetArc = (a, t) => {
+  const i = (Math.random() * CITIES.length) | 0
+  let j; do { j = (Math.random() * CITIES.length) | 0 } while (j === i || cityDirs[i].angleTo(cityDirs[j]) > 1.9)
+  const p = cityDirs[i].clone().multiplyScalar(R), q2 = cityDirs[j].clone().multiplyScalar(R)
+  const mid = p.clone().add(q2).normalize().multiplyScalar(R * (1.08 + p.distanceTo(q2) * 0.12))
+  a.line.geometry.setFromPoints(new THREE.QuadraticBezierCurve3(p, mid, q2).getPoints(SEG)); a.t0 = t
+}
+const starMat = new THREE.PointsMaterial({ size: 0.04, transparent: true, opacity: 0.6 })
+const stars = new THREE.Points(new THREE.BufferGeometry().setFromPoints(Array.from({ length: 600 }, () => new THREE.Vector3((Math.random() - 0.5) * 40, (Math.random() - 0.5) * 24, -8 - Math.random() * 12))), starMat)
+scene.add(stars)
+
+let dark = false, choice = 0, pal = LIGHT[0]
+function applyTheme() {
+  pal = dark ? DARK : LIGHT[choice]
+  document.documentElement.classList.toggle('dark', dark)
+  document.documentElement.style.setProperty('--background', dark ? '' : pal.css)
+  coreMat.uniforms.uCore.value.copy(pal.core)
+  coreMat.uniforms.uRim.value.copy(pal.rimC)
+  coreMat.uniforms.uRimAmt.value = pal.rimAmt
+  coreMat.uniforms.uRimPow.value = pal.rimPow
+  halo.material.opacity = pal.halo
+  shadow.material.opacity = pal.shadow
+  shadow.visible = pal.shadow > 0
+  starMat.color.copy(pal.stars)
+}
+
+const pointer = new THREE.Vector2(9, 9)
+let pointerInside = false, pointerDown = false, dragDx = 0
+const isUi = (el) => el.closest('a, button, .switcher, header')
+addEventListener('pointermove', (e) => {
+  const r = canvas.getBoundingClientRect()
+  const nx = ((e.clientX - r.left) / r.width) * 2 - 1, ny = -((e.clientY - r.top) / r.height) * 2 + 1
+  if (pointerDown) dragDx += nx - pointer.x
+  pointer.set(nx, ny)
+  pointerInside = e.clientY >= r.top && e.clientY <= r.bottom && !isUi(e.target)
+})
+addEventListener('pointerdown', (e) => { if (!isUi(e.target)) pointerDown = true })
+addEventListener('pointerup', () => { pointerDown = false })
+document.documentElement.addEventListener('pointerleave', () => { pointerInside = false })
+
+const halfSize = (dist) => { const h = Math.tan(rad(camera.fov / 2)) * dist; return { w: h * camera.aspect, h } }
+function resize() {
+  const { clientWidth: w, clientHeight: h } = canvas
+  if (!w || !h) return
+  renderer.setSize(w, h, false)
+  camera.aspect = w / h; camera.updateProjectionMatrix()
+  const half = halfSize(10), phone = camera.aspect < 0.9
+  root.position.set(phone ? 0 : half.w * 0.42, phone ? half.h * 0.4 : -0.05, 0)
+  root.scale.setScalar(phone ? 0.62 : Math.min(1, camera.aspect / 1.5))
+}
+new ResizeObserver(resize).observe(canvas)
+
+const raycaster = new THREE.Raycaster(), hit = new THREE.Vector3(99, 0, 0), local = new THREE.Vector3()
+const q = new THREE.Quaternion(), tmp = new THREE.Vector3(), c1 = new THREE.Color()
+let hitAmt = 0, vel = 0.05, t = 0
+function frame(dt) {
+  raycaster.setFromCamera(pointer, camera)
+  const hits = pointerInside ? raycaster.intersectObject(hitSphere, false) : []
+  if (hits.length) { hit.copy(spin.worldToLocal(local.copy(hits[0].point))); hitAmt = damp(hitAmt, 1, 8, dt) } else hitAmt = damp(hitAmt, 0, 4, dt)
+  document.body.style.cursor = hits.length ? 'grab' : ''
+  if (pointerDown && hits.length) vel = dragDx * 60
+  dragDx = 0
+  vel = damp(vel, 0.05 * motion, 1.5, dt)
+  spin.rotation.y += vel * dt
+  root.rotation.x = damp(root.rotation.x, pointerInside ? -pointer.y * 0.1 : 0, 2, dt)
+  root.rotation.y = damp(root.rotation.y, pointerInside ? pointer.x * 0.1 : 0, 2, dt)
+
+  spin.getWorldQuaternion(q)
+  for (let i = 0; i < dirs.length; i++) {
+    const d = dirs[i]
+    const f = smooth(tmp.copy(d).applyQuaternion(q).z, -0.15, 0.55)
+    const dist = hitAmt > 0.01 ? Math.hypot(d.x * R - hit.x, d.y * R - hit.y, d.z * R - hit.z) : 9
+    const g = hitAmt * Math.max(0, 1 - dist / (R * 0.5)) ** 2
+    const rr = R * (1 + g * 0.1)
+    const tw = land[i] ? 0.85 + 0.15 * Math.sin(t * 1.4 + i) : 1
+    cloud.set(i, d.x * rr, d.y * rr, d.z * rr,
+      (land[i] ? 1 : 0.7) * tw * (1 + g * 1.6),
+      c1.copy(land[i] ? pal.fg : pal.muted).lerp(ACCENT, Math.min(1, g * 1.5)),
+      ((land[i] ? 0.95 : pal.ocean) + g) * (pal.rim + f * (1 - pal.rim)))
+  }
+  cloud.flush()
+  cityDirs.forEach((d, i) => {
+    const pulse = 0.8 + 0.4 * Math.sin(t * 3 + i), r = R * 1.005
+    markers.set(i, d.x * r, d.y * r, d.z * r, pulse, ACCENT, 0.95)
+  })
+  markers.flush()
+  for (const a of arcs) {
+    if (!a.line.geometry.attributes.position) { if (t >= a.t0) resetArc(a, t); continue }
+    const age = (t - a.t0) / a.dur
+    if (age > 1) { resetArc(a, t); continue }
+    const head = Math.min(1, age * 2), tail = Math.max(0, age * 2 - 1)
+    a.line.geometry.setDrawRange(Math.floor(tail * SEG), Math.max(0, Math.floor((head - tail) * SEG) + 1))
+  }
+  stars.position.x = damp(stars.position.x, pointerInside ? -pointer.x * 0.4 : 0, 2, dt)
+  stars.position.y = damp(stars.position.y, pointerInside ? -pointer.y * 0.25 : 0, 2, dt)
+}
+
+const HASH = ['l0', 'g1', 'g2', 'g3']
+function select(i) {
+  choice = i
+  if (dark) dark = false // picking a proposal shows it in light mode
+  applyTheme()
+  document.querySelectorAll('.opt').forEach((b, k) => b.setAttribute('aria-pressed', String(k === i)))
+  document.getElementById('desc').textContent = LIGHT[i].name
+  history.replaceState(null, '', '#' + HASH[i])
+}
+document.querySelectorAll('.opt').forEach((b) => b.addEventListener('click', () => select(+b.dataset.key)))
+const toggle = () => {
+  dark = !dark; applyTheme()
+  document.getElementById('desc').textContent = dark ? 'Dark mode — unchanged, for reference. Press T or the moon to go back to the light proposal.' : LIGHT[choice].name
+}
+document.getElementById('theme').addEventListener('click', toggle)
+addEventListener('keydown', (e) => {
+  const k = '1234'.indexOf(e.key)
+  if (k >= 0) select(k)
+  else if (e.key === 't' || e.key === 'T') toggle()
+})
+
+const clock = new THREE.Clock()
+let frames = 0, fpsT = 0
+const fpsEl = document.getElementById('fps')
+renderer.setAnimationLoop(() => {
+  if (document.hidden) return
+  const dt = Math.min(clock.getDelta(), 0.05)
+  t += dt * motion
+  frame(dt)
+  renderer.render(scene, camera)
+  frames++; fpsT += dt
+  if (fpsT > 0.5) { fpsEl.textContent = Math.round(frames / fpsT) + ' fps'; frames = 0; fpsT = 0 }
+})
+
+resize()
+const start = HASH.indexOf(location.hash.slice(1))
+select(start >= 0 ? start : 2)
+</script>
+</body>
+</html>
