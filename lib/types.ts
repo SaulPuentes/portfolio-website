@@ -26,10 +26,3 @@ export interface Project {
   image?: string
   gallery?: string[]
 }
-
-export interface Client {
-  name: string
-  logo: string
-  logoDark?: string
-  url?: string
-}
