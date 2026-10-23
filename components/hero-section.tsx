@@ -6,7 +6,7 @@ import { cvFiles } from "@/lib/i18n"
 import { Download, ArrowDown } from "lucide-react"
 import { siteConfig } from "@/lib/site-config"
 import { Button } from "@/components/ui/button"
-import { ClientLogos } from "@/components/client-logos"
+import { SkillsMarquee } from "@/components/skills-marquee"
 import { HeroGlobe } from "@/components/hero-globe"
 
 const [firstName, ...rest] = siteConfig.name.split(" ")
@@ -139,7 +139,7 @@ export function HeroSection() {
       </div>
 
       <div className="relative z-[1] mt-auto shrink-0">
-        <ClientLogos />
+        <SkillsMarquee />
       </div>
     </section>
   )
