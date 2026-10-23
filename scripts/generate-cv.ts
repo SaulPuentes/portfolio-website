@@ -44,7 +44,7 @@ function flagValue(flag: string): string | undefined {
   if (idx === -1) return undefined;
   const val = process.argv[idx + 1];
   if (!val || val.startsWith("--")) {
-    console.error(`${flag} needs a value, e.g. ${flag} docs/applications/acme.md`);
+    console.error(`${flag} needs a value, e.g. ${flag} docs/job-search/postings/acme.md`);
     process.exit(1);
   }
   return val;

@@ -22,10 +22,9 @@ hooks/            → Custom React hooks
 styles/           → Global styles
 public/           → Static assets
 docs/             → Documentation
-docs/applications/  → Per-company job descriptions and interview prep (gitignored)
 docs/cover-letters/ → Cover letter sources, input to `generate:cover-letter` (gitignored except _template.md)
 docs/cv/            → CV source content (curriculum.md gitignored, sample committed), generated PDFs (gitignored), AI drafts in docs/cv/drafts/ (gitignored)
-docs/job-search/    → Job search strategy, pitch, source lists (gitignored)
+docs/job-search/    → postings/ (input to `generate:cv:job`), interview-prep/, pitch/, strategy/ (all gitignored)
 docs/site/          → Portfolio site content notes (portfolio.md gitignored, sample committed)
 tasks/            → Development task specs
 ```
