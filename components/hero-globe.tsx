@@ -82,7 +82,7 @@ export function HeroGlobe() {
       ref={canvasRef}
       data-globe
       aria-hidden="true"
-      className="absolute inset-0 size-full touch-pan-y opacity-0 transition-opacity duration-1000"
+      className="absolute inset-0 size-full touch-pan-y touch-pinch-zoom opacity-0 transition-opacity duration-1000"
     />
   )
 }

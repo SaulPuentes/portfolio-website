@@ -1,6 +1,5 @@
 "use client"
 
-import { useRef } from "react"
 import { cn } from "@/lib/utils"
 import { Menu, X, ChevronDown } from "lucide-react"
 import { siteConfig } from "@/lib/site-config"
@@ -27,8 +26,7 @@ export function Header() {
     handleSetLocale,
     scrollTo,
   } = useHeader()
-  const barRef = useRef<HTMLDivElement>(null)
-  const autoplay = useAutoplay(barRef)
+  const autoplay = useAutoplay()
   const handleToggle = () => {
     setMobileOpen(false)
     autoplay.toggle()
@@ -36,7 +34,7 @@ export function Header() {
 
   return (
     <header ref={headerRef} className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
-      <div ref={barRef} className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <a
           href="#"
           className="text-sm font-semibold tracking-tight text-foreground transition-all duration-700 ease-out"
