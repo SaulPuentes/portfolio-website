@@ -323,10 +323,13 @@ export function useScrollCarousel(
                 cachedWrapperW = wrapperEl.offsetWidth
                 cachedSlideH = (sw.slides.length || 0) * window.innerHeight * SLOW_DOWN_FACTOR
               },
-              onRefresh: () => {
+              onRefresh: (self) => {
                 if (sw && initializedRef.current) {
                   _updateSwiper(sw)
                 }
+                // Autoplay reads the pinned range here to stop on each slide without loading GSAP itself
+                el.dataset.scrubStart = String(self.start)
+                el.dataset.scrubEnd = String(self.end)
               },
             },
           })
