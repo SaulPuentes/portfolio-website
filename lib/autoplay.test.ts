@@ -81,6 +81,9 @@ test("buildStops with scrub", () => {
   ])
   assert.equal(stops[0].intro, true)
   assert.ok(stops.every((x) => x.slide === undefined))
+  assert.deepEqual(stops.map((x) => x.pauseMs), [
+    undefined, 1500, 1500, 1500, 1500, undefined, undefined, undefined, undefined,
+  ])
 })
 
 test("buildStops without scrub uses slide stops", () => {
@@ -131,6 +134,22 @@ test("2× halves scroll time and holds", () => {
   assert.deepEqual(s.scrolls[1], { y: 1000, seconds: 0.6 })
   step() // arrive services
   assert.equal(s.waits[1], 1500)
+})
+
+test("a stop's own pauseMs replaces the default hold and still scales with speed", () => {
+  const stops: TourStop[] = [{ y: 0, hash: "#services", pauseMs: 1500 }, { y: 1000, hash: "#contact" }]
+  const { s, env, step } = fakeEnv(stops)
+  const a = createAutoplay(env, () => {})
+  a.play()
+  step() // arrive first stop
+  assert.equal(s.waits[0], 1500)
+  a.pause()
+  a.cycleSpeed() // 2×
+  s.scrollY = 0
+  s.stops = [{ y: 0, hash: "#services", pauseMs: 1500 }, { y: 1000, hash: "#contact", pauseMs: 1500 }]
+  a.play() // resumes at contact
+  step()
+  assert.equal(s.waits[1], 750)
 })
 
 test("pause cancels the pending scroll", () => {

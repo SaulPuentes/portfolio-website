@@ -1,5 +1,6 @@
 export const SPEEDS = [1, 2, 0.5] as const
 export const PAUSE_MS = 3000
+export const SERVICE_PAUSE_MS = 1500 // per card: each card is short
 export const SCROLL_SECONDS = 1.2
 // Replay order once Play reaches the hero: globe backdrop → text stagger → skills marquee
 export const HERO_INTRO_TEXT_MS = 600 // globe is half faded in
@@ -18,6 +19,8 @@ export interface TourStop {
   hash?: string
   slide?: number
   intro?: boolean
+  /** Hold at 1×; defaults to PAUSE_MS. */
+  pauseMs?: number
 }
 
 export interface AutoplayEnv {
@@ -69,6 +72,7 @@ export function buildStops(m: PageMetrics): TourStop[] {
       stops.push({
         y: clamp(m.servicesTop + (m.servicesHeight - m.vh) * progress),
         hash: k === 1 ? "#services" : undefined,
+        pauseMs: SERVICE_PAUSE_MS,
       })
     }
   } else {
@@ -129,7 +133,7 @@ export function createAutoplay(env: AutoplayEnv, onChange: (s: AutoplayState) =>
       if (stop.intro) env.playIntro()
       nextIndex = i + 1
       const arrivedY = env.getScrollY()
-      cancel = env.wait((stop.intro ? HERO_INTRO_MS : 0) + PAUSE_MS / speed(), () => {
+      cancel = env.wait((stop.intro ? HERO_INTRO_MS : 0) + (stop.pauseMs ?? PAUSE_MS) / speed(), () => {
         // A scrollbar drag or find-in-page fires no wheel/touch/key event: treat any drift as manual navigation
         if (Math.abs(env.getScrollY() - arrivedY) > POS_TOLERANCE_PX) return pause()
         leg(i + 1)
