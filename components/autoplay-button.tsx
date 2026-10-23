@@ -17,7 +17,7 @@ export function AutoplayButton({ state, onToggle, onSpeed, compact }: AutoplayBu
   const Icon = state.label === "pause" ? Pause : state.label === "replay" ? RotateCcw : Play
 
   return (
-    <>
+    <div data-autoplay-control className="flex items-center gap-1">
       <button
         type="button"
         onClick={onToggle}
@@ -31,11 +31,11 @@ export function AutoplayButton({ state, onToggle, onSpeed, compact }: AutoplayBu
       <button
         type="button"
         onClick={onSpeed}
-        aria-label={t.nav.speed}
-        className="font-mono text-[11px] text-muted-foreground transition-colors hover:text-foreground"
+        aria-label={`${t.nav.speed}: ${SPEEDS[state.speedIndex]}×`}
+        className="min-h-7 min-w-7 rounded-md px-1.5 font-mono text-[11px] text-muted-foreground transition-colors hover:text-foreground"
       >
         {SPEEDS[state.speedIndex]}×
       </button>
-    </>
+    </div>
   )
 }

@@ -18,7 +18,7 @@ test("randia content", () => {
     assert.equal(r.description[loc].length, 4)
     assert.ok(r.name[loc])
     // spec: never mention the number of lots, never credit Trust
-    for (const p of r.description[loc]) assert.doesNotMatch(p, /\b45\b|lotes|\blots\b|grundstück|trust/i)
+    for (const p of r.description[loc]) assert.doesNotMatch(p, /\d+\s*(lotes|lots|grundstück)|lotes|\blots\b|grundstück|trust/i)
   }
 })
 

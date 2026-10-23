@@ -179,7 +179,7 @@ const halfSize = (camera: PerspectiveCamera, dist: number) => {
 const isUi = (target: EventTarget | null) => target instanceof Element && target.closest("a, button, header") !== null
 
 export function createGlobeScene(canvas: HTMLCanvasElement, opts: { dark: boolean; reducedMotion: boolean }): GlobeHandle {
-  const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" })
+  const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "default" })
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2))
   const pixelRatio = renderer.getPixelRatio()
   const motion = opts.reducedMotion ? 0.15 : 1
@@ -201,7 +201,7 @@ export function createGlobeScene(canvas: HTMLCanvasElement, opts: { dark: boolea
   const arcs = Array.from({ length: 8 }, (_, k) => {
     const line = new Line(new BufferGeometry(), arcMat)
     earth.spin.add(line)
-    return { line, t0: -k * 0.7, dur: 2.6 }
+    return { line, t0: k * 0.7, dur: 2.6 }
   })
   const resetArc = (a: (typeof arcs)[number], t: number) => {
     const [i, j] = pickArcPair(Math.random)
@@ -240,7 +240,7 @@ export function createGlobeScene(canvas: HTMLCanvasElement, opts: { dark: boolea
   addEventListener("pointerdown", onDown)
   addEventListener("pointerup", onUp)
   addEventListener("pointercancel", onUp)
-  document.addEventListener("pointerleave", onLeave)
+  document.documentElement.addEventListener("pointerleave", onLeave)
 
   const resize = () => {
     const { clientWidth: w, clientHeight: h } = canvas
@@ -317,7 +317,7 @@ export function createGlobeScene(canvas: HTMLCanvasElement, opts: { dark: boolea
     clock.start()
     renderer.setAnimationLoop(() => {
       const dt = Math.min(clock.getDelta(), 0.05)
-      t += dt
+      t += dt * motion
       frame(dt)
       renderer.render(scene, camera)
     })
@@ -337,7 +337,7 @@ export function createGlobeScene(canvas: HTMLCanvasElement, opts: { dark: boolea
     removeEventListener("pointerdown", onDown)
     removeEventListener("pointerup", onUp)
     removeEventListener("pointercancel", onUp)
-    document.removeEventListener("pointerleave", onLeave)
+    document.documentElement.removeEventListener("pointerleave", onLeave)
     ro.disconnect()
     scene.traverse((o: Object3D) => {
       const mesh = o as Object3D & { geometry?: BufferGeometry; material?: Material | Material[] }
@@ -348,6 +348,7 @@ export function createGlobeScene(canvas: HTMLCanvasElement, opts: { dark: boolea
       }
     })
     renderer.dispose()
+    renderer.forceContextLoss()
   }
 
   return { setTheme, start, stop, dispose }
