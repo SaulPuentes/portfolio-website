@@ -1,5 +1,5 @@
 // Dotted-Earth hero globe. Ported from option C2 of
-// docs/superpowers/specs/assets/2026-10-22-hero-globe-demo.html.
+// docs/superpowers/specs/assets/2026-10-22-hero-globe-demo.html (removed; see commit e96c07c).
 // Loaded lazily by components/hero-globe.tsx so three.js stays out of the first-paint bundle.
 import {
   BufferAttribute,
