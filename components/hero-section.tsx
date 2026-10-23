@@ -37,10 +37,11 @@ export function HeroSection() {
       className="scroll-mt-16 relative flex h-dvh min-h-[640px] flex-col overflow-hidden pt-14 sm:pt-16"
     >
       <HeroGlobe />
-      {/* Veil — fades the globe out behind the text (bottom on phones, left on desktop) */}
+      {/* Veil — fades the globe out behind the text. Same switch as scene.ts: aspect < 0.9 is the
+          phone layout (globe on top, veil from the bottom), wider is desktop (veil from the left). */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,var(--background)_8%,color-mix(in_oklch,var(--background)_80%,transparent)_45%,transparent_75%)] md:bg-[linear-gradient(90deg,var(--background)_0%,color-mix(in_oklch,var(--background)_70%,transparent)_30%,transparent_62%)]"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,var(--background)_8%,color-mix(in_oklch,var(--background)_80%,transparent)_45%,transparent_75%)] [@media(min-aspect-ratio:9/10)]:bg-[linear-gradient(90deg,var(--background)_0%,color-mix(in_oklch,var(--background)_70%,transparent)_30%,transparent_62%)]"
       />
       <div
         aria-hidden="true"
@@ -54,7 +55,7 @@ export function HeroSection() {
       {/* Content — flex-1 with min-h-0 allows shrinking on short viewports */}
       <div
         ref={sectionRef}
-        className="relative z-[1] pointer-events-none [&_a]:pointer-events-auto [&_button]:pointer-events-auto mx-auto flex w-full max-w-7xl flex-1 min-h-0 flex-col justify-end md:justify-center px-6 sm:px-10 lg:px-14 py-4"
+        className="relative z-[1] pointer-events-none [&_a]:pointer-events-auto [&_button]:pointer-events-auto mx-auto flex w-full max-w-7xl flex-1 min-h-0 flex-col justify-end [@media(min-aspect-ratio:9/10)]:justify-center px-6 sm:px-10 lg:px-14 py-4"
         style={{ rowGap: "clamp(0.75rem, 3vh, 2.25rem)" }}
       >
         {/* Eyebrow — coordinate/status line */}
@@ -101,7 +102,7 @@ export function HeroSection() {
         </div>
 
         {/* Description + CTAs — one column so the globe keeps the right side */}
-        <div className="flex flex-col gap-6 lg:max-w-[55%]">
+        <div className="flex flex-col gap-6 lg:[@media(min-aspect-ratio:9/10)]:max-w-[55%]">
           <div data-hero className="opacity-0 translate-y-6 min-w-0">
             <p
               className="leading-relaxed text-foreground/80 max-w-xl"
