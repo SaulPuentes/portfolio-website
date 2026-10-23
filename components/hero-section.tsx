@@ -8,6 +8,7 @@ import { siteConfig } from "@/lib/site-config"
 import { Button } from "@/components/ui/button"
 import { SkillsMarquee } from "@/components/skills-marquee"
 import { HeroGlobe } from "@/components/hero-globe"
+import { HERO_INTRO_EVENT } from "@/lib/autoplay"
 
 const [firstName, ...rest] = siteConfig.name.split(" ")
 const lastName = rest.join(" ")
@@ -24,14 +25,33 @@ export function HeroSection() {
       (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top,
     )
     const delays = [100, 300, 500, 700, 900]
-    items.forEach((item, i) => {
-      setTimeout(() => {
-        // Tailwind 4's translate-y-* sets the `translate` property, so reset that (not transform)
-        item.style.transition = "opacity 0.8s ease-out, translate 0.8s ease-out"
-        item.style.opacity = "1"
-        item.style.translate = "0 0"
-      }, delays[i] ?? 200 * i)
-    })
+    let timers: ReturnType<typeof setTimeout>[] = []
+
+    const runIntro = () => {
+      timers.forEach(clearTimeout)
+      // Drop inline styles so the Tailwind start state (opacity-0, translate-y-*) applies again
+      for (const item of items) {
+        item.style.transition = "none"
+        item.style.opacity = ""
+        item.style.translate = ""
+      }
+      void el.offsetHeight
+      timers = items.map((item, i) =>
+        setTimeout(() => {
+          // Tailwind 4's translate-y-* sets the `translate` property, so reset that (not transform)
+          item.style.transition = "opacity 0.8s ease-out, translate 0.8s ease-out"
+          item.style.opacity = "1"
+          item.style.translate = "0 0"
+        }, delays[i] ?? 200 * i),
+      )
+    }
+
+    runIntro()
+    window.addEventListener(HERO_INTRO_EVENT, runIntro)
+    return () => {
+      timers.forEach(clearTimeout)
+      window.removeEventListener(HERO_INTRO_EVENT, runIntro)
+    }
   }, [])
 
   return (
