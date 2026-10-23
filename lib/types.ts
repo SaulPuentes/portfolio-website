@@ -30,5 +30,6 @@ export interface Project {
 export interface Client {
   name: string
   logo: string
+  logoDark?: string
   url?: string
 }
