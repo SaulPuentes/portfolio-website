@@ -18,7 +18,6 @@ docs/site/portfolio.md
 docs/cover-letters/*.md
 !docs/cover-letters/_template.md
 # Job-search material: personal strategy, third-party postings and lists.
-docs/applications/
 docs/job-search/
 scripts/photo.jpg
 scripts/profile-pic.png

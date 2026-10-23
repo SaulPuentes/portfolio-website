@@ -28,7 +28,7 @@ Current gitignored personal sources:
 | `docs/cv/curriculum.md` | `docs/cv/curriculum.sample.md` |
 | `docs/site/portfolio.md` | `docs/site/portfolio.sample.md` |
 | `docs/cover-letters/*.md` | `docs/cover-letters/_template.md` |
-| `docs/applications/`, `docs/job-search/` | none — never committed |
+| `docs/job-search/` (postings, interview prep, pitch, strategy) | none — never committed |
 | `docs/cv/drafts/` (AI-tailored CV text, one per job posting) | none — never committed |
 | `.env` (`OPENAI_API_KEY`) | none — never committed |
 | `docs/cv/*.pdf`, `public/*-CV-*.pdf` (site copies), `out/` | none — generated |

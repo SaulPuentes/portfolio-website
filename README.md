@@ -24,7 +24,7 @@ Open [http://localhost:3000](http://localhost:3000) to see the site.
 > **Note:** this repository is public, so no personal data is committed. `projects.json`,
 > `content/site.json` and `content/data/cv-contact.json` are gitignored — copy the matching
 > `*.sample.*` file and fill it in locally. `docs/cv/curriculum.md` (use
-> `docs/cv/curriculum.sample.md` as a template), `docs/cover-letters/*.md`, `docs/applications/`
+> `docs/cv/curriculum.sample.md` as a template), `docs/cover-letters/*.md`
 > and `docs/job-search/` are gitignored too. CV and cover-letter PDFs read their name, phone,
 > email and address from `content/data/cv-contact.json`.
 
