@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "tsx --test lib/*.test.ts",
+    "test": "tsx --test lib/*.test.ts lib/globe/*.test.ts",
     "generate:cv": "pnpm tsx scripts/generate-cv.ts",
     "generate:cv:fullstack": "pnpm tsx scripts/generate-cv.ts --variant fullstack",
     "generate:cv:frontend": "pnpm tsx scripts/generate-cv.ts --variant frontend",
@@ -36,7 +36,8 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "swiper": "^12.1.2",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "three": "0.170.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": ["esbuild", "puppeteer"]
@@ -46,6 +47,7 @@
     "@types/node": "^22",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
+    "@types/three": "0.170.0",
     "postcss": "^8.5",
     "puppeteer": "^24.40.0",
     "tailwindcss": "^4.2.0",
