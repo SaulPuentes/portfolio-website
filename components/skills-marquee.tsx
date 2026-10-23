@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { skills } from "@/lib/data"
-import { HERO_INTRO_EVENT } from "@/lib/autoplay"
+import { HERO_INTRO_EVENT, HERO_INTRO_MARQUEE_MS } from "@/lib/autoplay"
 
 const allSkills = skills.flatMap((cat) => cat.items.map((s) => s.name))
 const mid = Math.ceil(allSkills.length / 2)
@@ -61,16 +61,17 @@ export function SkillsMarquee() {
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined
-    const show = () => {
+    const show = (delay: number) => {
       clearTimeout(timer)
       setVisible(false)
-      timer = setTimeout(() => setVisible(true), 1800)
+      timer = setTimeout(() => setVisible(true), delay)
     }
-    show()
-    window.addEventListener(HERO_INTRO_EVENT, show)
+    const replay = () => show(HERO_INTRO_MARQUEE_MS)
+    show(1800)
+    window.addEventListener(HERO_INTRO_EVENT, replay)
     return () => {
       clearTimeout(timer)
-      window.removeEventListener(HERO_INTRO_EVENT, show)
+      window.removeEventListener(HERO_INTRO_EVENT, replay)
     }
   }, [])
 
