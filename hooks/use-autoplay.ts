@@ -33,6 +33,9 @@ export function useAutoplay() {
             // Read what useScrollReveal rendered instead of repeating its breakpoint
             servicesSticky: services?.firstElementChild ? getComputedStyle(services.firstElementChild).position === "sticky" : false,
             serviceCount: services?.querySelectorAll(".grid > *").length ?? 0,
+            serviceBottoms: [...(services?.querySelectorAll(".grid > *") ?? [])].map(
+              (card) => card.getBoundingClientRect().bottom + window.scrollY,
+            ),
             projectsTop: top("projects"),
             projectCount: document.querySelectorAll("#projects .swiper-slide").length,
             scrub: scrubStart && scrubEnd ? { start: +scrubStart, end: +scrubEnd } : null,
