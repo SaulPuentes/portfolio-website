@@ -23,6 +23,7 @@ export function useAutoplay() {
         getStops: () => {
           const top = (id: string) => (document.getElementById(id)?.getBoundingClientRect().top ?? 0) + window.scrollY
           const services = document.getElementById("services")
+          const projectsWrapper = document.querySelector("#projects .swiper-wrapper")
           const { scrubStart, scrubEnd } = document.getElementById("projects-carousel")?.dataset ?? {}
           return buildStops({
             vh: root.clientHeight,
@@ -38,6 +39,13 @@ export function useAutoplay() {
             ),
             projectsTop: top("projects"),
             projectCount: document.querySelectorAll("#projects .swiper-slide").length,
+            // Below the md breakpoint useScrollCarousel leaves Swiper off and CSS stacks the cards
+            projectBottoms:
+              projectsWrapper && getComputedStyle(projectsWrapper).flexDirection === "column"
+                ? [...document.querySelectorAll("#projects .swiper-slide")].map(
+                    (card) => card.getBoundingClientRect().bottom + window.scrollY,
+                  )
+                : null,
             scrub: scrubStart && scrubEnd ? { start: +scrubStart, end: +scrubEnd } : null,
             contactTop: top("contact"),
           })

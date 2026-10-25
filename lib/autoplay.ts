@@ -49,6 +49,8 @@ export interface PageMetrics {
   serviceBottoms: number[]
   projectsTop: number
   projectCount: number
+  /** Page y of each project card's bottom edge when the cards stack (phones); null when they sit in the carousel. */
+  projectBottoms: number[] | null
   scrub: { start: number; end: number } | null
   contactTop: number
 }
@@ -67,6 +69,16 @@ export function isStopKey(key: string, fromInsideControl: boolean): boolean {
 export function buildStops(m: PageMetrics): TourStop[] {
   const clamp = (y: number) => Math.min(Math.max(y, 0), m.maxScroll)
   const stops: TourStop[] = [{ y: 0, hash: "#about", intro: true }]
+  // Stacked cards (phones) outgrow one screen: step until each card's bottom edge is on screen
+  const stepDown = (top: number, bottoms: number[], hash: string, pauseMs?: number) => {
+    let y = clamp(top - m.headerPx)
+    stops.push({ y, hash, pauseMs })
+    for (const bottom of bottoms) {
+      if (clamp(bottom - m.vh) <= y + POS_TOLERANCE_PX) continue
+      y = clamp(bottom - m.vh)
+      stops.push({ y, pauseMs })
+    }
+  }
   if (m.servicesSticky) {
     // useScrollReveal shows card k once progress passes (k-1)/(n+1): stop mid-band so each card has landed
     const n = m.serviceCount
@@ -79,23 +91,20 @@ export function buildStops(m: PageMetrics): TourStop[] {
       })
     }
   } else {
-    // Stacked cards (phones) outgrow one screen: step until each card's bottom edge is on screen
-    let y = clamp(m.servicesTop - m.headerPx)
-    stops.push({ y, hash: "#services", pauseMs: SERVICE_PAUSE_MS })
-    for (const bottom of m.serviceBottoms) {
-      if (clamp(bottom - m.vh) <= y + POS_TOLERANCE_PX) continue
-      y = clamp(bottom - m.vh)
-      stops.push({ y, pauseMs: SERVICE_PAUSE_MS })
-    }
+    stepDown(m.servicesTop, m.serviceBottoms, "#services", SERVICE_PAUSE_MS)
   }
-  for (let i = 0; i < m.projectCount; i++) {
-    const hash = i === 0 ? "#projects" : undefined
-    if (m.scrub) {
-      // The pinned carousel maps scroll progress to slides, so each project has its own scroll position
-      const t = m.projectCount > 1 ? i / (m.projectCount - 1) : 0
-      stops.push({ y: clamp(m.scrub.start + (m.scrub.end - m.scrub.start) * t), hash })
-    } else {
-      stops.push({ y: clamp(m.projectsTop - m.headerPx), hash, slide: i })
+  if (m.projectBottoms) {
+    stepDown(m.projectsTop, m.projectBottoms, "#projects")
+  } else {
+    for (let i = 0; i < m.projectCount; i++) {
+      const hash = i === 0 ? "#projects" : undefined
+      if (m.scrub) {
+        // The pinned carousel maps scroll progress to slides, so each project has its own scroll position
+        const t = m.projectCount > 1 ? i / (m.projectCount - 1) : 0
+        stops.push({ y: clamp(m.scrub.start + (m.scrub.end - m.scrub.start) * t), hash })
+      } else {
+        stops.push({ y: clamp(m.projectsTop - m.headerPx), hash, slide: i })
+      }
     }
   }
   stops.push({ y: clamp(m.contactTop - m.headerPx), hash: "#contact" })
