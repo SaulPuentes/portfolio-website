@@ -13,7 +13,7 @@ import {
 const M: PageMetrics = {
   vh: 1000, maxScroll: 7600, headerPx: 64, servicesTop: 1000, servicesHeight: 3000, servicesSticky: true, serviceCount: 4,
   serviceBottoms: [],
-  projectsTop: 4100, projectCount: 3, scrub: { start: 4500, end: 6500 }, contactTop: 7400,
+  projectsTop: 4100, projectCount: 3, projectBottoms: null, scrub: { start: 4500, end: 6500 }, contactTop: 7400,
 }
 
 const STOPS: TourStop[] = [
@@ -103,6 +103,19 @@ test("buildStops steps stacked services until every card is on screen", () => {
   assert.deepEqual(stops.slice(1, 4).map((x) => x.y), [936, 1200, 1600])
   assert.deepEqual(stops.slice(1, 4).map((x) => x.hash), ["#services", undefined, undefined])
   assert.equal(stops[4].hash, "#projects")
+})
+
+test("buildStops steps stacked projects until every card is on screen", () => {
+  const stops = buildStops({ ...M, servicesSticky: false, scrub: null, projectBottoms: [4600, 5200, 5800] })
+  const projects = stops.filter((x) => x.y >= 4036 && x.hash !== "#contact")
+  assert.deepEqual(projects.map((x) => x.y), [4036, 4200, 4800])
+  assert.deepEqual(projects.map((x) => x.hash), ["#projects", undefined, undefined])
+  assert.ok(projects.every((x) => x.slide === undefined && x.pauseMs === undefined))
+})
+
+test("buildStops gives stacked projects one stop when they all fit", () => {
+  const stops = buildStops({ ...M, servicesSticky: false, scrub: null, projectBottoms: [4300, 4500, 4900] })
+  assert.equal(stops.filter((x) => x.y >= 4036 && x.hash !== "#contact").length, 1)
 })
 
 test("buildStops clamps to maxScroll", () => {
