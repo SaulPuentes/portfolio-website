@@ -20,19 +20,19 @@
     "sectionTitle": "Servicios",
     "planning": {
       "title": "Estrategia y Arquitectura",
-      "description": "Te ayudo a traducir objetivos de negocio en una base técnica clara: definición de alcance, arquitectura, flujos y decisiones de stack para productos SaaS, plataformas logísticas y experiencias e-commerce."
+      "description": "Convierto tus objetivos de negocio en soluciones digitales bien definidas. Te ayudo a planificar funcionalidades, elegir tecnologías y diseñar la estructura de tu producto antes de desarrollarlo."
     },
     "development": {
       "title": "Desarrollo Full Stack",
-      "description": "Construyo aplicaciones web escalables con React, Next.js, NestJS y Node.js, desde dashboards y plataformas internas hasta sitios multilenguaje y experiencias listas para móvil."
+      "description": "Desarrollo aplicaciones web, plataformas internas y sitios web a medida. Creo soluciones rápidas, escalables y adaptadas a las necesidades de tu negocio, desde la idea inicial hasta su lanzamiento."
     },
     "analysis": {
-      "title": "E-commerce, CMS y Automatización",
-      "description": "Diseño soluciones que reducen trabajo manual y mejoran la operación: integraciones con Shopify, flujos con headless CMS, automatización de procesos y estructuras de contenido más fáciles de mantener."
+      "title": "Inteligencia Artificial y Automatización",
+      "description": "Implemento soluciones de IA que ahorran tiempo y simplifican procesos. Desde chatbots que responden preguntas y atienden clientes hasta automatizaciones que conectan tus herramientas y reducen tareas manuales."
     },
     "consulting": {
       "title": "Consultoría Técnica y Auditoría",
-      "description": "Analizo productos existentes para detectar cuellos de botella en rendimiento, mantenibilidad y escalabilidad, y propongo mejoras concretas con foco en resultados medibles y ejecución realista."
+      "description": "Evalúo tus sistemas y sitios web para detectar problemas de rendimiento, seguridad y mantenimiento. Te propongo mejoras concretas para optimizar tus recursos y preparar tu tecnología para crecer."
     }
   },
   "skills": {
