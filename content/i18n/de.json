@@ -20,19 +20,19 @@
     "sectionTitle": "Dienstleistungen",
     "planning": {
       "title": "Strategie & Architektur",
-      "description": "Ich helfe dabei, Geschäftsziele in ein klares technisches Fundament zu übersetzen: Scope, Architektur, Workflows und Stack-Entscheidungen für SaaS-Produkte, Logistikplattformen und E-Commerce-Erlebnisse."
+      "description": "Ich verwandle Ihre Geschäftsziele in klar definierte digitale Lösungen. Ich helfe Ihnen, Funktionen zu planen, Technologien auszuwählen und die Struktur Ihres Produkts zu entwerfen, bevor es entwickelt wird."
     },
     "development": {
       "title": "Full-Stack-Entwicklung",
-      "description": "Ich entwickle skalierbare Webanwendungen mit React, Next.js, NestJS und Node.js, von Dashboards und internen Plattformen bis zu mehrsprachigen Websites und mobiloptimierten Erlebnissen."
+      "description": "Ich entwickle maßgeschneiderte Webanwendungen, interne Plattformen und Websites. Ich schaffe schnelle, skalierbare Lösungen, die auf die Bedürfnisse Ihres Unternehmens zugeschnitten sind, von der ersten Idee bis zum Launch."
     },
     "analysis": {
-      "title": "E-Commerce, CMS & Automatisierung",
-      "description": "Ich konzipiere Lösungen, die manuelle Arbeit reduzieren und Abläufe verbessern: Shopify-Integrationen, Headless-CMS-Workflows, Prozessautomatisierung und Inhaltsstrukturen, die leichter zu pflegen sind."
+      "title": "KI & Automatisierung",
+      "description": "Ich setze KI-Lösungen um, die Zeit sparen und Prozesse vereinfachen. Von Chatbots, die Fragen beantworten und Kunden betreuen, bis zu Automatisierungen, die Ihre Tools verbinden und manuelle Aufgaben reduzieren."
     },
     "consulting": {
       "title": "Technische Beratung & Audit",
-      "description": "Ich analysiere bestehende Produkte, finde Engpässe bei Performance, Wartbarkeit und Skalierbarkeit und schlage konkrete Verbesserungen mit Fokus auf messbare Ergebnisse und realistische Umsetzung vor."
+      "description": "Ich bewerte Ihre Systeme und Websites, um Probleme bei Performance, Sicherheit und Wartung zu erkennen. Ich schlage konkrete Verbesserungen vor, um Ihre Ressourcen zu optimieren und Ihre Technologie auf Wachstum vorzubereiten."
     }
   },
   "skills": {

@@ -20,19 +20,19 @@
     "sectionTitle": "Services",
     "planning": {
       "title": "Strategy & Architecture",
-      "description": "I help translate business goals into a clear technical foundation: scope definition, architecture, workflows, and stack decisions for SaaS products, logistics platforms, and e-commerce experiences."
+      "description": "I turn your business goals into well-defined digital solutions. I help you plan features, choose technologies, and design your product's structure before it gets built."
     },
     "development": {
       "title": "Full-Stack Development",
-      "description": "I build scalable web applications with React, Next.js, NestJS, and Node.js, from dashboards and internal platforms to multilingual websites and mobile-ready experiences."
+      "description": "I build custom web applications, internal platforms, and websites. I create fast, scalable solutions tailored to your business needs, from the initial idea to launch."
     },
     "analysis": {
-      "title": "E-commerce, CMS & Automation",
-      "description": "I design solutions that reduce manual work and improve operations: Shopify integrations, headless CMS workflows, process automation, and content structures that are easier to maintain."
+      "title": "AI & Automation",
+      "description": "I implement AI solutions that save time and simplify processes. From chatbots that answer questions and serve customers to automations that connect your tools and cut manual work."
     },
     "consulting": {
       "title": "Technical Consulting & Audit",
-      "description": "I review existing products to uncover bottlenecks in performance, maintainability, and scalability, then propose concrete improvements focused on measurable outcomes and realistic execution."
+      "description": "I evaluate your systems and websites to detect performance, security, and maintenance issues. I propose concrete improvements to optimize your resources and get your technology ready to grow."
     }
   },
   "skills": {
