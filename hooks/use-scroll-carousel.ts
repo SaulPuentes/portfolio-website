@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useCallback } from "react"
+import { useEffect, useRef, useCallback, useSyncExternalStore } from "react"
 import type Swiper from "swiper"
 
 /* ------------------------------------------------------------------ */
@@ -26,6 +26,8 @@ const OPACITY_MAX_VALUE = 1
 const OPACITY_THRESHOLD = 0.6
 const OPACITY_DIFF_THRESHOLD = 0.01
 const SLOW_DOWN_FACTOR = 0.5
+// Must match the mobile @media block in scroll-carousel.css: below it the slides stack and Swiper stays off
+const STACK_QUERY = "(max-width: 51.29875em)"
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -41,6 +43,12 @@ const interpolateRange = (
   outMin: number,
   outMax: number,
 ) => outMin + ((value - inMin) / (inMax - inMin)) * (outMax - outMin)
+
+const subscribeStacked = (onChange: () => void) => {
+  const mq = matchMedia(STACK_QUERY)
+  mq.addEventListener("change", onChange)
+  return () => mq.removeEventListener("change", onChange)
+}
 
 const isTouch = () =>
   typeof window !== "undefined" && matchMedia("(pointer: coarse)").matches
@@ -69,6 +77,7 @@ export function useScrollCarousel(
   const centeredRef = useRef(opts.centeredSlides ?? true)
   const slideOpacity = opts.slideOpacity ?? true
   const isTouchingRef = useRef(false)
+  const stacked = useSyncExternalStore(subscribeStacked, () => matchMedia(STACK_QUERY).matches, () => false)
 
   const update = useCallback(() => {
     const sw = swiperRef.current
@@ -79,6 +88,12 @@ export function useScrollCarousel(
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
+
+    if (stacked) {
+      // Swiper's init is what normally clears this; without it the CTAs would stay unclickable
+      el.querySelectorAll(".swiper-slide").forEach((s) => s.classList.remove("no-interaction"))
+      return
+    }
 
     let destroyed = false
 
@@ -375,8 +390,12 @@ export function useScrollCarousel(
         swiperRef.current = null
       }
       initializedRef.current = false
+      // A stacked pass next must not inherit the scrub range or the no-swiping flag
+      delete el.dataset.scrubStart
+      delete el.dataset.scrubEnd
+      el.querySelector(".swiper-container")?.classList.remove("swiper-no-swiping")
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [stacked]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return { update }
 }
