@@ -163,13 +163,16 @@
     width: var(--swiper-column-gap-md-down);
   }
 
+  /* Stacked list: useScrollCarousel leaves Swiper off at this width */
+  .carousel .swiper-wrapper {
+    box-sizing: border-box; /* swiper/css makes it content-box: padding would overflow the page */
+    flex-direction: column;
+    gap: var(--swiper-column-gap);
+    padding-inline: 1rem; /* matches the heading's px-4 */
+  }
+
   .carousel .swiper-slide {
-    width: calc(
-      (
-          100% - var(--swiper-column-gap-md-down) *
-            (var(--swiper-slides-perview-md-down) + 1)
-        ) * var(--swiper-col-width-md-down)
-    );
+    width: 100%;
   }
 
   .carousel .card-text {
