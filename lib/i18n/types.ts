@@ -22,7 +22,7 @@ export interface Translations {
     sectionTitle: string
     planning: { title: string; description: string }
     development: { title: string; description: string }
-    analysis: { title: string; description: string }
+    automation: { title: string; description: string }
     consulting: { title: string; description: string }
   }
   skills: {
