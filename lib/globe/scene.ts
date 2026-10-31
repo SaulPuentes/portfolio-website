@@ -39,19 +39,30 @@ export interface GlobeHandle {
   dispose(): void
 }
 
-// core: sphere fill under the dots. Light mode makes it a step darker than the page (#f5f5f5)
-// so the globe reads as a disc instead of melting into the background.
-// ocean: ocean-dot alpha; rim: alpha floor for dots turned away from the camera (the limb).
-// Dark dots on a light page read fainter than light dots on a dark one, so light raises both.
-type Palette = { core: Color; fg: Color; muted: Color; ocean: number; rim: number }
+// Dot layout, counts at desktop size. Land comes from a Fibonacci grid of `land` points; sea is
+// every `seaEvery`th point of that grid, plus a separate grid of `sea` points when set, so the
+// sea can have its own pitch.
+type Dots = { land: number; landSize: number; seaEvery: number; sea: number; seaSize: number }
+
+// Dark: the sea is a sparse sample of the land grid.
+const DARK_DOTS: Dots = { land: 22000, landSize: 1, seaEvery: 7, sea: 0, seaSize: 0.7 }
+// Light "halftone": a tight grid of small land dots fills the continents in, and a dense pale sea
+// draws the globe's outline, so no grey disc is needed behind it.
+const LIGHT_DOTS: Dots = { land: 44000, landSize: 0.78, seaEvery: 0, sea: 32000, seaSize: 0.55 }
+
+// core: sphere fill under the dots, or null for an invisible one that still hides the far side.
+// sea: ocean-dot colour; ocean: ocean-dot alpha; rim: alpha floor for dots turned away from the
+// camera (the limb). Dark dots on a light page read fainter than light dots on a dark one, so
+// light raises both.
+type Palette = { core: Color | null; fg: Color; muted: Color; sea: Color; ocean: number; rim: number; dots: Dots }
 
 const ACCENT = new Color(0x3f80f2)
 const { degToRad: rad, radToDeg: deg, damp, smoothstep } = MathUtils
 
 const palette = (dark: boolean): Palette =>
   dark
-    ? { core: new Color(0x0d0d0d), fg: new Color(0xe9e9e9), muted: new Color(0x6e6e6e), ocean: 0.34, rim: 0.25 }
-    : { core: new Color(0xebebeb), fg: new Color(0x1c1c1c), muted: new Color(0x6a6a6a), ocean: 0.6, rim: 0.5 }
+    ? { core: new Color(0x0d0d0d), fg: new Color(0xe9e9e9), muted: new Color(0x6e6e6e), sea: new Color(0x6e6e6e), ocean: 0.34, rim: 0.25, dots: DARK_DOTS }
+    : { core: null, fg: new Color(0x1c1c1c), muted: new Color(0x6a6a6a), sea: new Color(0xa3a3a3), ocean: 0.6, rim: 0.5, dots: LIGHT_DOTS }
 
 const fromLatLon = (lat: number, lon: number) => {
   const { x, y, z } = latLonToUnit(lat, lon)
@@ -129,19 +140,33 @@ function glowSprite(size: number) {
   return sp
 }
 
-function makeEarth({ R, n, oceanEvery, size, pixelRatio }: { R: number; n: number; oceanEvery: number; size: number; pixelRatio: number }) {
+const landAt = (v: Vector3) => isLand(deg(Math.asin(v.y)), deg(Math.atan2(v.x, v.z)))
+
+function makeEarth({ R, scale, size, pixelRatio, dots }: { R: number; scale: number; size: number; pixelRatio: number; dots: Dots }) {
   const group = new Group() // axial tilt
   group.rotation.z = rad(-23.4)
   const spin = new Group()
   group.add(spin)
   spin.rotation.y = rad(72) // Americas face the viewer first
-  const dirs: Vector3[] = [], land: boolean[] = []
-  fib(n).forEach((v, i) => {
-    const l = isLand(deg(Math.asin(v.y)), deg(Math.atan2(v.x, v.z)))
-    if (l || i % oceanEvery === 0) { dirs.push(v); land.push(l) }
-  })
-  const D = dirs.length, cloud = dotCloud(D, size, pixelRatio)
-  spin.add(cloud.points)
+
+  // One cloud per layout, built the first time its theme is shown.
+  const layouts = new Map<Dots, { cloud: ReturnType<typeof dotCloud>; dirs: Vector3[]; land: boolean[] }>()
+  const layout = (d: Dots) => {
+    let l = layouts.get(d)
+    if (l) return l
+    const dirs: Vector3[] = [], land: boolean[] = []
+    fib(Math.round(d.land * scale)).forEach((v, i) => {
+      const isL = landAt(v)
+      if (isL || (d.seaEvery && i % d.seaEvery === 0)) { dirs.push(v); land.push(isL) }
+    })
+    if (d.sea) fib(Math.round(d.sea * scale)).forEach((v) => { if (!landAt(v)) { dirs.push(v); land.push(false) } })
+    l = { cloud: dotCloud(dirs.length, size, pixelRatio), dirs, land }
+    spin.add(l.cloud.points)
+    layouts.set(d, l)
+    return l
+  }
+  let cur = layout(dots)
+
   const coreMat = new MeshBasicMaterial()
   spin.add(new Mesh(new SphereGeometry(R * 0.985, 64, 32), coreMat))
   const halo = glowSprite(R * 3.1)
@@ -153,12 +178,16 @@ function makeEarth({ R, n, oceanEvery, size, pixelRatio }: { R: number; n: numbe
   return {
     group, spin, R, hitSphere,
     theme(p: Palette, dark: boolean) {
-      coreMat.color.copy(p.core)
+      coreMat.colorWrite = p.core !== null
+      if (p.core) coreMat.color.copy(p.core)
       halo.material.opacity = dark ? 0.22 : 0.12
+      cur = layout(p.dots)
+      for (const l of layouts.values()) l.cloud.points.visible = l === cur
     },
     update(t: number, pal: Palette, hit: Vector3, hitAmt: number) {
+      const { cloud, dirs, land } = cur, { landSize, seaSize } = pal.dots
       spin.getWorldQuaternion(q)
-      for (let i = 0; i < D; i++) {
+      for (let i = 0; i < dirs.length; i++) {
         const d = dirs[i]
         const f = smoothstep(tmp.copy(d).applyQuaternion(q).z, -0.15, 0.55) // facing the camera
         const dist = hitAmt > 0.01 ? Math.hypot(d.x * R - hit.x, d.y * R - hit.y, d.z * R - hit.z) : 9
@@ -166,8 +195,8 @@ function makeEarth({ R, n, oceanEvery, size, pixelRatio }: { R: number; n: numbe
         const rr = R * (1 + g * 0.1)
         const tw = land[i] ? 0.85 + 0.15 * Math.sin(t * 1.4 + i) : 1 // twinkle
         cloud.set(i, d.x * rr, d.y * rr, d.z * rr,
-          (land[i] ? 1 : 0.7) * tw * (1 + g * 1.6),
-          c.copy(land[i] ? pal.fg : pal.muted).lerp(ACCENT, Math.min(1, g * 1.5)),
+          (land[i] ? landSize : seaSize) * tw * (1 + g * 1.6),
+          c.copy(land[i] ? pal.fg : pal.sea).lerp(ACCENT, Math.min(1, g * 1.5)),
           ((land[i] ? 0.95 : pal.ocean) + g) * (pal.rim + f * (1 - pal.rim)))
       }
       cloud.flush()
@@ -193,7 +222,7 @@ export function createGlobeScene(canvas: HTMLCanvasElement, opts: { dark: boolea
   camera.position.set(0, 0, 10)
   const root = new Group()
   scene.add(root)
-  const earth = makeEarth({ R: 1.95, n: innerWidth < 768 ? 14000 : 22000, oceanEvery: 7, size: 2.4, pixelRatio })
+  const earth = makeEarth({ R: 1.95, scale: innerWidth < 768 ? 14 / 22 : 1, size: 2.4, pixelRatio, dots: palette(opts.dark).dots })
   root.add(earth.group)
 
   // City markers + arcs between them
