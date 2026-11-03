@@ -1,6 +1,7 @@
 export const SPEEDS = [1, 2, 0.5] as const
 export const PAUSE_MS = 3000
 export const SERVICE_PAUSE_MS = 400 // per card: each card is short
+export const PROJECTS_PAUSE_MS = 9000 // long enough to watch the stage play
 export const SCROLL_SECONDS = 1.2
 // Replay order once Play reaches the hero: globe backdrop → text stagger → skills marquee
 export const HERO_INTRO_TEXT_MS = 600 // globe is half faded in
@@ -18,7 +19,6 @@ const STOP_KEYS = new Set([
 export interface TourStop {
   y: number
   hash?: string
-  slide?: number
   intro?: boolean
   /** Hold at 1×; defaults to PAUSE_MS. */
   pauseMs?: number
@@ -33,7 +33,6 @@ export interface AutoplayEnv {
   /** Returns a cancel function. */
   wait(ms: number, done: () => void): () => void
   setHash(hash: string): void
-  slideTo(index: number): void
   playIntro(): void
 }
 
@@ -48,10 +47,6 @@ export interface PageMetrics {
   /** Page y of each service card's bottom edge; drives the stacked (non-sticky) layout. */
   serviceBottoms: number[]
   projectsTop: number
-  projectCount: number
-  /** Page y of each project card's bottom edge when the cards stack (phones); null when they sit in the carousel. */
-  projectBottoms: number[] | null
-  scrub: { start: number; end: number } | null
   contactTop: number
 }
 
@@ -93,20 +88,7 @@ export function buildStops(m: PageMetrics): TourStop[] {
   } else {
     stepDown(m.servicesTop, m.serviceBottoms, "#services", SERVICE_PAUSE_MS)
   }
-  if (m.projectBottoms) {
-    stepDown(m.projectsTop, m.projectBottoms, "#projects")
-  } else {
-    for (let i = 0; i < m.projectCount; i++) {
-      const hash = i === 0 ? "#projects" : undefined
-      if (m.scrub) {
-        // The pinned carousel maps scroll progress to slides, so each project has its own scroll position
-        const t = m.projectCount > 1 ? i / (m.projectCount - 1) : 0
-        stops.push({ y: clamp(m.scrub.start + (m.scrub.end - m.scrub.start) * t), hash })
-      } else {
-        stops.push({ y: clamp(m.projectsTop - m.headerPx), hash, slide: i })
-      }
-    }
-  }
+  stops.push({ y: clamp(m.projectsTop - m.headerPx), hash: "#projects", pauseMs: PROJECTS_PAUSE_MS })
   stops.push({ y: clamp(m.contactTop - m.headerPx), hash: "#contact" })
   return stops
 }
@@ -148,7 +130,6 @@ export function createAutoplay(env: AutoplayEnv, onChange: (s: AutoplayState) =>
     cancel = null
     const stopScroll = env.scrollTo(stop.y, SCROLL_SECONDS / speed(), () => {
       if (stop.hash) env.setHash(stop.hash)
-      if (stop.slide !== undefined) env.slideTo(stop.slide)
       if (stop.intro) env.playIntro()
       nextIndex = i + 1
       const arrivedY = env.getScrollY()
@@ -165,7 +146,7 @@ export function createAutoplay(env: AutoplayEnv, onChange: (s: AutoplayState) =>
   function resumeIndex(): number {
     const stops = env.getStops()
     const y = env.getScrollY()
-    // Slide stops share one y, so prefer the remembered stop when we are still sitting on it
+    // Stops can share one y, so prefer the remembered stop when we are still sitting on it
     if (nextIndex !== null && Math.abs((stops[nextIndex]?.y ?? Infinity) - y) <= POS_TOLERANCE_PX) return nextIndex
     const ahead = stops.findIndex((s) => s.y > y + POS_TOLERANCE_PX)
     return ahead === -1 ? stops.length : ahead

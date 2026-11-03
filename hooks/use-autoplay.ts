@@ -1,7 +1,6 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import type Swiper from "swiper"
 import { buildStops, createAutoplay, isStopKey, HERO_INTRO_EVENT, AUTOPLAY_TOGGLE_EVENT, type AutoplayState } from "@/lib/autoplay"
 
 const HEADER_PX = 64 // sections use scroll-mt-16
@@ -23,8 +22,6 @@ export function useAutoplay() {
         getStops: () => {
           const top = (id: string) => (document.getElementById(id)?.getBoundingClientRect().top ?? 0) + window.scrollY
           const services = document.getElementById("services")
-          const projectsWrapper = document.querySelector("#projects .swiper-wrapper")
-          const { scrubStart, scrubEnd } = document.getElementById("projects-carousel")?.dataset ?? {}
           return buildStops({
             vh: root.clientHeight,
             maxScroll: getMaxScroll(),
@@ -38,21 +35,12 @@ export function useAutoplay() {
               (card) => card.getBoundingClientRect().bottom + window.scrollY,
             ),
             projectsTop: top("projects"),
-            projectCount: document.querySelectorAll("#projects .swiper-slide").length,
-            // Below the md breakpoint useScrollCarousel leaves Swiper off and CSS stacks the cards
-            projectBottoms:
-              projectsWrapper && getComputedStyle(projectsWrapper).flexDirection === "column"
-                ? [...document.querySelectorAll("#projects .swiper-slide")].map(
-                    (card) => card.getBoundingClientRect().bottom + window.scrollY,
-                  )
-                : null,
-            scrub: scrubStart && scrubEnd ? { start: +scrubStart, end: +scrubEnd } : null,
             contactTop: top("contact"),
           })
         },
         scrollTo: (y, seconds, done) => {
           // `html` has scroll-smooth, so every step must be "instant" or the browser fights the tween
-          // Touch slide stops share one y: arrive at once instead of tweening nowhere
+          // Stops sharing one y arrive at once instead of tweening nowhere
           if (Math.abs(y - window.scrollY) < 1 || matchMedia("(prefers-reduced-motion: reduce)").matches) {
             window.scrollTo({ top: y, behavior: "instant" })
             done()
@@ -78,8 +66,6 @@ export function useAutoplay() {
           return () => clearTimeout(id)
         },
         setHash: (hash) => history.replaceState(null, "", hash),
-        slideTo: (i) =>
-          (document.querySelector("#projects .swiper-container") as (Element & { swiper?: Swiper }) | null)?.swiper?.slideTo(i),
         playIntro: () => window.dispatchEvent(new Event(HERO_INTRO_EVENT)),
       },
       (s) =>

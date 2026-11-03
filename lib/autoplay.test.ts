@@ -5,6 +5,7 @@ import {
   createAutoplay,
   isStopKey,
   HERO_INTRO_MS,
+  PROJECTS_PAUSE_MS,
   type AutoplayEnv,
   type PageMetrics,
   type TourStop,
@@ -13,7 +14,7 @@ import {
 const M: PageMetrics = {
   vh: 1000, maxScroll: 7600, headerPx: 64, servicesTop: 1000, servicesHeight: 3000, servicesSticky: true, serviceCount: 4,
   serviceBottoms: [],
-  projectsTop: 4100, projectCount: 3, projectBottoms: null, scrub: { start: 4500, end: 6500 }, contactTop: 7400,
+  projectsTop: 4100, contactTop: 7400,
 }
 
 const STOPS: TourStop[] = [
@@ -30,7 +31,6 @@ function fakeEnv(stops: TourStop[] = STOPS, max = 2000) {
     scrolls: [] as { y: number; seconds: number }[],
     waits: [] as number[],
     hashes: [] as string[],
-    slides: [] as number[],
     intros: 0,
     cancels: 0,
     pending: null as (() => void) | null,
@@ -58,7 +58,6 @@ function fakeEnv(stops: TourStop[] = STOPS, max = 2000) {
       return later(done)
     },
     setHash: (h) => s.hashes.push(h),
-    slideTo: (i) => s.slides.push(i),
     playIntro: () => {
       s.intros++
     },
@@ -74,48 +73,20 @@ function fakeEnv(stops: TourStop[] = STOPS, max = 2000) {
   return { s, env, step, finish }
 }
 
-test("buildStops with scrub", () => {
+test("buildStops stops once at projects", () => {
   const stops = buildStops(M)
-  assert.deepEqual(stops.map((x) => x.y), [0, 1200, 1600, 2000, 2400, 4500, 5500, 6500, 7336])
-  assert.deepEqual(stops.map((x) => x.hash), [
-    "#about", "#services", undefined, undefined, undefined, "#projects", undefined, undefined, "#contact",
-  ])
+  assert.deepEqual(stops.map((x) => x.y), [0, 1200, 1600, 2000, 2400, 4036, 7336])
+  assert.deepEqual(stops.map((x) => x.hash), ["#about", "#services", undefined, undefined, undefined, "#projects", "#contact"])
   assert.equal(stops[0].intro, true)
-  assert.ok(stops.every((x) => x.slide === undefined))
-  assert.deepEqual(stops.map((x) => x.pauseMs), [
-    undefined, 400, 400, 400, 400, undefined, undefined, undefined, undefined,
-  ])
-})
-
-test("buildStops without scrub uses slide stops", () => {
-  const stops = buildStops({ ...M, servicesSticky: false, scrub: null })
-  assert.equal(stops[1].y, 936)
-  assert.equal(stops[2].slide, 0) // all cards show at once without the sticky reveal: one services stop
-  const projects = stops.slice(2, 5)
-  assert.deepEqual(projects.map((x) => x.y), [4036, 4036, 4036])
-  assert.deepEqual(projects.map((x) => x.slide), [0, 1, 2])
-  assert.deepEqual(projects.map((x) => x.hash), ["#projects", undefined, undefined])
+  assert.deepEqual(stops.map((x) => x.pauseMs), [undefined, 400, 400, 400, 400, PROJECTS_PAUSE_MS, undefined])
 })
 
 test("buildStops steps stacked services until every card is on screen", () => {
-  const stops = buildStops({ ...M, servicesSticky: false, scrub: null, serviceBottoms: [1400, 1800, 2200, 2600] })
+  const stops = buildStops({ ...M, servicesSticky: false, serviceBottoms: [1400, 1800, 2200, 2600] })
   // First stop already shows cards 1-2; then one stop per card whose bottom is still below the fold
   assert.deepEqual(stops.slice(1, 4).map((x) => x.y), [936, 1200, 1600])
   assert.deepEqual(stops.slice(1, 4).map((x) => x.hash), ["#services", undefined, undefined])
   assert.equal(stops[4].hash, "#projects")
-})
-
-test("buildStops steps stacked projects until every card is on screen", () => {
-  const stops = buildStops({ ...M, servicesSticky: false, scrub: null, projectBottoms: [4600, 5200, 5800] })
-  const projects = stops.filter((x) => x.y >= 4036 && x.hash !== "#contact")
-  assert.deepEqual(projects.map((x) => x.y), [4036, 4200, 4800])
-  assert.deepEqual(projects.map((x) => x.hash), ["#projects", undefined, undefined])
-  assert.ok(projects.every((x) => x.slide === undefined && x.pauseMs === undefined))
-})
-
-test("buildStops gives stacked projects one stop when they all fit", () => {
-  const stops = buildStops({ ...M, servicesSticky: false, scrub: null, projectBottoms: [4300, 4500, 4900] })
-  assert.equal(stops.filter((x) => x.y >= 4036 && x.hash !== "#contact").length, 1)
 })
 
 test("buildStops clamps to maxScroll", () => {
@@ -199,22 +170,22 @@ test("resume goes to the next stop below the current position", () => {
   assert.equal(s.intros, 1)
 })
 
-test("resume on same-y slide stops keeps slide order", () => {
+test("resume on same-y stops keeps stop order", () => {
   const stops: TourStop[] = [
-    { y: 500, hash: "#projects", slide: 0 },
-    { y: 500, slide: 1 },
-    { y: 500, slide: 2 },
+    { y: 500, hash: "#a" },
+    { y: 500, hash: "#b" },
+    { y: 500, hash: "#c" },
   ]
   const { s, env, step } = fakeEnv(stops, 5000)
   const a = createAutoplay(env, () => {})
   a.play()
-  step() // arrive slide 0
-  step() // hold done → leg to slide 1
-  step() // arrive slide 1, holding
+  step() // arrive first
+  step() // hold done → leg to second
+  step() // arrive second, holding
   a.pause()
   a.play()
-  step() // arrive slide 2
-  assert.deepEqual(s.slides, [0, 1, 2])
+  step() // arrive third
+  assert.deepEqual(s.hashes, ["#a", "#b", "#c"])
 })
 
 test("fresh play mid-page starts from the hero", () => {
