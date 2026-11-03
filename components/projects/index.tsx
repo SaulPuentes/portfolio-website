@@ -1,72 +1,53 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { useI18n } from "@/lib/i18n/context"
 import { projects } from "@/lib/data"
 import type { Project } from "@/lib/types"
-import { ScrollCarousel } from "@/components/scroll-carousel"
-import type { CarouselItem } from "@/components/scroll-carousel"
+import { useShowcase } from "@/hooks/use-showcase"
 import { ProjectDetailModal } from "./project-detail-modal"
+import { Stage } from "./stage"
+import { Strip } from "./strip"
+
+const MOBILE = "(max-width: 767.98px)"
+const HEADER_PX = 64
 
 export function ProjectsSection() {
-  const { locale, t } = useI18n()
+  const { t } = useI18n()
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const { timeline, paused, togglePaused, select, onScreen, sectionRef, fillRef } = useShowcase(projects)
+  const stageRef = useRef<HTMLDivElement | null>(null)
 
-  const carouselItems: CarouselItem[] = projects.map((p) => ({
-    image: p.image
-      ? { src: p.image, alt: p.name[locale], width: 1024, height: 640 }
-      : undefined,
-    gallery:
-      p.gallery && p.gallery.length > 1
-        ? p.gallery.map((src, i) => ({
-            src,
-            alt: `${p.name[locale]} ${i + 1}`,
-            width: 1024,
-            height: 640,
-          }))
-        : undefined,
-    title: p.name[locale],
-    description: p.description[locale][0],
-    badges: p.technologies,
-    cta: {
-      label: t.projects.viewDetails,
-      href: "#",
-    },
-  }))
-
-  const handleCtaClick = (e: React.MouseEvent) => {
-    const target = e.target as HTMLElement
-    const ctaEl = target.closest<HTMLAnchorElement>(".cta-button")
-    if (!ctaEl) return
-
-    e.preventDefault()
-    const slideEl = ctaEl.closest(".swiper-slide")
-    if (!slideEl) return
-    const slideContainer = slideEl.parentElement
-    if (!slideContainer) return
-    const index = Array.from(slideContainer.children).filter(
-      (el) => el.classList.contains("swiper-slide"),
-    ).indexOf(slideEl)
-    if (index >= 0 && index < projects.length) {
-      setSelectedProject(projects[index])
-    }
+  const onSelectCard = (index: number) => {
+    select(index)
+    // The only scroll in this feature: on phones the strip sits below the stage, and the visitor asked for this
+    const stage = stageRef.current
+    if (!stage || !matchMedia(MOBILE).matches) return
+    const { top, bottom } = stage.getBoundingClientRect()
+    if (top < HEADER_PX || bottom > document.documentElement.clientHeight) stage.scrollIntoView({ block: "start" })
   }
 
+  const project = projects[timeline.project]
+
   return (
-    <section id="projects" className="relative scroll-mt-16">
-      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-      <div onClick={handleCtaClick}>
-        <ScrollCarousel
-          id="projects-carousel"
-          items={carouselItems}
-          heading={t.projects.sectionTitle}
-          scrub
-          onCardClick={(index) => {
-            if (index >= 0 && index < projects.length) {
-              setSelectedProject(projects[index])
-            }
-          }}
-        />
+    <section id="projects" ref={sectionRef} className="relative scroll-mt-16 py-16 md:py-24">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 className="mb-6 text-3xl font-bold text-foreground md:text-4xl">{t.projects.sectionTitle}</h2>
+        {project && (
+          <Stage
+            ref={stageRef}
+            project={project}
+            index={timeline.project}
+            total={projects.length}
+            next={projects[(timeline.project + 1) % projects.length]}
+            slide={timeline.slide}
+            paused={paused}
+            onTogglePaused={togglePaused}
+            onDetails={() => setSelectedProject(project)}
+            fillRef={fillRef}
+          />
+        )}
+        <Strip projects={projects} activeIndex={timeline.project} running={onScreen} onSelect={onSelectCard} />
       </div>
 
       {selectedProject && (

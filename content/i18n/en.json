@@ -43,11 +43,9 @@
     "viewLive": "Live Preview",
     "viewRepo": "Repository",
     "viewDetails": "Details",
-    "description": "Description",
-    "links": "Links",
-    "techStack": "Tech Stack",
     "close": "Close",
-    "featured": "Featured Project"
+    "featured": "Featured Project",
+    "upNext": "Up next"
   },
   "contact": {
     "sectionTitle": "Contact",

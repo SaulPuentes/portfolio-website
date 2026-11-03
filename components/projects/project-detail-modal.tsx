@@ -39,18 +39,14 @@ export function ProjectDetailModal({
         {/* Sticky header */}
         <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-border bg-background px-6 py-5">
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-              {project.featured && (
-                <>
-                  <Star className="size-3 fill-accent text-accent" />
-                  <span className="text-accent">{t.projects.featured}</span>
-                  <span className="h-px w-3 bg-border" aria-hidden="true" />
-                </>
-              )}
-              <span>// project</span>
-            </div>
+            {project.featured && (
+              <div className="mb-1.5 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-accent">
+                <Star className="size-3 fill-accent" />
+                <span>{t.projects.featured}</span>
+              </div>
+            )}
             <DialogTitle
-              className="mt-1.5 font-medium text-xl md:text-2xl tracking-[-0.02em] leading-tight truncate"
+              className="font-medium text-xl md:text-2xl tracking-[-0.02em] leading-tight truncate"
               style={{ fontFamily: "var(--font-display)" }}
             >
               {project.name[locale]}
@@ -76,8 +72,7 @@ export function ProjectDetailModal({
 
           {/* 2. Tech stack */}
           <section className="mt-8">
-            <SectionLabel>{t.projects.techStack}</SectionLabel>
-            <div className="mt-3 flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1.5">
               {project.technologies.map((tech) => (
                 <span
                   key={tech}
@@ -91,9 +86,8 @@ export function ProjectDetailModal({
 
           {/* 3. Description */}
           <section className="mt-8">
-            <SectionLabel>{t.projects.description}</SectionLabel>
             <DialogDescription asChild>
-              <div className="mt-3 flex flex-col gap-3">
+              <div className="flex flex-col gap-3">
                 {project.description[locale].map((paragraph, i) => (
                   <p
                     key={i}
@@ -109,8 +103,7 @@ export function ProjectDetailModal({
           {/* 4. Links */}
           {(project.liveUrl || (project.liveUrls && project.liveUrls.length > 0) || project.repoUrl) && (
             <section className="mt-8 pt-6 border-t border-border">
-              <SectionLabel>{t.projects.links}</SectionLabel>
-              <div className="mt-3 flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-3">
                 {project.liveUrls && project.liveUrls.length > 0 ? (
                   project.liveUrls.map((link) => (
                     <Button key={link.url} asChild>

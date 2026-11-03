@@ -43,11 +43,9 @@
     "viewLive": "Live ansehen",
     "viewRepo": "Repository",
     "viewDetails": "Details",
-    "description": "Beschreibung",
-    "links": "Links",
-    "techStack": "Tech-Stack",
     "close": "Schliessen",
-    "featured": "Hauptprojekt"
+    "featured": "Hauptprojekt",
+    "upNext": "Als Nächstes"
   },
   "contact": {
     "sectionTitle": "Kontakt",

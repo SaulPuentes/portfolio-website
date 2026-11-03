@@ -33,11 +33,9 @@ export interface Translations {
     viewLive: string
     viewRepo: string
     viewDetails: string
-    description: string
-    links: string
-    techStack: string
     close: string
     featured: string
+    upNext: string
   }
   contact: {
     sectionTitle: string

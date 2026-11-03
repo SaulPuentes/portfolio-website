@@ -19,3 +19,7 @@ test("every service key has copy in every locale", () => {
       assert.ok(copy?.title && copy?.description, s.key)
     }
 })
+
+test("showcase copy exists in every locale", () => {
+  for (const json of [en, es, de]) assert.ok((json.projects as Record<string, string>).upNext)
+})
