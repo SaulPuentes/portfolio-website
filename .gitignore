@@ -29,3 +29,6 @@ out/
 .env*.local
 .DS_Store
 *.tsbuildinfo
+
+# Brainstorm companion mockups
+.superpowers/
