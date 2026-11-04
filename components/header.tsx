@@ -6,8 +6,6 @@ import { siteConfig } from "@/lib/site-config"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { locales } from "@/lib/i18n"
 import { useHeader } from "@/hooks/use-header"
-import { useAutoplay } from "@/hooks/use-autoplay"
-import { AutoplayButton } from "@/components/autoplay-button"
 
 export function Header() {
   const {
@@ -26,11 +24,6 @@ export function Header() {
     handleSetLocale,
     scrollTo,
   } = useHeader()
-  const autoplay = useAutoplay()
-  const handleToggle = () => {
-    setMobileOpen(false)
-    autoplay.toggle()
-  }
 
   return (
     <header ref={headerRef} className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
@@ -75,24 +68,13 @@ export function Header() {
             </button>
           ))}
 
-          <div
-            className="flex items-center gap-2 transition-all duration-700 ease-out"
-            style={{
-              opacity: headerReady ? 1 : 0,
-              transform: headerReady ? "translateY(0)" : "translateY(-10px)",
-              transitionDelay: `${(navItems.length + 1) * 80}ms`,
-            }}
-          >
-            <AutoplayButton state={autoplay.state} onToggle={handleToggle} onSpeed={autoplay.cycleSpeed} />
-          </div>
-
           {/* Language Switcher */}
           <div
             className="relative transition-all duration-700 ease-out"
             style={{
               opacity: headerReady ? 1 : 0,
               transform: headerReady ? "translateY(0)" : "translateY(-10px)",
-              transitionDelay: `${(navItems.length + 2) * 80}ms`,
+              transitionDelay: `${(navItems.length + 1) * 80}ms`,
             }}
           >
             <button
@@ -134,7 +116,7 @@ export function Header() {
             style={{
               opacity: headerReady ? 1 : 0,
               transform: headerReady ? "translateY(0)" : "translateY(-10px)",
-              transitionDelay: `${(navItems.length + 3) * 80}ms`,
+              transitionDelay: `${(navItems.length + 2) * 80}ms`,
             }}
           >
             <ThemeToggle />
@@ -143,7 +125,6 @@ export function Header() {
 
         {/* Mobile controls */}
         <div className="flex items-center gap-2 md:hidden">
-          <AutoplayButton state={autoplay.state} onToggle={handleToggle} onSpeed={autoplay.cycleSpeed} />
           <ThemeToggle />
           <button
             className="flex items-center"

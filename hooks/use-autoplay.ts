@@ -112,8 +112,7 @@ export function useAutoplay() {
     }
   }, [])
 
-  const toggle = useCallback(() => engine.current?.toggle(), [])
   const cycleSpeed = useCallback(() => engine.current?.cycleSpeed(), [])
 
-  return { state, toggle, cycleSpeed }
+  return { state, cycleSpeed }
 }

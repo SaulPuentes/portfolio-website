@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import { useI18n } from "@/lib/i18n/context"
 import { locales, defaultLocale } from "@/lib/i18n"
 import { usePathname, useRouter } from "next/navigation"
+import { AUTOPLAY_TOGGLE_EVENT } from "@/lib/autoplay"
 
 export function useHeader() {
   const { locale, setLocale, t } = useI18n()
@@ -47,6 +48,12 @@ export function useHeader() {
   useEffect(() => {
     const timer = setTimeout(() => setHeaderReady(true), 100)
     return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    const closeMenu = () => setMobileOpen(false)
+    window.addEventListener(AUTOPLAY_TOGGLE_EVENT, closeMenu)
+    return () => window.removeEventListener(AUTOPLAY_TOGGLE_EVENT, closeMenu)
   }, [])
 
   const updateSlider = useCallback(() => {

@@ -7,6 +7,7 @@ import { ServicesSection } from "@/components/services-section"
 import { ProjectsSection } from "@/components/projects"
 import { ContactSection } from "@/components/contact-section"
 import { Footer } from "@/components/footer"
+import { AutoplayBadge } from "@/components/autoplay-badge"
 
 export default function Home() {
   return (
@@ -19,6 +20,7 @@ export default function Home() {
         <ContactSection />
       </main>
       <Footer />
+      <AutoplayBadge />
     </I18nProvider>
   )
 }

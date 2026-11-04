@@ -3,12 +3,12 @@
 import { useEffect, useRef } from "react"
 import { useI18n } from "@/lib/i18n/context"
 import { cvFiles } from "@/lib/i18n"
-import { Download, Play } from "lucide-react"
+import { ArrowDown, Download } from "lucide-react"
 import { siteConfig } from "@/lib/site-config"
 import { Button } from "@/components/ui/button"
 import { SkillsMarquee } from "@/components/skills-marquee"
 import { HeroGlobe } from "@/components/hero-globe"
-import { AUTOPLAY_TOGGLE_EVENT, HERO_INTRO_EVENT, HERO_INTRO_TEXT_MS } from "@/lib/autoplay"
+import { HERO_INTRO_EVENT, HERO_INTRO_TEXT_MS } from "@/lib/autoplay"
 
 const [firstName, ...rest] = siteConfig.name.split(" ")
 const lastName = rest.join(" ")
@@ -143,13 +143,11 @@ export function HeroSection() {
             data-hero
             className="opacity-0 translate-y-6 flex flex-wrap justify-start gap-3 [&>*]:flex-1 [@media(min-aspect-ratio:9/10)]:[&>*]:flex-none"
           >
-            <Button
-              size="lg"
-              data-autoplay-control
-              onClick={() => window.dispatchEvent(new Event(AUTOPLAY_TOGGLE_EVENT))}
-            >
-              <Play className="size-4" />
-              {t.hero.autoplay}
+            <Button asChild size="lg">
+              <a href="#projects">
+                <ArrowDown className="size-4" />
+                {t.hero.viewProjects}
+              </a>
             </Button>
             <Button asChild variant="outline" size="lg">
               <a href={cvFiles[locale]} download>
