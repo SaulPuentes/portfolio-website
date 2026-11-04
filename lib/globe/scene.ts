@@ -31,6 +31,7 @@ import {
   type Object3D,
 } from "three"
 import { CAPITALS, isLand, latLonToUnit, pickArcPair } from "./geo"
+import { makeSky } from "./sky"
 
 export interface GlobeHandle {
   setTheme(dark: boolean): void
@@ -209,6 +210,8 @@ const halfSize = (camera: PerspectiveCamera, dist: number) => {
   return { w: h * camera.aspect, h }
 }
 
+const SKY_Z = -6 // constellation plane: behind the globe, in front of the far starfield
+
 const isUi = (target: EventTarget | null) => target instanceof Element && target.closest("a, button, header") !== null
 
 export function createGlobeScene(canvas: HTMLCanvasElement, opts: { dark: boolean; reducedMotion: boolean }): GlobeHandle {
@@ -253,6 +256,11 @@ export function createGlobeScene(canvas: HTMLCanvasElement, opts: { dark: boolea
   )
   scene.add(stars)
 
+  const sky = makeSky(pixelRatio)
+  sky.group.position.z = SKY_Z
+  scene.add(sky.group)
+  let skyHalf = { w: 1, h: 1 }
+
   // Pointer state, fed by window listeners so the hero text can sit above the canvas.
   const pointer = new Vector2(9, 9)
   let pointerInside = false, pointerDown = false, dragDx = 0
@@ -282,6 +290,7 @@ export function createGlobeScene(canvas: HTMLCanvasElement, opts: { dark: boolea
     const aspect = w / h
     camera.aspect = aspect
     camera.updateProjectionMatrix()
+    skyHalf = halfSize(camera, camera.position.z - SKY_Z)
     const half = halfSize(camera, 10), phone = aspect < 0.9
     root.position.set(phone ? 0 : half.w * 0.42, phone ? half.h * 0.4 : -0.05, 0)
     root.scale.setScalar(phone ? 0.62 : Math.min(1, aspect / 1.5))
@@ -295,6 +304,7 @@ export function createGlobeScene(canvas: HTMLCanvasElement, opts: { dark: boolea
     pal = palette(dark)
     earth.theme(pal, dark)
     starMat.color.copy(pal.muted)
+    sky.group.visible = dark // constellations are a dark-theme effect
   }
   setTheme(opts.dark)
 
@@ -335,8 +345,17 @@ export function createGlobeScene(canvas: HTMLCanvasElement, opts: { dark: boolea
       const head = Math.min(1, age * 2), tail = Math.max(0, age * 2 - 1)
       a.line.geometry.setDrawRange(Math.floor(tail * SEG), Math.max(0, Math.floor((head - tail) * SEG) + 1))
     }
-    stars.position.x = damp(stars.position.x, pointerInside ? -pointer.x * 0.4 : 0, 2, dt)
-    stars.position.y = damp(stars.position.y, pointerInside ? -pointer.y * 0.25 : 0, 2, dt)
+    // Background parallax kept small so the constellations read as still
+    stars.position.x = damp(stars.position.x, pointerInside ? -pointer.x * 0.15 : 0, 2, dt)
+    stars.position.y = damp(stars.position.y, pointerInside ? -pointer.y * 0.1 : 0, 2, dt)
+    const g = sky.group.position // nearer than the starfield, so it shifts a little more
+    g.x = damp(g.x, pointerInside ? -pointer.x * 0.2 : 0, 2, dt)
+    g.y = damp(g.y, pointerInside ? -pointer.y * 0.12 : 0, 2, dt)
+    if (sky.group.visible)
+      sky.update({
+        t, dt: dt * motion, hw: skyHalf.w, hh: skyHalf.h, fg: pal.fg,
+        cursor: pointerInside ? { x: pointer.x * skyHalf.w - g.x, y: pointer.y * skyHalf.h - g.y } : null,
+      })
   }
 
   const clock = new Clock(false)
