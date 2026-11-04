@@ -104,12 +104,6 @@ export function Stage({
           ))}
         </div>
 
-        {count > 1 && (
-          <div className={`${ON_IMAGE} bottom-3 left-3 px-2 py-1.5 font-mono text-[10px] tracking-[0.25em] md:bottom-auto md:top-3`}>
-            {pad(slide + 1)} / {pad(count)}
-          </div>
-        )}
-
         <button
           type="button"
           onClick={onTogglePaused}
