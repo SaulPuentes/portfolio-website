@@ -24,8 +24,9 @@ const plan = (rows: string[], layer: number): Block[] =>
   rows.flatMap((row, z) => [...row].flatMap((c, x) => (c === "#" ? [cube(x, layer, z)] : [])))
 
 // Pixel drawing that stands upright: # is a cube.
-const upright = (rows: string[]): Block[] =>
-  rows.flatMap((row, r) => [...row].flatMap((c, x) => (c === "#" ? [cube(x, rows.length - 1 - r, 0)] : [])))
+const upright = (rows: string[], depth: number): Block[] =>
+  rows.flatMap((row, r) => [...row].flatMap((c, x) =>
+    c === "#" ? Array.from({ length: depth }, (_, z) => cube(x, rows.length - 1 - r, z)) : []))
 
 const PRESS_X = 4
 
@@ -34,17 +35,17 @@ export const smooth = (x: number) => {
   return c * c * (3 - 2 * c)
 }
 
+// Drawn to similar on-screen bounds, since fit() gives all four one cube size.
 export const STRUCTURES: Block[][] = [
   // Strategy & Architecture: a solid stepped pyramid, its capstone floating above it.
   [
-    ...slab(0, 0, 8, 0),
-    ...slab(1, 1, 6, 1),
-    ...slab(2, 2, 4, 2),
+    ...slab(0, 0, 6, 0),
+    ...slab(1, 1, 4, 1),
     // High enough that the top tier's back corner stays clear of it on screen, even mid-bob.
-    ...slab(3, 3, 2, 6.4, 0.15, 0).map((b) => ({ ...b, idle: 0.35 })),
+    ...slab(2, 2, 2, 5.4, 0.15, 0).map((b) => ({ ...b, idle: 0.35 })),
   ],
   // Full-Stack Development: the stack itself, three thin plates.
-  [0, 1, 2].flatMap((l) => slab(0, 0, 5, l * 1.35).map((b) => ({ ...b, h: PLATE }))),
+  [0, 1, 2].flatMap((l) => slab(0, 0, 6, l * 1.35).map((b) => ({ ...b, h: PLATE }))),
   // AI & Automation: a production line, a belt running under a press.
   [
     ...box(0, 0, 9, 3, 0),
@@ -60,7 +61,7 @@ export const STRUCTURES: Block[][] = [
     ".####..",
     "....##.",
     ".....##",
-  ]),
+  ], 2),
 ]
 
 // Small cubes ride the belt, the press comes down as each passes under, and they leave full size
@@ -149,7 +150,7 @@ function place(cell: Cell, boxes: Rect[], pitch: number) {
   return null
 }
 
-const MAX_PITCH = 22, MIN_PITCH = 9
+const MAX_PITCH = 20, MIN_PITCH = 9
 
 // Largest cube size at which all four structures fit, one size so they read as a set.
 // Null when a cell has no room: then nothing is drawn rather than something overlapping.

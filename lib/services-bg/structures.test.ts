@@ -23,6 +23,14 @@ test("every structure lands inside its cell and clear of the copy and number", (
   })
 })
 
+test("the four structures read at a similar size", () => {
+  const { boxes } = fit([0, 1, 2, 3].map(() => cell(0, 0, [])))!
+  const extent = (pick: (b: Cell["rect"]) => [number, number]) =>
+    boxes.map((bs) => Math.max(...bs.map((b) => pick(b)[1])) - Math.min(...bs.map((b) => pick(b)[0])))
+  for (const sizes of [extent((b) => [b.x, b.x + b.w]), extent((b) => [b.y, b.y + b.h])])
+    assert.ok(Math.max(...sizes) / Math.min(...sizes) < 1.35, sizes.join(" "))
+})
+
 test("a cell with no free room draws nothing rather than overlapping", () => {
   const full = { x: 0, y: 0, w: 608, h: 300 }
   assert.equal(fit([cell(0, 0, [full])], [STRUCTURES[0]]), null)

@@ -50,7 +50,7 @@ export function ServicesSection() {
                 <div
                   key={service.key}
                   data-service-cell
-                  className={`group relative overflow-hidden border-b border-border p-8 pb-36 md:p-10 transition-all duration-700 ease-out ${
+                  className={`group relative overflow-hidden border-b border-border p-8 pb-44 md:p-8 transition-all duration-700 ease-out ${
                     isRight ? "md:border-l" : ""
                   }`}
                   style={{
@@ -64,7 +64,7 @@ export function ServicesSection() {
                     data-service-number
                     className="pointer-events-none absolute right-6 top-6 select-none font-mono font-medium leading-none text-foreground/[0.05] transition-all duration-500 group-hover:text-accent/30"
                     style={{
-                      fontSize: "clamp(4rem, 9vw, 7rem)",
+                      fontSize: "clamp(3rem, 5vw, 4rem)",
                     }}
                     aria-hidden="true"
                   >
@@ -77,7 +77,7 @@ export function ServicesSection() {
                     aria-hidden="true"
                   />
 
-                  <div className="relative flex flex-col h-full min-h-[220px]">
+                  <div className="relative flex flex-col h-full min-h-[237px]">
                     <div>
                       <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
                         <span className="text-accent">{service.number}</span>
@@ -86,12 +86,12 @@ export function ServicesSection() {
                       </div>
 
                       <h3
-                        className="mt-5 font-medium text-2xl md:text-[28px] leading-[1.15] tracking-[-0.02em] transition-colors duration-300"
+                        className="mt-4 font-medium text-xl md:text-2xl leading-[1.15] tracking-[-0.02em] transition-colors duration-300"
                         style={{ fontFamily: "var(--font-display)" }}
                       >
                         {serviceData.title}
                       </h3>
-                      <p className="mt-4 text-sm md:text-[15px] leading-relaxed text-muted-foreground max-w-md">
+                      <p className="mt-3 text-[13px] md:text-sm leading-relaxed text-muted-foreground max-w-[23rem]">
                         {serviceData.description}
                       </p>
                     </div>
