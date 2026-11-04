@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Light Globe Variants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --background: oklch(0.97 0 0);
+    --foreground: oklch(0.17 0 0);
+    --muted-foreground: oklch(0.50 0 0);
+    --border: oklch(0.91 0 0);
+    --primary: oklch(0.17 0 0);
+    --primary-foreground: oklch(0.985 0 0);
+    --accent: oklch(0.6231 0.188 259.81);
+    --card: oklch(1 0 0);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--background); color: var(--foreground); font-family: Inter, system-ui, sans-serif; overflow-x: hidden; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+
+  /* Header — mirrors components/header.tsx */
+  header { position: fixed; inset: 0 0 auto 0; z-index: 50; border-bottom: 1px solid var(--border);
+    background: color-mix(in oklch, var(--background) 80%, transparent); backdrop-filter: blur(12px); }
+  .bar { max-width: 80rem; margin: 0 auto; height: 3.5rem; padding: 0 1rem; display: flex; align-items: center; justify-content: space-between; }
+  .brand { font-size: .875rem; font-weight: 600; letter-spacing: -.01em; }
+  nav { display: flex; align-items: center; gap: 1.5rem; font-size: .875rem; }
+  nav .link { color: var(--muted-foreground); }
+  nav .link:first-child { color: var(--foreground); }
+  .icon-btn { width: 2rem; height: 2rem; display: grid; place-items: center; border: 1px solid var(--border);
+    border-radius: .375rem; background: transparent; color: var(--foreground); }
+  @media (max-width: 767px) { nav .link, nav .lang { display: none; } nav { gap: .5rem; } }
+
+  /* Hero — mirrors components/hero-section.tsx */
+  .hero { position: relative; height: 100dvh; min-height: 640px; overflow: hidden; display: flex; flex-direction: column; padding-top: 3.5rem; }
+  #gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
+  .veil { position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(90deg, var(--background) 0%, color-mix(in oklch, var(--background) 70%, transparent) 30%, transparent 62%); }
+  @media (max-width: 767px) {
+    .veil { background: linear-gradient(0deg, var(--background) 8%, color-mix(in oklch, var(--background) 80%, transparent) 45%, transparent 75%); }
+  }
+  .content { position: relative; z-index: 1; pointer-events: none; max-width: 80rem; width: 100%; margin: 0 auto; flex: 1; min-height: 0;
+    display: flex; flex-direction: column; justify-content: center; padding: 1rem 1.5rem; row-gap: clamp(.75rem, 3vh, 2.25rem); }
+  @media (min-width: 640px) { .content { padding: 1rem 2.5rem; } }
+  @media (min-width: 1024px) { .content { padding: 1rem 3.5rem; } }
+  @media (max-width: 767px) { .content { justify-content: flex-end; padding-bottom: 1.5rem; } }
+  .content a { pointer-events: auto; }
+  .eyebrow { display: flex; align-items: center; gap: .75rem; font-size: 11px; text-transform: uppercase; letter-spacing: .2em; color: var(--muted-foreground); }
+  .dot { width: 6px; height: 6px; border-radius: 99px; background: var(--accent); animation: ping 2s infinite; }
+  @keyframes ping { 0% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--accent) 60%, transparent); } 100% { box-shadow: 0 0 0 8px transparent; } }
+  .rule-s { height: 1px; width: 1.5rem; background: var(--border); }
+  h1 { margin: 0; font-family: Geist, sans-serif; font-weight: 500; letter-spacing: -.04em; line-height: .95; font-size: clamp(2.5rem, min(9vw, 11vh), 6rem); }
+  h1 span { display: block; }
+  h1 span + span { color: color-mix(in oklch, var(--foreground) 50%, transparent); }
+  .rule { height: 1px; background: linear-gradient(90deg, var(--border), var(--border), transparent); max-width: 40rem; }
+  .bottom { display: grid; gap: 1.5rem; align-items: start; }
+  .bottom p { margin: 0; max-width: 34rem; line-height: 1.65; font-size: clamp(.9rem, 1.6vh, 1.125rem); color: color-mix(in oklch, var(--foreground) 80%, transparent); }
+  .ctas { display: flex; flex-wrap: wrap; gap: .75rem; }
+  .btn { height: 2.5rem; padding: 0 1.25rem; border-radius: .375rem; display: inline-flex; align-items: center; gap: .5rem;
+    font: 500 .875rem Inter, sans-serif; border: 1px solid transparent; text-decoration: none; }
+  .btn-primary { background: var(--primary); color: var(--primary-foreground); }
+  .btn-outline { background: var(--background); color: var(--foreground); border-color: var(--border); }
+
+  .strip { position: relative; z-index: 1; padding-bottom: 2.5rem; overflow: hidden; pointer-events: none;
+    mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent); }
+  .strip .row { display: flex; width: max-content; gap: 3.5rem; animation: marquee 40s linear infinite; }
+  .strip span { font-family: Geist, sans-serif; font-weight: 600; font-size: 1.05rem; letter-spacing: -.01em; color: color-mix(in oklch, var(--foreground) 40%, transparent); white-space: nowrap; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+
+  /* Variant switcher (demo only) */
+  .switcher { position: fixed; z-index: 60; left: 50%; bottom: 1rem; transform: translateX(-50%); width: min(44rem, calc(100% - 2rem));
+    padding: .75rem; border-radius: .75rem; background: color-mix(in oklch, var(--card) 88%, transparent); border: 1px solid var(--border);
+    backdrop-filter: blur(14px); box-shadow: 0 10px 40px -10px rgb(0 0 0 / .25); }
+  .switcher .top { display: flex; align-items: center; justify-content: space-between; gap: .75rem; font-size: 10px; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--muted-foreground); margin-bottom: .5rem; }
+  .opts { display: grid; grid-template-columns: repeat(4, 1fr); gap: .375rem; }
+  .opt { text-align: left; padding: .5rem .625rem; border-radius: .5rem; border: 1px solid var(--border); background: transparent;
+    color: var(--foreground); cursor: pointer; font: 500 .8rem Inter, sans-serif; }
+  .opt b { display: block; font: 500 10px "JetBrains Mono", monospace; color: var(--muted-foreground); letter-spacing: .15em; margin-bottom: .15rem; }
+  .opt[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in oklch, var(--accent) 12%, transparent); }
+  .opt[aria-pressed="true"] b { color: var(--accent); }
+  .desc { margin: .55rem .1rem 0; font-size: .78rem; line-height: 1.5; color: var(--muted-foreground); min-height: 2.3em; }
+  @media (max-width: 560px) { .opt { padding: .4rem; font-size: .7rem; } .desc, .switcher .top span:first-child { display: none; } .switcher { bottom: .5rem; padding: .5rem; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <span class="brand">Saúl Puentes</span>
+    <nav>
+      <span class="link">Profile</span><span class="link">Services</span><span class="link">Projects</span><span class="link">Contact</span>
+      <span class="lang mono" style="font-size:.75rem;color:var(--muted-foreground)">EN</span>
+      <span class="icon-btn" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </span>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <canvas id="gl" aria-hidden="true"></canvas>
+  <div class="veil"></div>
+  <div class="content">
+    <div class="eyebrow mono">
+      <span style="display:flex;align-items:center;gap:.5rem"><span class="dot"></span><span style="color:var(--accent)">available</span></span>
+      <span class="rule-s"></span>
+      <span>Software Engineer with 8+ years of experience.</span>
+    </div>
+    <h1><span>Saúl</span><span>Puentes</span></h1>
+    <div class="rule"></div>
+    <div class="bottom">
+      <p>I build web applications and platforms for e-commerce, logistics, and SaaS with a strong focus on quality and detail.</p>
+      <div class="ctas">
+        <a class="btn btn-primary" href="#">↓ Download CV</a>
+        <a class="btn btn-outline" href="#">View Projects</a>
+      </div>
+    </div>
+  </div>
+  <div class="strip" aria-hidden="true"><div class="row" id="logos"></div></div>
+</section>
+
+<div class="switcher">
+  <div class="top"><span>Light globe · keys 1–4 or ← →</span><span class="mono" id="count"></span></div>
+  <div class="opts" id="opts"></div>
+  <p class="desc" id="desc"></p>
+</div>
+
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js" } }</script>
+<script type="module">
+import * as THREE from "three"
+const { degToRad: rad, radToDeg: deg, damp, smoothstep } = THREE.MathUtils
+
+const names = ["Grupo Xcaret", "Galerías", "NordicTrack", "Simonett", "Uncommon Man", "Trust", "Salsa World", "Nourpac", "Evalor", "Twelve Thirty Four", "Grupo DAGS"]
+document.getElementById("logos").innerHTML = [...names, ...names].map((n) => `<span>${n}</span>`).join("")
+
+// --- geo.ts -----------------------------------------------------------------
+const LAND_MASK_B64 = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+P8PAID//wcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4//+P/////38QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAODZ///4//////8fAAAAAAAAAAAwAAAAAB4AAAAAAAAAAAAAAAAAAAAAAAAAAPDf/w/4//////8BAAAAED8AAAAAAAAAAH8AAAAAAAAAAAAAAAAAAAAAAAAA8ID//8H//////38AAAAA/wAAAAAAAAAAAEAOAAAAAAAAAAAAAAAAAAAAAAAwABDgP+D//////38AAAAAOAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAADDwH4D///////8AAAAAEAAAAAAAwAAAAAB+AAAAAAAAAAAAAAAAAAAAAADPgycHBgAA/v////8AAAAAAAAAAACADwAAAP//HwAA4AsAAAAAAAAAAAAAAAA4ACD+DwAA+P////8AAAAAAAAAAADwAAAA+P//DwAAQAAAAAAAAAAAAAAAAP8AAOIhAAAA8P///38AAAAAAAAAAAAcAAAA/v//HAAAAAAAAAAAAAAAAAAAgP9Ph+e4/wAA4P///x8AAAAAAAAAAAAOAA7g//////8fAAYAAAAAAAAAAAAAAM//Bye8/wMA4P///x8AAAAAAAAAAAAPAE/e//////8fgP8BAAAAAADAAwAAAID/D/Dw/z8AAP///zMAAAAAAJABAAAMgM//////////////BwAAAAD8/z8AvgD/P/CAg/8AwP7//w8AAAAAgP8HAAAAgM//////////////D8APAYD///////95AcyPA/4AAP7//wMAAAAA4P//AQBAf57/////////////////DwD///////9jn+/Pg/EHgP//BwAAAAAA+P//D+P//9///////////////////wH8//////f/////A9g/gP//AwAAAAAA/v//H////+f//////////////////eP//////8P///8/APwZgP8/AGA/AAAA/+c/8P//////////////////////wMD////////////fw/8DAP8PAMA/AACA/+F/8v////////////////////9/AAD4///////////DBPAHAP4HAIADAADA//j///////////////////////8/AAD///////////8AAMADAPwDAAAAAAD4P/7///////////////////////9/AID////////5/38AwA8AAPgDAAAAAAD+H/5/////////////////////Of8BAID/7/z//////z8AwD8AAMABAAAAAAD+H/7j//////////////////9/gH8AAAD8JwD//////x8AgD8IAAAAAAAAAAD+fwD///////////////////89YAAAAADAAwD4/////z8AwH8cAAAAAAAAAACcH/D//////////////////wEAOAAAAACADQDw/////38AgP8/AAAAAAAAwAEAH/D//////////////////wAAPgAAAABgAADA//////8HAP9/AAAAAAAAwAMwDv7/////////////////PwAAfwAAAAAAAACA//////8/gP//AAAAAAAAgAMwAv7/////////////////DwCAPwAAAAAAAAAA/P//////4///AwAAAAAAMAcgIP///////////////v//DwCAHwAAAAAAAAAA/P////3/4///BwAAAAAAPA7w//////////////9//v//3wAADwAAAAAAAAAA+P////n/4///DwAAAAAAPB/+//////////////+//////wcAAwAAAAAAAAAA8P//////5///DwAAAAAABB///////////////////////wUAAwAAAAAAAAAA8P//////////CQAAAAAAAMH//////////////////////wQAAAAAAAAAAAAA4P////////8BDAAAAAAAAOD//////////////////////wwAAAAAAAAAAAAAgP3////P/38PPgAAAAAAAP3//////////////////////wAAAAAAAAAAAAAAAP////+D//8HfAAAAAAAAP7/////////////////////fwAAAAAAAAAAAAAAAP////+d//8HAAAAAAAAAPz//////D/+////////////PwQAAAAAAAAAAAAAAP////+f8P9/AAAAAAAAAPj///9j/A9+////////////HwAAAAAAAAAAAAAAAP/////f8f8dAAAAAAAAAPj/+P8B/Id/////////////DwYAAAAAAAAAAAAAAP/////PHT8EAAAAAAAAAPzH8f8A8If/////////////Bx4AAAAAAAAAAAAAAP/////P5x8AAAAAAAAA+H+Aw/8A4A////////////9/AAcAAAAAAAAAAAAAAP//////+R8AAAAAAAAA+H8Aj//w4B/8//////////8/AAAAAAAAAAAAAAAAAP///////wMAAAAAAAAA+B8wmM/+/x/+/////////98fAAEAAAAAAAAAAAAAAP///////wMAAAAAAAAA+A8wEMf//x/+/////////2cGAAMAAAAAAAAAAAAAAP7//////wEAAAAAAAAA+A8AAI7//x/8/////////wEOgAEAAAAAAAAAAAAAAPz//////wAAAAAAAAAA+AcABob//x/8/////////xccwAEAAAAAAAAAAAAAAPz//////wAAAAAAAAAAQIB/AAA2/3///////////x8c8AAAAAAAAAAAAAAAAPj//////wAAAAAAAAAAQPh/AAAA/////////////wcc/AAAAAAAAAAAAAAAAPD/////fwAAAAAAAAAAwP9/AAAA/////////////weEDwAAAAAAAAAAAAAAAMD/////HwAAAAAAAAAA8P9/AACA/////////////w9AAwAAAAAAAAAAAAAAAID/////DwAAAAAAAAAA+P//AwaA/////////////x9AAAAAAAAAAAAAAAAAAAD/////BwAAAAAAAAAA/P//Dx/A/////////////x9AAAAAAAAAAAAAAAAAAAD7////BwAAAAAAAAAA/P//P////////////////x8AAAAAAAAAAAAAAAAAAADy/z8CBgAAAAAAAAAA/P///////8///////////z8AAAAAAAAAAAAAAAAAAADk/w8ABgAAAAAAAAAA/v///////4///////////x8AAAAAAAAAAAAAAAAAAADM/wcADAAAAAAAAACA//////+//x///////////w8AAAAAAAAAAAAAAAAAAACY/wcADAAAAAAAAADA//////8//z/g/////////w8AAAAAAAAAAAAAAAAAAACQ/wcACAAAAAAAAADg//////9//n+A/////////wcAAAAAAAAAAAAAAAAAAAAw/wMAAAAAAAAAAADg//////9//n8MgP///////zMAAAAAAAAAAAAAAAAAAABA/AMAAAAAAAAAAADw//////9//P8/AP///////xEAAAAAAAAAAAAAAAAAAAAA/AMAHQAAAAAAAADw////////+P9/AP7/////PxAAAAAAAAAAAAAAAAAAAAAA+AcAYAAAAAAAAAD4////////+f9/APz/B///BgAAAAAAAAAAAAAAAAAAAAAA+AccgAEAAAAAAADw////////8f8/AOD/B/8/AAAAAAAAAAAAAAAAAAAAAAAA+A8eADgAAAAAAADw////////4f8/AOD/Af4/BgAAAAAAAAAAAAAAAAAAAAAA4B8PAHAAAAAAAADw////////4/8fAOD/APw/AgAAAAAAAAAAAAAAAAAAAAAAgP8PAAAAAAAAAADw////////x/8HAOB/APw/ADAAAAAAAAAAAAAAAAAAAAAAAP4PAAAAAAAAAADw////////h/8BAOA/AOx/ADAAAAAAAAAAAAAAAAAAAAAAAID/AAAAAAAAAAD4////////j/8AAMAPAMD/ABAAAAAAAAAAAAAAAAAAAAAAAAD/AQAAAAAAAAD4////////nx8AAMAPAMD/ARAAAAAAAAAAAAAAAAAAAAAAAAD4AQAAAAAAAAD4////////vwcAAIAPAMD/AQAAAAAAAAAAAAAAAAAAAAAAAADgAQAAAAAAAAD4////////fwAAAIAPAMD8AQAAAAAAAAAAAAAAAAAAAAAAAACAAEgAAAAAAADg////////f0AAAIAPAED4AQABAAAAAAAAAAAAAAAAAAAAAADAAf4SAAAAAADg/////////34AAAAHAEBwAEAAAAAAAAAAAAAAAAAAAAAAAAAAA+9/AAAAAADA/////////38AAAAHAEAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAzv//AAAAAACA/////////z8AAAASAMAAAAADAAAAAAAAAAAAAAAAAAAAAAAAyP//AQAAAAAA/////////z8AAAAwAIAAAAADAAAAAAAAAAAAAAAAAAAAAAAAgP//AwAAAAAA/v///////x8AAAAQAAADAAEBAAAAAAAAAAAAAAAAAAAAAAAAgP//fwAAAAAA/A/+/////w8AAAAAAAAHgAMAAAAAAAAAAAAAAAAAAAAAAAAAgP///wAAAAAAEADk/////w8AAAAAADAHwAMAAAAAAAAAAAAAAAAAAAAAAAAAgP///wEAAAAAAADA/////wcAAAAAAGAG4AEAAAAAAAAAAAAAAAAAAAAAAAAAwP///wEAAAAAAADA/////wMAAAAAAMAM+AMAAAAAAAAAAAAAAAAAAAAAAAAA4P///wMAAAAAAADA/////wAAAAAAAIAL/gMAAAAAAAAAAAAAAAAAAAAAAAAA8P///wMAAAAAAADg////fwAAAAAAAIAH/gEAAAAAAAAAAAAAAAAAAAAAAAAA8P///wcAAAAAAADg///PPwAAAAAAAAAH/gEAAQAAAAAAAAAAAAAAAAAAAAAA+P///38AAAAAAADg///PHwAAAAAAAAAP/DiAAwAAAAAAAAAAAAAAAAAAAAAA8P////8BAAAAAADA////DwAAAAAAAAA+/DgA8wAAAAAAAAAAAAAAAAAAAAAA8P////8fAAAAAACA////DwAAAAAAAAA8wCgA/gcAAAAAAAAAAAAAAAAAAAAA+P////8/AAAAAAAA////BwAAAAAAAAA4AEgA8B8AAAAAAAAAAAAAAAAAAAAA+P//////AQAAAAAA///9BwAAAAAAAAAQAAAAwD8GAAAAAAAAAAAAAAAAAAAA8P//////AQAAAAAA/v//BwAAAAAAAADAAAAAwH8AAAAAAAAAAAAAAAAAAAAA4P//////AQAAAAAA/v//BwAAAAAAAACAHwAAwH8AAAAAAAAAAAAAAAAAAAAA4P//////AQAAAAAA/v//BwAAAAAAAAAAAAAAAMcAAAAAAAAAAAAAAAAAAAAAwP//////AAAAAAAA/v//DwAAAAAAAAAAAAABAIABAAAAAAAAAAAAAAAAAAAAwP////9/AAAAAAAA/P//DwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP////9/AAAAAAAA/P+/DwAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAgP////8/AAAAAAAA/v+/DwAAAAAAAAAAAADADwYAAAAAAAAAAAAAAAAAAAAAAP////8fAAAAAAAA/v//DzAAAAAAAAAAAADADwYAAAAAAAAAAAAAAAAAAAAAAP////8fAAAAAAAA////HzAAAAAAAAAAAADuBw4AAAAAAAAAAAAAAAAAAAAAAP7///8fAAAAAAAA////DzwAAAAAAAAAAAD/Dx4AAAAAAAAAAAAAAAAAAAAAAPj///8fAAAAAAAA////Bz8AAAAAAAAAAID/Px4AAAAAAAAAAAAAAAAAAAAAAOD///8fAAAAAAAA////AR8AAAAAAAAAAMD//z8AAAAgAAAAAAAAAAAAAAAAAMD///8PAAAAAAAA////AB8AAAAAAAAAAMD//z8AAAAAAAAAAAAAAAAAAAAAAMD///8PAAAAAAAA/v9/AB8AAAAAAAAAAOD//38AAAAAAAAAAAAAAAAAAAAAAMD///8PAAAAAAAA/v9/AA8AAAAAAAAAAP7///8AAAAAAAAAAAAAAAAAAAAAAMD///8HAAAAAAAA/P9/gA8AAAAAAAAAgP////8BAAAAAAAAAAAAAAAAAAAAAMD///8DAAAAAAAA/P9/gA8AAAAAAAAAwP////8DAAAAAAAAAAAAAAAAAAAAAMD//38AAAAAAAAA/P9/AAcAAAAAAAAA4P////8HAAAAAAAAAAAAAAAAAAAAAMD//x8AAAAAAAAA+P9/AAcAAAAAAAAA4P////8PAAAAAAAAAAAAAAAAAAAAAMD//w8AAAAAAAAA+P8fAAAAAAAAAAAAwP////8fAAAAAAAAAAAAAAAAAAAAAOD//wcAAAAAAAAA+P8fAAAAAAAAAAAAwP////8fAAAAAAAAAAAAAAAAAAAAAOD//w8AAAAAAAAA8P8fAAAAAAAAAAAAwP////8fAAAAAAAAAAAAAAAAAAAAAOD//wcAAAAAAAAA8P8PAAAAAAAAAAAAwP////8fAAAAAAAAAAAAAAAAAAAAAOD//wMAAAAAAAAA4P8HAAAAAAAAAAAAgP////8fAAAAAAAAAAAAAAAAAAAAAOD//wEAAAAAAAAA4P8DAAAAAAAAAAAAgP////8fAAAAAAAAAAAAAAAAAAAAAOD//wAAAAAAAAAAwP8BAAAAAAAAAAAAgP+f//8PAAAAAAAAAAAAAAAAAAAAAOD/fwAAAAAAAAAAwP8AAAAAAAAAAAAAgP8B/P8PAAAAAAAAAAAAAAAAAAAAAPD/fwAAAAAAAAAAwD8AAAAAAAAAAAAAgH8A+P8HAAAAAAAAAAAAAAAAAAAAAPD/OwAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAwP8DAAAAAAAAAAAAAAAAAAAAAPD/BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP8DAAACAAAAAAAAAAAAAAAAAPj/BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP8DAAAAAAAAAAAAAAAAAAAAAPj/BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8BAAAMAAAAAAAAAAAAAAAAAPj/AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAAAAPg/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAPw/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAPwHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOAAAIADAAAAAAAAAAAAAAAAAPgHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAIABAAAAAAAAAAAAAAAAAPgHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOAAAAAAAAAAAAAAAAAAAPwDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHgAAAAAAAAAAAAAAAAAAPwBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAAAAAAAAAAAAAAAAP4BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPwDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP4BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHwAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB4AAAAAAAAAAAAAAAAAAAAAAAAAPgPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8AAAAAAAAAAAAAAAAAMAfAADA////fuDn/wEAAAAAAAAAAAAAAAAAAAAAAAB+AAAAAAAAAAAAAAAAAP7//wDg/////////z8AAAAAAAAAAAAAAAAAAAAAAAB+AAAAAAAAAAAAAAAg8P///z/8//////////9/AAAAAAAAAAAAAAAAAAAAAPx/AAAAAAAAABwAPgD/+///////////////////DwAAAAAAAAAAAAAAAAAAAPx/AAAAAAAA/P///////////////////////////wcAAAAAAAAAAAAAAAwAAPz/AAAAAACA/////////////////////////////z8AAAAAAAAAAAAA4P8f4Pn/AAAAAAD+/////////////////////////////x8AAAAAAAAA4C8AwP//+/9/AAAAAID//////////////////////////////wEAAAAAAADw//8/gP////9/AAAAAPD//////////////////////////////wAAAAAAAPz/////////////BwAAAP7/////////////////////////////PwAAAAAAwP//////////////fwAA4P//////////////////////////////fwAAAADA/////////////////z84/v////////////////////////////////wf////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////"
+const MASK = Uint8Array.from(atob(LAND_MASK_B64), (c) => c.charCodeAt(0))
+const isLand = (lat, lon) => {
+  const x = Math.min(359, Math.floor(((lon + 180) / 360) * 360))
+  const y = Math.min(179, Math.max(0, Math.floor(((90 - lat) / 180) * 180)))
+  const i = y * 360 + x
+  return ((MASK[i >> 3] >> (i & 7)) & 1) === 1
+}
+const latLon = (lat, lon) => {
+  const la = rad(lat), lo = rad(lon)
+  return new THREE.Vector3(Math.cos(la) * Math.sin(lo), Math.sin(la), Math.cos(la) * Math.cos(lo))
+}
+const CAPITALS = [
+  [19.43, -99.13], [38.91, -77.04], [45.42, -75.7], [4.71, -74.07], [-12.05, -77.04], [-15.79, -47.88],
+  [-34.6, -58.38], [51.51, -0.13], [48.86, 2.35], [40.42, -3.7], [52.52, 13.4], [41.9, 12.5],
+  [30.04, 31.24], [-1.29, 36.82], [-25.75, 28.19], [55.76, 37.62], [28.61, 77.21], [39.9, 116.4],
+  [35.68, 139.69], [37.57, 126.98], [-35.28, 149.13], [1.35, 103.82],
+]
+const UNITS = CAPITALS.map(([a, b]) => latLon(a, b))
+const pickArcPair = () => {
+  const n = UNITS.length, i = Math.floor(Math.random() * n)
+  let j
+  do { j = Math.floor(Math.random() * n) } while (j === i || UNITS[i].angleTo(UNITS[j]) > 1.9)
+  return [i, j]
+}
+
+// --- scene.ts (light palette) -----------------------------------------------
+const ACCENT = new THREE.Color(0x3f80f2)
+const FG = new THREE.Color(0x1c1c1c), MUTED = new THREE.Color(0x6a6a6a), RIM = 0.5
+const R = 1.95
+
+const dotVertex = `
+  uniform float uSize; uniform float uPR;
+  attribute float aSize; attribute vec3 aColor; attribute float aAlpha;
+  varying vec3 vColor; varying float vAlpha;
+  void main() {
+    vec4 mv = modelViewMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix * mv;
+    gl_PointSize = uSize * aSize * uPR * (10.0 / -mv.z);
+    vColor = aColor; vAlpha = aAlpha;
+  }`
+const dotFragment = `
+  varying vec3 vColor; varying float vAlpha;
+  void main() {
+    float r = length(gl_PointCoord - 0.5);
+    if (r > 0.5) discard;
+    gl_FragColor = vec4(vColor, vAlpha * smoothstep(0.5, 0.15, r));
+    #include <colorspace_fragment>
+  }`
+
+function dotCloud(n, size, pr) {
+  const pos = new Float32Array(n * 3), sz = new Float32Array(n), cl = new Float32Array(n * 3), al = new Float32Array(n)
+  const geo = new THREE.BufferGeometry()
+  geo.setAttribute("position", new THREE.BufferAttribute(pos, 3))
+  geo.setAttribute("aSize", new THREE.BufferAttribute(sz, 1))
+  geo.setAttribute("aColor", new THREE.BufferAttribute(cl, 3))
+  geo.setAttribute("aAlpha", new THREE.BufferAttribute(al, 1))
+  const mat = new THREE.ShaderMaterial({
+    vertexShader: dotVertex, fragmentShader: dotFragment, transparent: true, depthWrite: false,
+    uniforms: { uSize: { value: size }, uPR: { value: pr } },
+  })
+  const points = new THREE.Points(geo, mat)
+  points.frustumCulled = false
+  return {
+    points,
+    set(i, x, y, z, s, c, a) {
+      pos[i * 3] = x; pos[i * 3 + 1] = y; pos[i * 3 + 2] = z; sz[i] = s
+      cl[i * 3] = c.r; cl[i * 3 + 1] = c.g; cl[i * 3 + 2] = c.b; al[i] = a
+    },
+    flush() { for (const k of ["position", "aSize", "aColor", "aAlpha"]) geo.attributes[k].needsUpdate = true },
+  }
+}
+
+const fib = (n) => Array.from({ length: n }, (_, i) => {
+  const y = 1 - (i / (n - 1)) * 2, r = Math.sqrt(1 - y * y), th = i * Math.PI * (3 - Math.sqrt(5))
+  return new THREE.Vector3(Math.cos(th) * r, y, Math.sin(th) * r)
+})
+const landOf = (v) => isLand(deg(Math.asin(v.y)), deg(Math.atan2(v.x, v.z)))
+
+function glowSprite(size) {
+  const c = document.createElement("canvas")
+  c.width = c.height = 128
+  const g = c.getContext("2d"), grd = g.createRadialGradient(64, 64, 0, 64, 64, 64)
+  grd.addColorStop(0, "rgba(255,255,255,1)"); grd.addColorStop(0.45, "rgba(255,255,255,.35)"); grd.addColorStop(1, "rgba(255,255,255,0)")
+  g.fillStyle = grd; g.fillRect(0, 0, 128, 128)
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), color: ACCENT, transparent: true, depthWrite: false, opacity: 0.12 }))
+  sp.scale.setScalar(size)
+  return sp
+}
+
+// Variant knobs. land/sea each get their own Fibonacci grid so their pitch and dot size are independent.
+// core: disc colour under the dots, or null = invisible occluder (still hides the far hemisphere).
+// n values are desktop counts; phones get 14/22 of them, like scene.ts.
+const VARIANTS = [
+  {
+    tag: "NOW", name: "Current",
+    note: "Grey disc #ebebeb under the dots. Sea = every 7th dot of the land grid, size 0.7, alpha 0.6.",
+    core: 0xebebeb, land: { n: 22000, size: 1 }, sea: { n: 22000, every: 7, size: 0.7, alpha: 0.6, color: MUTED },
+  },
+  {
+    tag: "A", name: "Fine sea",
+    note: "Disc removed. Sea gets its own grid ~7× denser with tiny dots, so the ocean itself draws the globe. Land unchanged.",
+    core: null, land: { n: 22000, size: 1 }, sea: { n: 48000, size: 0.42, alpha: 0.55, color: MUTED },
+  },
+  {
+    tag: "B", name: "Two pitches",
+    note: "Disc faded to #f1f1f1, barely off the page. Dense fine sea; land on a coarser grid with bigger dots, so continents read as their own layer.",
+    core: 0xf1f1f1, land: { n: 11000, size: 1.45 }, sea: { n: 40000, size: 0.5, alpha: 0.45, color: MUTED },
+  },
+  {
+    tag: "C", name: "Halftone",
+    note: "Disc removed. Pale dense sea (#a3a3a3); land on a very tight grid of small dark dots, so continents fill in almost solid.",
+    core: null, land: { n: 44000, size: 0.78 }, sea: { n: 32000, size: 0.55, alpha: 0.6, color: new THREE.Color(0xa3a3a3) },
+  },
+]
+
+function makeEarth(v, pr) {
+  const k = innerWidth < 768 ? 14 / 22 : 1, N = (n) => Math.round(n * k)
+  const group = new THREE.Group(); group.rotation.z = rad(-23.4)
+  const spin = new THREE.Group(); group.add(spin)
+  const dirs = [], land = []
+  fib(N(v.land.n)).forEach((d, i) => {
+    const l = landOf(d)
+    if (l || (v.sea.every && i % v.sea.every === 0)) { dirs.push(d); land.push(l) }
+  })
+  if (!v.sea.every) fib(N(v.sea.n)).forEach((d) => { if (!landOf(d)) { dirs.push(d); land.push(false) } })
+  const D = dirs.length, cloud = dotCloud(D, 2.4, pr)
+  spin.add(cloud.points)
+  const coreMat = v.core === null ? new THREE.MeshBasicMaterial({ colorWrite: false }) : new THREE.MeshBasicMaterial({ color: v.core })
+  spin.add(new THREE.Mesh(new THREE.SphereGeometry(R * 0.985, 64, 32), coreMat))
+  const halo = glowSprite(R * 3.1); halo.renderOrder = -1; group.add(halo)
+  const hitSphere = new THREE.Mesh(new THREE.SphereGeometry(R, 32, 16), new THREE.MeshBasicMaterial({ visible: false }))
+  spin.add(hitSphere)
+  const q = new THREE.Quaternion(), tmp = new THREE.Vector3(), c = new THREE.Color()
+  return {
+    group, spin, hitSphere, count: D,
+    update(t, hit, hitAmt) {
+      spin.getWorldQuaternion(q)
+      for (let i = 0; i < D; i++) {
+        const d = dirs[i], l = land[i]
+        const f = smoothstep(tmp.copy(d).applyQuaternion(q).z, -0.15, 0.55)
+        const dist = hitAmt > 0.01 ? Math.hypot(d.x * R - hit.x, d.y * R - hit.y, d.z * R - hit.z) : 9
+        const g = hitAmt * Math.max(0, 1 - dist / (R * 0.5)) ** 2
+        const rr = R * (1 + g * 0.1)
+        const tw = l ? 0.85 + 0.15 * Math.sin(t * 1.4 + i) : 1
+        cloud.set(i, d.x * rr, d.y * rr, d.z * rr,
+          (l ? v.land.size : v.sea.size) * tw * (1 + g * 1.6),
+          c.copy(l ? FG : v.sea.color).lerp(ACCENT, Math.min(1, g * 1.5)),
+          ((l ? 0.95 : v.sea.alpha) + g) * (RIM + f * (1 - RIM)))
+      }
+      cloud.flush()
+    },
+  }
+}
+
+// --- hero scene ---------------------------------------------------------------
+const canvas = document.getElementById("gl")
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true })
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2))
+const pr = renderer.getPixelRatio()
+const motion = matchMedia("(prefers-reduced-motion: reduce)").matches ? 0.15 : 1
+const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100)
+camera.position.set(0, 0, 10)
+const root = new THREE.Group(); scene.add(root)
+const holder = new THREE.Group(); root.add(holder) // swapped earth lives here
+const spinY = { value: rad(72) } // kept across swaps so the view doesn't jump
+
+const stars = new THREE.Points(
+  new THREE.BufferGeometry().setFromPoints(Array.from({ length: 600 }, () =>
+    new THREE.Vector3((Math.random() - 0.5) * 40, (Math.random() - 0.5) * 24, -8 - Math.random() * 12))),
+  new THREE.PointsMaterial({ size: 0.04, transparent: true, opacity: 0.6, color: MUTED }),
+)
+scene.add(stars)
+
+let earth, markers, arcs
+const arcMat = new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.9 }), SEG = 72
+const resetArc = (a, t) => {
+  const [i, j] = pickArcPair(), p = UNITS[i].clone().multiplyScalar(R), qq = UNITS[j].clone().multiplyScalar(R)
+  const mid = p.clone().add(qq).normalize().multiplyScalar(R * (1.08 + p.distanceTo(qq) * 0.12))
+  a.line.geometry.setFromPoints(new THREE.QuadraticBezierCurve3(p, mid, qq).getPoints(SEG)); a.t0 = t
+}
+
+function show(idx) {
+  const v = VARIANTS[idx]
+  if (earth) {
+    spinY.value = earth.spin.rotation.y
+    holder.remove(earth.group)
+    earth.group.traverse((o) => { o.geometry?.dispose(); if (o.material && o.material !== arcMat) { o.material.map?.dispose(); o.material.dispose() } })
+  }
+  earth = makeEarth(v, pr)
+  earth.spin.rotation.y = spinY.value
+  holder.add(earth.group)
+  markers = dotCloud(UNITS.length, 7, pr); earth.spin.add(markers.points)
+  arcs = Array.from({ length: 8 }, (_, k) => {
+    const line = new THREE.Line(new THREE.BufferGeometry(), arcMat); earth.spin.add(line)
+    return { line, t0: t + k * 0.7, dur: 2.6 }
+  })
+  document.querySelectorAll(".opt").forEach((b, i) => b.setAttribute("aria-pressed", String(i === idx)))
+  document.getElementById("desc").textContent = v.note
+  document.getElementById("count").textContent = `${earth.count.toLocaleString()} dots`
+  current = idx
+}
+
+const halfSize = (dist) => { const h = Math.tan(rad(camera.fov / 2)) * dist; return { w: h * camera.aspect, h } }
+const resize = () => {
+  const { clientWidth: w, clientHeight: h } = canvas
+  if (!w || !h) return
+  renderer.setSize(w, h, false)
+  camera.aspect = w / h; camera.updateProjectionMatrix()
+  const half = halfSize(10), phone = camera.aspect < 0.9
+  root.position.set(phone ? 0 : half.w * 0.42, phone ? half.h * 0.4 : -0.05, 0)
+  root.scale.setScalar(phone ? 0.62 : Math.min(1, camera.aspect / 1.5))
+}
+new ResizeObserver(resize).observe(canvas)
+
+// Pointer on window so the hero text can sit above the canvas (as in scene.ts)
+const isUi = (el) => el instanceof Element && el.closest("a, button, header, .switcher") !== null
+const pointer = new THREE.Vector2(9, 9)
+let inside = false, down = false, dragDx = 0
+addEventListener("pointermove", (e) => {
+  const r = canvas.getBoundingClientRect()
+  const nx = ((e.clientX - r.left) / r.width) * 2 - 1, ny = -((e.clientY - r.top) / r.height) * 2 + 1
+  if (down) dragDx += nx - pointer.x
+  pointer.set(nx, ny)
+  inside = e.clientY >= r.top && e.clientY <= r.bottom && !isUi(e.target)
+})
+addEventListener("pointerdown", (e) => { if (!isUi(e.target)) down = true })
+addEventListener("pointerup", (e) => { down = false; if (e.pointerType !== "mouse") inside = false })
+document.documentElement.addEventListener("pointerleave", () => { inside = false })
+
+// Switcher
+let current = 0, t = 0
+document.getElementById("opts").innerHTML = VARIANTS.map((v, i) => `<button class="opt" type="button"><b>${i + 1} · ${v.tag}</b>${v.name}</button>`).join("")
+document.querySelectorAll(".opt").forEach((b, i) => b.addEventListener("click", () => show(i)))
+addEventListener("keydown", (e) => {
+  const n = Number(e.key)
+  if (n >= 1 && n <= VARIANTS.length) show(n - 1)
+  else if (e.key === "ArrowRight") show((current + 1) % VARIANTS.length)
+  else if (e.key === "ArrowLeft") show((current + VARIANTS.length - 1) % VARIANTS.length)
+})
+show(0)
+
+const ray = new THREE.Raycaster(), hit = new THREE.Vector3(99, 0, 0), local = new THREE.Vector3()
+let hitAmt = 0, vel = 0.05
+const clock = new THREE.Clock()
+renderer.setAnimationLoop(() => {
+  const dt = Math.min(clock.getDelta(), 0.05)
+  t += dt * motion
+  ray.setFromCamera(pointer, camera)
+  const hits = inside ? ray.intersectObject(earth.hitSphere, false) : []
+  if (hits.length) { hit.copy(earth.spin.worldToLocal(local.copy(hits[0].point))); hitAmt = damp(hitAmt, 1, 8, dt) }
+  else hitAmt = damp(hitAmt, 0, 4, dt)
+  document.body.style.cursor = hits.length ? "grab" : ""
+  if (down && hits.length) vel = dragDx * 60
+  dragDx = 0
+  vel = damp(vel, 0.05 * motion, 1.5, dt)
+  earth.spin.rotation.y += vel * dt
+  root.rotation.x = damp(root.rotation.x, inside ? -pointer.y * 0.1 : 0, 2, dt)
+  root.rotation.y = damp(root.rotation.y, inside ? pointer.x * 0.1 : 0, 2, dt)
+  earth.update(t, hit, hitAmt)
+  UNITS.forEach((d, i) => { const r = R * 1.005; markers.set(i, d.x * r, d.y * r, d.z * r, 0.8 + 0.4 * Math.sin(t * 3 + i), ACCENT, 0.95) })
+  markers.flush()
+  for (const a of arcs) {
+    if (!a.line.geometry.attributes.position) { if (t >= a.t0) resetArc(a, t); continue }
+    const age = (t - a.t0) / a.dur
+    if (age > 1) { resetArc(a, t); continue }
+    const head = Math.min(1, age * 2), tail = Math.max(0, age * 2 - 1)
+    a.line.geometry.setDrawRange(Math.floor(tail * SEG), Math.max(0, Math.floor((head - tail) * SEG) + 1))
+  }
+  stars.position.x = damp(stars.position.x, inside ? -pointer.x * 0.15 : 0, 2, dt)
+  stars.position.y = damp(stars.position.y, inside ? -pointer.y * 0.1 : 0, 2, dt)
+  renderer.render(scene, camera)
+})
+</script>
+</body>
+</html>
