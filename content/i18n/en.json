@@ -41,11 +41,8 @@
   "projects": {
     "sectionTitle": "Projects",
     "viewLive": "Live Preview",
-    "viewRepo": "Repository",
-    "viewDetails": "Details",
-    "close": "Close",
-    "featured": "Featured Project",
-    "upNext": "Up next"
+    "readMore": "Read more",
+    "readLess": "Read less"
   },
   "contact": {
     "sectionTitle": "Contact",

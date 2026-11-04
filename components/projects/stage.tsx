@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, type RefObject } from "react"
+import { useEffect, useRef, useState, type RefObject } from "react"
 import Image from "next/image"
 import { ArrowUpRight, Pause, Play } from "lucide-react"
 import { useI18n } from "@/lib/i18n/context"
@@ -24,7 +24,8 @@ export function Stage({
   slide,
   paused,
   onTogglePaused,
-  onDetails,
+  expanded,
+  onToggleExpanded,
   fillRef,
 }: {
   ref: RefObject<HTMLDivElement | null>
@@ -35,7 +36,8 @@ export function Stage({
   slide: number
   paused: boolean
   onTogglePaused: () => void
-  onDetails: () => void
+  expanded: boolean
+  onToggleExpanded: () => void
   fillRef: RefObject<HTMLDivElement | null>
 }) {
   const { locale, t } = useI18n()
@@ -51,18 +53,18 @@ export function Stage({
   }
 
   // The panel keeps showing the outgoing project until its text has finished leaving
-  const [panel, setPanel] = useState({ project, index, next })
+  const [panel, setPanel] = useState({ project, index })
   const [hasChanged, setHasChanged] = useState(false)
   const leaving = panel.project !== project
   useEffect(() => {
     if (!leaving) return
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches
     const id = setTimeout(() => {
-      setPanel({ project, index, next })
+      setPanel({ project, index })
       setHasChanged(true)
     }, reduced ? 0 : CASCADE_OUT_MS)
     return () => clearTimeout(id)
-  }, [leaving, project, index, next])
+  }, [leaving, project, index])
   const cascade = leaving ? "leaving" : hasChanged ? "entering" : undefined
 
   const { title, kind } = splitProjectName(panel.project.name[locale])
@@ -74,9 +76,20 @@ export function Stage({
     .sort()
   const liveUrl = panel.project.liveUrls?.[0]?.url ?? panel.project.liveUrl
 
+  const paragraphs = panel.project.description[locale]
+  const firstParagraph = useRef<HTMLParagraphElement | null>(null)
+  const [clamped, setClamped] = useState(false)
+  useEffect(() => {
+    const el = firstParagraph.current
+    if (!el || expanded) return
+    const observer = new ResizeObserver(() => setClamped(el.scrollHeight > el.clientHeight))
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [expanded, paragraphs])
+
   return (
     <div ref={ref} className="grid scroll-mt-20 border border-border bg-card md:grid-cols-[1.6fr_1fr] md:gap-6">
-      <div className="relative aspect-[4/3] overflow-hidden bg-muted md:aspect-[16/10]">
+      <div className={`relative aspect-[4/3] overflow-hidden bg-muted ${expanded ? "md:aspect-auto" : "md:aspect-[16/10]"}`}>
         {mounted.map((src) => (
           <Image
             key={src}
@@ -128,9 +141,29 @@ export function Stage({
             </span>
           )}
         </h3>
-        <p className="mt-2 line-clamp-4 min-h-[4lh] text-sm leading-relaxed text-muted-foreground md:mt-3 md:min-h-0 md:line-clamp-3 lg:line-clamp-5 xl:line-clamp-none xl:text-[15px]">
-          {panel.project.description[locale][0]}
-        </p>
+        <div className="mt-2 md:mt-3">
+          <div className="flex flex-col gap-3 text-sm leading-relaxed text-muted-foreground xl:text-[15px]">
+            {(expanded ? paragraphs : paragraphs.slice(0, 1)).map((paragraph, i) => (
+              <p
+                key={i}
+                ref={i === 0 ? firstParagraph : undefined}
+                className={expanded ? undefined : "line-clamp-4 min-h-[4lh] md:min-h-0 md:line-clamp-3 lg:line-clamp-5 xl:line-clamp-none"}
+              >
+                {paragraph}
+              </p>
+            ))}
+          </div>
+          {(paragraphs.length > 1 || clamped) && (
+            <button
+              type="button"
+              onClick={onToggleExpanded}
+              aria-expanded={expanded}
+              className="mt-1 py-1 font-mono text-[11px] uppercase tracking-[0.2em] text-accent hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:max-lg:tracking-[0.1em]"
+            >
+              {expanded ? t.projects.readLess : t.projects.readMore}
+            </button>
+          )}
+        </div>
         <div className="mt-3 hidden flex-wrap gap-1.5 md:flex md:max-lg:h-6 md:max-lg:overflow-hidden">
           {panel.project.technologies.map((tech) => (
             <span key={tech} className="border border-border px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
@@ -138,21 +171,14 @@ export function Stage({
             </span>
           ))}
         </div>
-        <div className="mt-5 hidden truncate font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground lg:block">
-          {t.projects.upNext} — {splitProjectName(panel.next.name[locale]).title}
-        </div>
-        <div className="mt-4 flex flex-wrap gap-4 md:max-lg:gap-3">
-          <button type="button" data-stage-details onClick={onDetails} className={CTA}>
-            {t.projects.viewDetails}
-            <ArrowUpRight className="size-3.5" />
-          </button>
-          {liveUrl && (
+        {liveUrl && (
+          <div className="mt-4">
             <a href={liveUrl} target="_blank" rel="noopener noreferrer" className={CTA}>
               {t.projects.viewLive}
               <ArrowUpRight className="size-3.5" />
             </a>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   )

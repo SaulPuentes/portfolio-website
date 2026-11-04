@@ -41,11 +41,8 @@
   "projects": {
     "sectionTitle": "Proyectos",
     "viewLive": "Ver en vivo",
-    "viewRepo": "Repositorio",
-    "viewDetails": "Detalles",
-    "close": "Cerrar",
-    "featured": "Proyecto destacado",
-    "upNext": "A continuación"
+    "readMore": "Leer más",
+    "readLess": "Leer menos"
   },
   "contact": {
     "sectionTitle": "Contacto",

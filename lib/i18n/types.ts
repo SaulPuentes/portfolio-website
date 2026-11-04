@@ -31,11 +31,8 @@ export interface Translations {
   projects: {
     sectionTitle: string
     viewLive: string
-    viewRepo: string
-    viewDetails: string
-    close: string
-    featured: string
-    upNext: string
+    readMore: string
+    readLess: string
   }
   contact: {
     sectionTitle: string

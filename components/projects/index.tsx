@@ -3,9 +3,7 @@
 import { useRef, useState } from "react"
 import { useI18n } from "@/lib/i18n/context"
 import { projects } from "@/lib/data"
-import type { Project } from "@/lib/types"
 import { useShowcase } from "@/hooks/use-showcase"
-import { ProjectDetailModal } from "./project-detail-modal"
 import { Stage } from "./stage"
 import { Strip } from "./strip"
 
@@ -14,11 +12,13 @@ const HEADER_PX = 64
 
 export function ProjectsSection() {
   const { t } = useI18n()
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
-  const { timeline, paused, togglePaused, select, onScreen, sectionRef, fillRef } = useShowcase(projects, !!selectedProject)
+  const [expanded, setExpanded] = useState(false)
+  // Held while expanded: the text must not change under someone reading it
+  const { timeline, paused, togglePaused, select, onScreen, sectionRef, fillRef } = useShowcase(projects, expanded)
   const stageRef = useRef<HTMLDivElement | null>(null)
 
   const onSelectCard = (index: number) => {
+    setExpanded(false)
     select(index)
     // The only scroll in this feature: on phones the strip sits below the stage, and the visitor asked for this
     const stage = stageRef.current
@@ -43,25 +43,13 @@ export function ProjectsSection() {
             slide={timeline.slide}
             paused={paused}
             onTogglePaused={togglePaused}
-            onDetails={() => setSelectedProject(project)}
+            expanded={expanded}
+            onToggleExpanded={() => setExpanded((e) => !e)}
             fillRef={fillRef}
           />
         )}
         <Strip projects={projects} activeIndex={timeline.project} running={onScreen} onSelect={onSelectCard} />
       </div>
-
-      {selectedProject && (
-        <ProjectDetailModal
-          project={selectedProject}
-          open={!!selectedProject}
-          onClose={() => setSelectedProject(null)}
-          onCloseAutoFocus={(e) => {
-            // No DialogTrigger here, so Radix would otherwise drop focus to the body
-            e.preventDefault()
-            stageRef.current?.querySelector<HTMLElement>("[data-stage-details]")?.focus({ preventScroll: true })
-          }}
-        />
-      )}
     </section>
   )
 }
