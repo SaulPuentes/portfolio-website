@@ -145,3 +145,26 @@ body {
 @utility animate-marquee-right {
   animation: marquee-right 60s linear infinite;
 }
+
+/* Featured project text: leaves bottom item first, arrives top item first */
+@keyframes cascade-out {
+  to { opacity: 0; transform: translateY(-8px); }
+}
+@keyframes cascade-in {
+  from { opacity: 0; transform: translateY(16px); }
+}
+[data-cascade] > :nth-child(1) { --i: 0; }
+[data-cascade] > :nth-child(2) { --i: 1; }
+[data-cascade] > :nth-child(3) { --i: 2; }
+[data-cascade] > :nth-child(4) { --i: 3; }
+[data-cascade] > :nth-child(5) { --i: 4; }
+[data-cascade] > :nth-child(6) { --i: 5; }
+@media (prefers-reduced-motion: no-preference) {
+  /* The longest delay + duration here is CASCADE_OUT_MS in components/projects/stage.tsx */
+  [data-cascade="leaving"] > * {
+    animation: cascade-out 180ms cubic-bezier(0.4, 0, 1, 1) calc((5 - var(--i)) * 25ms) both;
+  }
+  [data-cascade="entering"] > * {
+    animation: cascade-in 520ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 60ms) backwards;
+  }
+}
