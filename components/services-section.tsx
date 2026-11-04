@@ -4,6 +4,7 @@ import { useI18n } from "@/lib/i18n/context"
 import { services } from "@/lib/data"
 import type { Translations } from "@/lib/i18n/types"
 import { useScrollReveal } from "@/hooks/use-scroll-reveal"
+import { ServicesBackground } from "@/components/services-background"
 
 const QUADRANT_ORDER = [0, 1, 2, 3]
 
@@ -18,7 +19,8 @@ export function ServicesSection() {
       className="relative scroll-mt-16"
       style={{ height: isMobile ? "auto" : "300vh" }}
     >
-      <div className={isMobile ? "" : "sticky top-0 h-screen flex items-center"}>
+      <ServicesBackground key={isMobile ? "phone" : "desktop"} sectionRef={sectionRef} revealed={visibleCount} isMobile={isMobile} />
+      <div className={isMobile ? "relative" : "sticky top-0 h-screen flex items-center"}>
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-0">
 
           {/* Section header */}
@@ -47,7 +49,8 @@ export function ServicesSection() {
               return (
                 <div
                   key={service.key}
-                  className={`group relative overflow-hidden border-b border-border p-8 md:p-10 transition-all duration-700 ease-out ${
+                  data-service-cell
+                  className={`group relative overflow-hidden border-b border-border p-8 pb-36 md:p-10 transition-all duration-700 ease-out ${
                     isRight ? "md:border-l" : ""
                   }`}
                   style={{
@@ -58,6 +61,7 @@ export function ServicesSection() {
                 >
                   {/* Ghost number — mono, subtle depth */}
                   <span
+                    data-service-number
                     className="pointer-events-none absolute right-6 top-6 select-none font-mono font-medium leading-none text-foreground/[0.05] transition-all duration-500 group-hover:text-accent/30"
                     style={{
                       fontSize: "clamp(4rem, 9vw, 7rem)",

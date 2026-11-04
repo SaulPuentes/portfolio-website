@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "tsx --test lib/*.test.ts lib/globe/*.test.ts",
+    "test": "tsx --test lib/*.test.ts lib/globe/*.test.ts lib/services-bg/*.test.ts",
     "generate:cv": "pnpm tsx scripts/generate-cv.ts",
     "generate:cv:fullstack": "pnpm tsx scripts/generate-cv.ts --variant fullstack",
     "generate:cv:frontend": "pnpm tsx scripts/generate-cv.ts --variant frontend",
