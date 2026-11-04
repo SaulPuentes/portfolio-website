@@ -69,7 +69,8 @@ export function Stage({
         ))}
 
         <div className="absolute inset-x-0 top-0 z-10 h-0.5 bg-white/20">
-          <div ref={fillRef} className="h-full origin-left scale-x-0 bg-accent" />
+          {/* Inline, not scale-x-0: that class sets the `scale` property, which multiplies with the transform the hook writes */}
+          <div ref={fillRef} className="h-full origin-left bg-accent" style={{ transform: "scaleX(0)" }} />
           {Array.from({ length: Math.max(count - 1, 0) }, (_, i) => (
             <span
               key={i}
@@ -124,7 +125,7 @@ export function Stage({
           {t.projects.upNext} — {splitProjectName(next.name[locale]).title}
         </div>
         <div className="mt-4 flex flex-wrap gap-4 md:max-lg:gap-3">
-          <button type="button" onClick={onDetails} className={CTA}>
+          <button type="button" data-stage-details onClick={onDetails} className={CTA}>
             {t.projects.viewDetails}
             <ArrowUpRight className="size-3.5" />
           </button>

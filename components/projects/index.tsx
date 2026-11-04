@@ -15,7 +15,7 @@ const HEADER_PX = 64
 export function ProjectsSection() {
   const { t } = useI18n()
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
-  const { timeline, paused, togglePaused, select, onScreen, sectionRef, fillRef } = useShowcase(projects)
+  const { timeline, paused, togglePaused, select, onScreen, sectionRef, fillRef } = useShowcase(projects, !!selectedProject)
   const stageRef = useRef<HTMLDivElement | null>(null)
 
   const onSelectCard = (index: number) => {
@@ -55,6 +55,11 @@ export function ProjectsSection() {
           project={selectedProject}
           open={!!selectedProject}
           onClose={() => setSelectedProject(null)}
+          onCloseAutoFocus={(e) => {
+            // No DialogTrigger here, so Radix would otherwise drop focus to the body
+            e.preventDefault()
+            stageRef.current?.querySelector<HTMLElement>("[data-stage-details]")?.focus({ preventScroll: true })
+          }}
         />
       )}
     </section>

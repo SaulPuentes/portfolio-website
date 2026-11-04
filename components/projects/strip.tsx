@@ -101,12 +101,14 @@ export function Strip({
       className="group mt-6 overflow-hidden motion-reduce:overflow-x-auto"
       style={{ maskImage: EDGE_MASK, WebkitMaskImage: EDGE_MASK }}
       onBlur={(e) => {
-        // The browser scrolls this box to reveal a focused card; left in place it would break the loop
-        if (!e.currentTarget.contains(e.relatedTarget)) e.currentTarget.scrollLeft = 0
+        // The browser scrolls this box to reveal a focused card; left in place it would break the loop.
+        // With reduced motion nothing loops, and the scroll position is the visitor's own.
+        if (e.currentTarget.contains(e.relatedTarget) || matchMedia("(prefers-reduced-motion: reduce)").matches) return
+        e.currentTarget.scrollLeft = 0
       }}
     >
       <div
-        className="flex w-max gap-3 animate-marquee-left [animation-duration:35s] group-hover:[animation-play-state:paused] group-has-focus-visible:[animation-play-state:paused] md:[animation-duration:45s] motion-reduce:animate-none"
+        className="flex w-max gap-3 pr-3 animate-marquee-left [animation-duration:35s] group-hover:[animation-play-state:paused] group-has-focus-visible:animate-none md:[animation-duration:45s] motion-reduce:animate-none"
         style={running ? undefined : { animationPlayState: "paused" }}
       >
         {stripCards(projects.length).map(({ index, duplicate }) => (

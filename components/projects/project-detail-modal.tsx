@@ -16,10 +16,12 @@ export function ProjectDetailModal({
   project,
   open,
   onClose,
+  onCloseAutoFocus,
 }: {
   project: Project
   open: boolean
   onClose: () => void
+  onCloseAutoFocus?: (event: Event) => void
 }) {
   const { locale, t } = useI18n()
 
@@ -34,6 +36,7 @@ export function ProjectDetailModal({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent
         showCloseButton={false}
+        onCloseAutoFocus={onCloseAutoFocus}
         className="flex max-h-[88vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl"
       >
         {/* Sticky header */}

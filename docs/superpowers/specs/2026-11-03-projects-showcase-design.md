@@ -108,6 +108,9 @@ These were not decided by the owner and can be challenged while reading the doc:
 - Tapping a strip card on mobile may scroll the stage into view, because the visitor asked for it.
 - Keyboard focus on a strip card pauses the drift.
 - No image resize step. The site already ships original files.
+- The stage also waits while the detail modal is open, so readers keep their place. The strip does not.
+- Tabbing into the strip resets its drift to the start, so every focused card can be seen. It jumps
+  once on entering and once on leaving.
 
 ## What must keep working
 

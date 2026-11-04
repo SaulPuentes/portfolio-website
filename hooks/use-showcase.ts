@@ -4,7 +4,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import type { Project } from "@/lib/types"
 import { advance, progress, projectImages, selectProject, type Timeline } from "@/lib/showcase"
 
-export function useShowcase(projects: Project[]) {
+export function useShowcase(projects: Project[], suspended = false) {
   const imageCounts = useMemo(() => projects.map((p) => projectImages(p).length), [projects])
   const clock = useRef<Timeline>({ project: 0, slide: 0, elapsedMs: 0 })
   const sectionRef = useRef<HTMLElement | null>(null)
@@ -45,7 +45,7 @@ export function useShowcase(projects: Project[]) {
     }
   }, [])
 
-  const running = !paused && onScreen && tabVisible && !reducedMotion && projects.length > 0
+  const running = !paused && !suspended && onScreen && tabVisible && !reducedMotion && projects.length > 0
 
   useEffect(() => {
     if (!running) return
