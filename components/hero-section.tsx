@@ -2,19 +2,18 @@
 
 import { useEffect, useRef } from "react"
 import { useI18n } from "@/lib/i18n/context"
-import { cvFiles } from "@/lib/i18n"
-import { ArrowDown, Download } from "lucide-react"
+import { ArrowDown, Play } from "lucide-react"
 import { siteConfig } from "@/lib/site-config"
 import { Button } from "@/components/ui/button"
 import { SkillsMarquee } from "@/components/skills-marquee"
 import { HeroGlobe } from "@/components/hero-globe"
-import { HERO_INTRO_EVENT, HERO_INTRO_TEXT_MS } from "@/lib/autoplay"
+import { AUTOPLAY_TOGGLE_EVENT } from "@/lib/autoplay"
 
 const [firstName, ...rest] = siteConfig.name.split(" ")
 const lastName = rest.join(" ")
 
 export function HeroSection() {
-  const { locale, t } = useI18n()
+  const { t } = useI18n()
   const sectionRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -25,35 +24,15 @@ export function HeroSection() {
       (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top,
     )
     const delays = [100, 300, 500, 700, 900]
-    let timers: ReturnType<typeof setTimeout>[] = []
-
-    const runIntro = (offset: number) => {
-      timers.forEach(clearTimeout)
-      // Drop inline styles so the Tailwind start state (opacity-0, translate-y-*) applies again
-      for (const item of items) {
-        item.style.transition = "none"
-        item.style.opacity = ""
-        item.style.translate = ""
-      }
-      void el.offsetHeight
-      timers = items.map((item, i) =>
-        setTimeout(() => {
-          // Tailwind 4's translate-y-* sets the `translate` property, so reset that (not transform)
-          item.style.transition = "opacity 0.8s ease-out, translate 0.8s ease-out"
-          item.style.opacity = "1"
-          item.style.translate = "0 0"
-        }, offset + (delays[i] ?? 200 * i)),
-      )
-    }
-
-    // On replay the globe fades in first (HeroGlobe), so the text waits for it
-    const replay = () => runIntro(HERO_INTRO_TEXT_MS)
-    runIntro(0)
-    window.addEventListener(HERO_INTRO_EVENT, replay)
-    return () => {
-      timers.forEach(clearTimeout)
-      window.removeEventListener(HERO_INTRO_EVENT, replay)
-    }
+    const timers = items.map((item, i) =>
+      setTimeout(() => {
+        // Tailwind 4's translate-y-* sets the `translate` property, so reset that (not transform)
+        item.style.transition = "opacity 0.8s ease-out, translate 0.8s ease-out"
+        item.style.opacity = "1"
+        item.style.translate = "0 0"
+      }, delays[i] ?? 200 * i),
+    )
+    return () => timers.forEach(clearTimeout)
   }, [])
 
   return (
@@ -143,16 +122,18 @@ export function HeroSection() {
             data-hero
             className="opacity-0 translate-y-6 flex flex-wrap justify-start gap-3 [&>*]:flex-1 [@media(min-aspect-ratio:9/10)]:[&>*]:flex-none"
           >
-            <Button asChild size="lg">
+            <Button
+              size="lg"
+              data-autoplay-control
+              onClick={() => window.dispatchEvent(new Event(AUTOPLAY_TOGGLE_EVENT))}
+            >
+              <Play className="size-4" />
+              {t.hero.autoplay}
+            </Button>
+            <Button asChild variant="outline" size="lg">
               <a href="#projects">
                 <ArrowDown className="size-4" />
                 {t.hero.viewProjects}
-              </a>
-            </Button>
-            <Button asChild variant="outline" size="lg">
-              <a href={cvFiles[locale]} download>
-                <Download className="size-4" />
-                {t.hero.downloadCv}
               </a>
             </Button>
           </div>

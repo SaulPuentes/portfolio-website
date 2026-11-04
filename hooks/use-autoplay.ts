@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { buildStops, createAutoplay, isStopKey, HERO_INTRO_EVENT, AUTOPLAY_TOGGLE_EVENT, type AutoplayState } from "@/lib/autoplay"
+import { buildStops, createAutoplay, isStopKey, AUTOPLAY_TOGGLE_EVENT, type AutoplayState } from "@/lib/autoplay"
 
 const HEADER_PX = 64 // sections use scroll-mt-16
 const MANUAL_SCROLL_PX = 3
@@ -66,7 +66,6 @@ export function useAutoplay() {
           return () => clearTimeout(id)
         },
         setHash: (hash) => history.replaceState(null, "", hash),
-        playIntro: () => window.dispatchEvent(new Event(HERO_INTRO_EVENT)),
       },
       (s) =>
         setState((prev) =>

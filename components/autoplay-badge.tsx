@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Play, Pause, RotateCcw } from "lucide-react"
-import { AUTOPLAY_TOGGLE_EVENT, BADGE_INTRO_MS, BADGE_LABEL_MS, SPEEDS } from "@/lib/autoplay"
+import { AUTOPLAY_TOGGLE_EVENT, SPEEDS } from "@/lib/autoplay"
 import { useAutoplay } from "@/hooks/use-autoplay"
 import { useI18n } from "@/lib/i18n/context"
 import { cn } from "@/lib/utils"
@@ -18,22 +18,16 @@ function Tooltip({ children }: { children: React.ReactNode }) {
 export function AutoplayBadge() {
   const { t } = useI18n()
   const { state, cycleSpeed } = useAutoplay()
-  const [stage, setStage] = useState<"hidden" | "label" | "compact">("hidden")
+  const [started, setStarted] = useState(false)
   const [inHero, setInHero] = useState(true)
-  const [pressed, setPressed] = useState(false)
-  const expanded = stage !== "compact" && !pressed
-  const label = pressed ? t.nav[state.label] : t.hero.autoplay
+  const label = t.nav[state.label]
   const Icon = state.label === "pause" ? Pause : state.label === "replay" ? RotateCcw : Play
 
   useEffect(() => {
-    const timers = [
-      setTimeout(() => setStage("label"), BADGE_INTRO_MS),
-      setTimeout(() => setStage("compact"), BADGE_INTRO_MS + BADGE_LABEL_MS),
-    ]
-    return () => timers.forEach(clearTimeout)
-  }, [])
+    if (state.playing) setStarted(true)
+  }, [state.playing])
 
-  // Same midline as the header's active section, so the badge leaves as the nav moves on
+  // Same midline as the header's active section
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => setInHero(entry.isIntersecting), {
       rootMargin: "-50% 0px -50% 0px",
@@ -42,50 +36,32 @@ export function AutoplayBadge() {
     return () => observer.disconnect()
   }, [])
 
+  // Past the hero it stays through a pause or finish; in the hero the CTA resumes, so only playing shows it
+  const visible = state.playing || (started && !inHero)
+
   return (
     <div
       data-autoplay-control
       className={cn(
-        "fixed inset-x-0 bottom-8 z-40 mx-auto flex w-fit items-center gap-0.5 rounded-full border p-1 shadow-md backdrop-blur-md transition-all duration-700 ease-out motion-reduce:transition-none",
-        expanded
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border bg-background/80 text-muted-foreground",
-        (stage === "hidden" || (!inHero && !pressed)) && "invisible translate-y-4 opacity-0",
+        "fixed inset-x-0 bottom-8 z-40 mx-auto flex w-fit items-center gap-0.5 rounded-full border border-border bg-background/80 p-1 text-muted-foreground shadow-md backdrop-blur-md transition-all duration-700 ease-out motion-reduce:transition-none",
+        !visible && "invisible translate-y-4 opacity-0",
       )}
     >
       <button
         type="button"
-        onClick={() => {
-          setPressed(true)
-          window.dispatchEvent(new Event(AUTOPLAY_TOGGLE_EVENT))
-        }}
+        onClick={() => window.dispatchEvent(new Event(AUTOPLAY_TOGGLE_EVENT))}
         aria-pressed={state.playing}
         aria-label={label}
-        className={cn(
-          "group relative flex h-9 items-center rounded-full px-2.5 transition-colors",
-          !expanded && "hover:text-foreground",
-        )}
+        className="group relative flex h-9 items-center rounded-full px-2.5 transition-colors hover:text-foreground"
       >
         <Icon className="size-4" />
-        {/* ponytail: max-w animates to auto width; raise it if a locale's label outgrows 10rem */}
-        <span
-          className={cn(
-            "overflow-hidden whitespace-nowrap text-xs font-medium transition-all duration-500 ease-out motion-reduce:transition-none",
-            expanded ? "ml-1.5 max-w-40 opacity-100" : "ml-0 max-w-0 opacity-0",
-          )}
-        >
-          {t.hero.autoplay}
-        </span>
-        {!expanded && <Tooltip>{label}</Tooltip>}
+        <Tooltip>{label}</Tooltip>
       </button>
       <button
         type="button"
         onClick={cycleSpeed}
         aria-label={`${t.nav.speed}: ${SPEEDS[state.speedIndex]}×`}
-        className={cn(
-          "group relative h-9 min-w-9 rounded-full px-2 font-mono text-xs transition-colors",
-          !expanded && "hover:text-foreground",
-        )}
+        className="group relative h-9 min-w-9 rounded-full px-2 font-mono text-xs transition-colors hover:text-foreground"
       >
         {SPEEDS[state.speedIndex]}×
         <Tooltip>{t.nav.speed}</Tooltip>

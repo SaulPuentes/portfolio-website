@@ -3,15 +3,7 @@ export const PAUSE_MS = 3000
 export const SERVICE_PAUSE_MS = 400 // per card: each card is short
 export const PROJECTS_PAUSE_MS = 9000 // long enough to watch the stage play
 export const SCROLL_SECONDS = 1.2
-// Replay order once Play reaches the hero: globe backdrop → text stagger → skills marquee
-export const HERO_INTRO_TEXT_MS = 600 // globe is half faded in
-export const HERO_INTRO_MARQUEE_MS = 2400 // last text item (900 stagger + 800 transition) has settled
-export const HERO_INTRO_MS = HERO_INTRO_MARQUEE_MS + 200 + 900 // second marquee row finishes
-export const HERO_INTRO_EVENT = "autoplay:hero-intro"
-export const AUTOPLAY_TOGGLE_EVENT = "autoplay:toggle" // badge toggles the engine; header closes its menu
-// Page-load order: hero text → skills marquee (second row done at 1800 + 200 + 900) → badge
-export const BADGE_INTRO_MS = 2900
-export const BADGE_LABEL_MS = 4000 // label stays this long, then collapses to icon + speed
+export const AUTOPLAY_TOGGLE_EVENT = "autoplay:toggle" // hero CTA and badge toggle the engine; header closes its menu
 
 const POS_TOLERANCE_PX = 2
 const STOP_KEYS = new Set([
@@ -22,7 +14,6 @@ const STOP_KEYS = new Set([
 export interface TourStop {
   y: number
   hash?: string
-  intro?: boolean
   /** Hold at 1×; defaults to PAUSE_MS. */
   pauseMs?: number
 }
@@ -36,7 +27,6 @@ export interface AutoplayEnv {
   /** Returns a cancel function. */
   wait(ms: number, done: () => void): () => void
   setHash(hash: string): void
-  playIntro(): void
 }
 
 export interface PageMetrics {
@@ -66,7 +56,7 @@ export function isStopKey(key: string, fromInsideControl: boolean): boolean {
 
 export function buildStops(m: PageMetrics): TourStop[] {
   const clamp = (y: number) => Math.min(Math.max(y, 0), m.maxScroll)
-  const stops: TourStop[] = [{ y: 0, hash: "#about", intro: true }]
+  const stops: TourStop[] = [{ y: 0, hash: "#about" }]
   // Stacked cards (phones) outgrow one screen: step until each card's bottom edge is on screen
   const stepDown = (top: number, bottoms: number[], hash: string, pauseMs?: number) => {
     let y = clamp(top - m.headerPx)
@@ -133,10 +123,9 @@ export function createAutoplay(env: AutoplayEnv, onChange: (s: AutoplayState) =>
     cancel = null
     const stopScroll = env.scrollTo(stop.y, SCROLL_SECONDS / speed(), () => {
       if (stop.hash) env.setHash(stop.hash)
-      if (stop.intro) env.playIntro()
       nextIndex = i + 1
       const arrivedY = env.getScrollY()
-      cancel = env.wait((stop.intro ? HERO_INTRO_MS : 0) + (stop.pauseMs ?? PAUSE_MS) / speed(), () => {
+      cancel = env.wait((stop.pauseMs ?? PAUSE_MS) / speed(), () => {
         // A scrollbar drag or find-in-page fires no wheel/touch/key event: treat any drift as manual navigation
         if (Math.abs(env.getScrollY() - arrivedY) > POS_TOLERANCE_PX) return pause()
         leg(i + 1)
@@ -157,10 +146,11 @@ export function createAutoplay(env: AutoplayEnv, onChange: (s: AutoplayState) =>
 
   function play() {
     if (playing) return
-    const fresh = nextIndex === null || done || atEnd()
+    // Only a replay returns to the hero; a first play is already looking at it, so it moves on
+    const replay = done || atEnd()
     done = false
     playing = true
-    leg(fresh ? 0 : resumeIndex())
+    leg(replay ? 0 : resumeIndex())
     if (playing) emit()
   }
 

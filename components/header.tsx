@@ -1,15 +1,20 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { Menu, X, ChevronDown } from "lucide-react"
+import { Menu, X, ChevronDown, Download } from "lucide-react"
 import { siteConfig } from "@/lib/site-config"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { locales } from "@/lib/i18n"
+import { cvFiles, locales } from "@/lib/i18n"
 import { useHeader } from "@/hooks/use-header"
+
+// Same chrome as the language switcher
+const cvLinkClass =
+  "flex items-center gap-1 rounded-md border border-border bg-secondary px-2.5 py-1.5 text-xs font-medium text-secondary-foreground transition-colors hover:bg-muted"
 
 export function Header() {
   const {
     locale,
+    t,
     currentLocale,
     navItems,
     mobileOpen,
@@ -68,58 +73,76 @@ export function Header() {
             </button>
           ))}
 
-          {/* Language Switcher */}
-          <div
-            className="relative transition-all duration-700 ease-out"
-            style={{
-              opacity: headerReady ? 1 : 0,
-              transform: headerReady ? "translateY(0)" : "translateY(-10px)",
-              transitionDelay: `${(navItems.length + 1) * 80}ms`,
-            }}
-          >
-            <button
-              onClick={() => setLangOpen(!langOpen)}
-              onBlur={() => setTimeout(() => setLangOpen(false), 150)}
-              className="flex items-center gap-1 rounded-md border border-border bg-secondary px-2.5 py-1.5 text-xs font-medium text-secondary-foreground transition-colors hover:bg-muted"
-              aria-label="Select language"
+          <div className="flex items-center gap-2">
+            {/* CV download */}
+            <div
+              className="transition-all duration-700 ease-out"
+              style={{
+                opacity: headerReady ? 1 : 0,
+                transform: headerReady ? "translateY(0)" : "translateY(-10px)",
+                transitionDelay: `${(navItems.length + 1) * 80}ms`,
+              }}
             >
-              {currentLocale?.flag}
-              <ChevronDown className="size-3" />
-            </button>
-            {langOpen && (
-              <div className="absolute right-0 top-full mt-1 w-32 rounded-md border border-border bg-card shadow-md">
-                {locales.map((l) => (
-                  <button
-                    key={l.code}
-                    onClick={() => {
-                      handleSetLocale(l.code)
-                      setLangOpen(false)
-                    }}
-                    className={cn(
-                      "flex w-full items-center gap-2 px-3 py-2 text-xs transition-colors hover:bg-muted",
-                      l.code === locale
-                        ? "font-medium text-foreground"
-                        : "text-muted-foreground"
-                    )}
-                  >
-                    <span>{l.flag}</span>
-                    <span>{l.label}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+              <a href={cvFiles[locale]} download className={cvLinkClass}>
+                <Download className="size-3" />
+                {/* Icon only below lg: the German label overflows the header at md */}
+                <span className="sr-only lg:not-sr-only">{t.hero.downloadCv}</span>
+              </a>
+            </div>
 
-          {/* Theme Toggle */}
-          <div
-            className="transition-all duration-700 ease-out"
-            style={{
-              opacity: headerReady ? 1 : 0,
-              transform: headerReady ? "translateY(0)" : "translateY(-10px)",
-              transitionDelay: `${(navItems.length + 2) * 80}ms`,
-            }}
-          >
-            <ThemeToggle />
+            {/* Language Switcher */}
+            <div
+              className="relative transition-all duration-700 ease-out"
+              style={{
+                opacity: headerReady ? 1 : 0,
+                transform: headerReady ? "translateY(0)" : "translateY(-10px)",
+                transitionDelay: `${(navItems.length + 2) * 80}ms`,
+              }}
+            >
+              <button
+                onClick={() => setLangOpen(!langOpen)}
+                onBlur={() => setTimeout(() => setLangOpen(false), 150)}
+                className="flex items-center gap-1 rounded-md border border-border bg-secondary px-2.5 py-1.5 text-xs font-medium text-secondary-foreground transition-colors hover:bg-muted"
+                aria-label="Select language"
+              >
+                {currentLocale?.flag}
+                <ChevronDown className="size-3" />
+              </button>
+              {langOpen && (
+                <div className="absolute right-0 top-full mt-1 w-32 rounded-md border border-border bg-card shadow-md">
+                  {locales.map((l) => (
+                    <button
+                      key={l.code}
+                      onClick={() => {
+                        handleSetLocale(l.code)
+                        setLangOpen(false)
+                      }}
+                      className={cn(
+                        "flex w-full items-center gap-2 px-3 py-2 text-xs transition-colors hover:bg-muted",
+                        l.code === locale
+                          ? "font-medium text-foreground"
+                          : "text-muted-foreground"
+                      )}
+                    >
+                      <span>{l.flag}</span>
+                      <span>{l.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Theme Toggle */}
+            <div
+              className="transition-all duration-700 ease-out"
+              style={{
+                opacity: headerReady ? 1 : 0,
+                transform: headerReady ? "translateY(0)" : "translateY(-10px)",
+                transitionDelay: `${(navItems.length + 3) * 80}ms`,
+              }}
+            >
+              <ThemeToggle />
+            </div>
           </div>
         </nav>
 
@@ -156,6 +179,10 @@ export function Header() {
                 {item.label}
               </button>
             ))}
+            <a href={cvFiles[locale]} download className={cn(cvLinkClass, "mt-1 w-full justify-center")}>
+              <Download className="size-3" />
+              {t.hero.downloadCv}
+            </a>
             <div className="mt-2 border-t border-border pt-2">
               <p className="px-3 pb-1 text-xs text-muted-foreground">Theme</p>
               <div className="px-3 pb-2">
