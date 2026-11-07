@@ -17,7 +17,6 @@ import { CAM, CENTERS, HALF, MOVERS, STRUCTURES, bob, fit, float, smooth, type B
 export type Layout = { width: number; height: number; cells: Cell[] }
 
 export interface ServicesBg {
-  setActive(index: number): void
   setHovered(index: number | null): void
   setRevealed(count: number): void
   setTheme(dark: boolean): void
@@ -105,7 +104,7 @@ export function createModules(canvas: HTMLCanvasElement, opts: { dark: boolean; 
   let count = 0, offsets = new Float32Array(), widths = new Float32Array()
   let bases = new Float32Array(), heights = new Float32Array(), tints = new Float32Array()
   let blocks: (Block | number)[] = [], owners = new Int8Array(), peaks = new Float32Array(), delays = new Float32Array()
-  let active = 0, hovered: number | null = null, revealed = 1, t = 0, layout = opts.layout
+  let hovered: number | null = null, revealed = 1, t = 0, layout = opts.layout
   const rise = [0, 0, 0, 0], glow = [0, 0, 0, 0], hover = [0, 0, 0, 0]
   const hubs = [0, 1, 2, 3].map(() => ({ x: 0, z: 0 }))
   const belt = [0, 0, 0, 0], beltSpeed = [0, 0, 0, 0] // distance along each loop, so speed can ease
@@ -123,7 +122,7 @@ export function createModules(canvas: HTMLCanvasElement, opts: { dark: boolean; 
     camera.updateProjectionMatrix()
     camera.updateMatrixWorld()
 
-    const off: number[] = [], own: number[] = [], peak: number[] = [], delay: number[] = []
+    const off: number[] = [], own: number[] = [], peak: number[] = [], delay: number[] = [], wide: number[] = []
     const all: (Block | number)[] = [] // a number is an index into that structure's movers
     placed.origins.forEach(({ x, y }, i) => {
       // Screen point to the y=0 plane, sliding along the camera ray.
@@ -132,11 +131,11 @@ export function createModules(canvas: HTMLCanvasElement, opts: { dark: boolean; 
       mat.uniforms.uCenter.value[i].set(p.x + CENTERS[i].x, CENTERS[i].y, p.z + CENTERS[i].z)
       hubs[i] = { x: p.x, z: p.z }
       for (const b of STRUCTURES[i]) {
-        off.push(p.x + b.x, p.z + b.z); own.push(i); peak.push(b.h); all.push(b)
+        off.push(p.x + b.x, p.z + b.z); own.push(i); peak.push(b.h); all.push(b); wide.push(b.w ?? 1)
         delay.push((b.x + b.y + b.z) * 0.05)
       }
       MOVERS[i](0).forEach((_, k) => {
-        off.push(0, 0); own.push(i); peak.push(HALF * 2); all.push(k); delay.push(0.5)
+        off.push(0, 0); own.push(i); peak.push(HALF * 2); all.push(k); delay.push(0.5); wide.push(1)
       })
     })
     count = own.length
@@ -145,7 +144,7 @@ export function createModules(canvas: HTMLCanvasElement, opts: { dark: boolean; 
     peaks = Float32Array.from(peak)
     delays = Float32Array.from(delay)
     offsets = Float32Array.from(off)
-    widths = new Float32Array(count).fill(1)
+    widths = Float32Array.from(wide)
     bases = new Float32Array(count)
     heights = new Float32Array(count)
     tints = new Float32Array(count)
@@ -173,7 +172,7 @@ export function createModules(canvas: HTMLCanvasElement, opts: { dark: boolean; 
     t += dt * motion
     for (let i = 0; i < 4; i++) {
       rise[i] += (Number(i < revealed) * 1.6 - rise[i]) * (1 - Math.exp(-1.8 * dt))
-      glow[i] += (Number(i === active) - glow[i]) * (1 - Math.exp(-5 * dt))
+      glow[i] += (Number(i === hovered) - glow[i]) * (1 - Math.exp(-5 * dt))
       hover[i] += (Number(i === hovered) - hover[i]) * (1 - Math.exp(-3.2 * dt))
       beltSpeed[i] += ((i === hovered ? 1 : 0.35) - beltSpeed[i]) * (1 - Math.exp(-3 * dt))
       belt[i] += beltSpeed[i] * dt * motion * 2.4
@@ -234,7 +233,6 @@ export function createModules(canvas: HTMLCanvasElement, opts: { dark: boolean; 
   setLayout(opts.layout)
   setTheme(opts.dark)
   return {
-    setActive: (i) => { active = i },
     setHovered: (i) => { hovered = i },
     setRevealed: (c) => { revealed = c },
     setTheme, setLayout, start, stop,

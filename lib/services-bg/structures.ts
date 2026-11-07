@@ -1,7 +1,8 @@
 // What each service's cell shows, and where it fits. Pure geometry: no three.js, no DOM.
 export type Rect = { x: number; y: number; w: number; h: number }
 // drift: how far a loose upper piece bobs on hover, idle: how far at rest. Pieces of one group share a phase.
-export type Block = { x: number; y: number; z: number; h: number; drift?: number; phase?: number; idle?: number }
+// w: footprint relative to a full cube.
+export type Block = { x: number; y: number; z: number; h: number; w?: number; drift?: number; phase?: number; idle?: number }
 // A cube in motion: s is its size from 0 to 1, ink how far it has turned blue.
 export type Mover = { x: number; y: number; z: number; s: number; ink: number }
 export type Cell = { rect: Rect; blocked: Rect[] } // blocked: the cell's copy and ghost number
@@ -23,12 +24,16 @@ const slab = (x0: number, z0: number, size: number, layer: number, drift = 0, ph
 const plan = (rows: string[], layer: number): Block[] =>
   rows.flatMap((row, z) => [...row].flatMap((c, x) => (c === "#" ? [cube(x, layer, z)] : [])))
 
-// Pixel drawing that stands upright: # is a cube.
-const upright = (rows: string[], depth: number): Block[] =>
-  rows.flatMap((row, r) => [...row].flatMap((c, x) =>
-    c === "#" ? Array.from({ length: depth }, (_, z) => cube(x, rows.length - 1 - r, z)) : []))
+// A whole structure at another size, motion included. Same cubes, same proportions.
+const resize = (blocks: Block[], k: number): Block[] => blocks.map((b) => ({
+  ...b, x: b.x * k, y: b.y * k, z: b.z * k, h: b.h * k, w: k, drift: (b.drift ?? 0) * k, idle: b.idle && b.idle * k,
+}))
 
 const PRESS_X = 4
+
+// Card 04's 2x2 sample columns, by back corner. The last one holds the find.
+const BORES = [[1, 3], [3, 1], [3, 3]]
+const inBore = (x: number, z: number) => BORES.some(([bx, bz]) => x >= bx && x < bx + 2 && z >= bz && z < bz + 2)
 
 export const smooth = (x: number) => {
   const c = Math.min(1, Math.max(0, x))
@@ -37,13 +42,16 @@ export const smooth = (x: number) => {
 
 // Drawn to similar on-screen bounds, since fit() gives all four one cube size.
 export const STRUCTURES: Block[][] = [
-  // Strategy & Architecture: a solid stepped pyramid, its capstone floating above it.
-  [
-    ...slab(0, 0, 6, 0),
-    ...slab(1, 1, 4, 1),
-    // High enough that the top tier's back corner stays clear of it on screen, even mid-bob.
-    ...slab(2, 2, 2, 5.4, 0.15, 0).map((b) => ({ ...b, idle: 0.35 })),
-  ],
+  // Strategy & Architecture: a solid stepped pyramid, its capstone floating above it. Drawn at 6/7 so
+  // its 7-wide base covers the same ground as the 6-wide cards.
+  resize([
+    ...slab(0, 0, 7, 0),
+    ...slab(1, 1, 5, 1),
+    ...slab(2, 2, 3, 2),
+    // Off the grid by half a cube to centre 2 over 3. High enough that the top tier's back corner
+    // stays clear of it on screen, even mid-bob.
+    ...slab(2.5, 2.5, 2, 5.9, 0.15, 0).map((b) => ({ ...b, idle: 0.35 })),
+  ], 6 / 7),
   // Full-Stack Development: the stack itself, three thin plates.
   [0, 1, 2].flatMap((l) => slab(0, 0, 6, l * 1.35).map((b) => ({ ...b, h: PLATE }))),
   // AI & Automation: a production line, a belt running under a press.
@@ -52,16 +60,8 @@ export const STRUCTURES: Block[][] = [
     ...[1, 2, 3].flatMap((l) => [cube(PRESS_X, l, 0), cube(PRESS_X, l, 2)]),
     cube(PRESS_X, 4, 0), cube(PRESS_X, 4, 1), cube(PRESS_X, 4, 2),
   ],
-  // Technical Consulting & Audit: a magnifying glass.
-  upright([
-    ".###...",
-    "#...#..",
-    "#...#..",
-    "#...#..",
-    ".####..",
-    "....##.",
-    ".....##",
-  ], 2),
+  // Technical Consulting & Audit: a solid block, holed where the sample columns sit.
+  [0, 1, 2].flatMap((l) => slab(0, 0, 6, l).filter((b) => !inBore(b.x, b.z))),
 ]
 
 // Small cubes ride the belt, the press comes down as each passes under, and they leave full size
@@ -75,8 +75,28 @@ const line = (tau: number): Mover[] => {
   return [...parts, { x: PRESS_X, y: (3 - smooth(1 - nearest / 0.9)) * LAYER, z: 1, s: 1, ink: 0 }]
 }
 
+const BORE_LOOP = 15
+const hold = (u: number) => smooth(u / 0.3) * (1 - smooth((u - 0.72) / 0.28)) // out, wait, back
+
+// Samples taken across the block: two columns come up plain and sink back, then the last one rises,
+// parts, and its buried layer shows blue.
+const bores = (tau: number): Mover[] => {
+  const u = (tau % BORE_LOOP) / BORE_LOOP
+  return BORES.flatMap(([bx, bz], i) => {
+    const found = i === BORES.length - 1
+    const open = hold((u - i * 0.25) / (found ? 0.5 : 0.25))
+    return [0, 1, 2].flatMap((l) => [0, 1].flatMap((dx) => [0, 1].map((dz) => ({
+      x: bx + dx,
+      y: (l + open * (found ? 3.1 + l * 0.42 : 2.4)) * LAYER,
+      z: bz + dz,
+      s: 1,
+      ink: found && l === 1 ? smooth((open - 0.35) / 0.4) : 0,
+    }))))
+  })
+}
+
 // Moving parts per structure, by tau.
-export const MOVERS: ((tau: number) => Mover[])[] = [() => [], () => [], line, () => []]
+export const MOVERS: ((tau: number) => Mover[])[] = [() => [], () => [], line, bores]
 
 const span = (values: number[]) => (Math.min(...values) + Math.max(...values)) / 2
 
@@ -110,9 +130,10 @@ const toScreen = (x: number, y: number, z: number) => ({ x: (x - z) * H, y: (x +
 const bounds = (b: Block, c: { x: number; z: number }): Rect => {
   const reach = b.drift ? (b.idle ?? IDLE) + b.drift : 0
   let left = Infinity, right = -Infinity, top = Infinity, bottom = -Infinity
+  const half = HALF * (b.w ?? 1)
   for (const yaw of [-SWAY, 0, SWAY]) {
     const cos = Math.cos(yaw), sin = Math.sin(yaw)
-    for (const ox of [-HALF, HALF]) for (const oz of [-HALF, HALF]) for (const y of [b.y - reach, b.y + b.h + LIFT + SWELL + reach]) {
+    for (const ox of [-half, half]) for (const oz of [-half, half]) for (const y of [b.y - reach, b.y + b.h + LIFT + SWELL + reach]) {
       const dx = b.x + ox - c.x, dz = b.z + oz - c.z
       const p = toScreen(c.x + dx * cos + dz * sin, y, c.z - dx * sin + dz * cos)
       left = Math.min(left, p.x); right = Math.max(right, p.x); top = Math.min(top, p.y); bottom = Math.max(bottom, p.y)

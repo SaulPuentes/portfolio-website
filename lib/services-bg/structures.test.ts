@@ -51,6 +51,22 @@ test("card 01's capstone never touches the pyramid at the bottom of its bob", ()
   assert.ok(cap[0].y - cap[0].idle! - cap[0].drift! > top)
 })
 
+test("card 01 keeps all its cubes, scaled as one, and its cap clears the top tier on screen", () => {
+  const [pyramid] = STRUCTURES
+  assert.equal(pyramid.length, 7 * 7 + 5 * 5 + 3 * 3 + 2 * 2)
+  const k = pyramid[0].w!
+  assert.ok(k < 1 && pyramid.every((b) => b.w === k && Math.abs(b.h - 0.92 * k) < 1e-9))
+  // Screen y grows downward: the cap's nearest low corner must stay above the tier's far top corner.
+  const screenY = (x: number, y: number, z: number) => (x + z) * 0.3939 - y * 0.8304
+  const half = 0.46 * k
+  const solid = pyramid.filter((b) => !b.drift), cap = pyramid.filter((b) => b.drift)
+  const tier = Math.min(...solid.filter((b) => b.y === Math.max(...solid.map((s) => s.y))).map((b) => b.x))
+  const top = Math.max(...solid.map((b) => b.y + b.h))
+  const far = screenY(tier - half, top, tier - half)
+  const near = Math.max(...cap.map((b) => screenY(b.x + half, b.y - b.idle! - b.drift!, b.z + half)))
+  assert.ok(near < far, `${near} ${far}`)
+})
+
 test("only the loose upper pieces of card 01 bob", () => {
   const loose = STRUCTURES.map((s) => s.filter((b) => b.drift).length)
   assert.ok(loose[0] > 0)
@@ -73,4 +89,23 @@ test("the production line turns cubes blue at the press, and the press comes dow
     }
   }
   assert.ok(highest - lowest > 0.8)
+})
+
+test("card 04's samples fill the block's holes and only the last one shows blue", () => {
+  const home = (tau: number) => MOVERS[3](tau).map((p) => `${p.x},${p.z},${Math.round(p.y / 0.96)}`)
+  const solid = STRUCTURES[3].map((b) => `${b.x},${b.z},${Math.round(b.y / 0.96)}`)
+  const cells = [...home(0), ...solid]
+  assert.equal(new Set(cells).size, 6 * 6 * 3) // closed, the block has no gap and no doubled cube
+
+  const blue = new Set<number>(), raised = new Set<number>()
+  for (let tau = 0; tau < 15; tau += 0.05) {
+    const parts = MOVERS[3](tau)
+    parts.forEach((p, i) => {
+      if (p.ink > 0) blue.add(Math.floor(i / 12))
+      if (p.y > 3) raised.add(Math.floor(i / 12))
+    })
+  }
+  assert.deepEqual([...blue], [2])
+  assert.deepEqual([...raised].sort(), [0, 1, 2])
+  assert.deepEqual(home(15), home(0)) // the loop closes without a jump
 })
