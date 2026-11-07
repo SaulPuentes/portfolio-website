@@ -168,3 +168,16 @@ body {
     animation: cascade-in 520ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 60ms) backwards;
   }
 }
+
+/* Theme switch: components/theme-toggle.tsx sets the origin and radius, and skips this for
+   reduced motion */
+@keyframes theme-ripple {
+  from { clip-path: circle(0px at var(--theme-x) var(--theme-y)); }
+  to { clip-path: circle(var(--theme-radius) at var(--theme-x) var(--theme-y)); }
+}
+::view-transition-old(root) {
+  animation: none;
+}
+::view-transition-new(root) {
+  animation: theme-ripple 600ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
