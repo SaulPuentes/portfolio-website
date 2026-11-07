@@ -1,25 +1,23 @@
 "use client"
 
-import { useEffect, useRef, useState, type RefObject } from "react"
+import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react"
 import Image from "next/image"
 import { ArrowUpRight, Pause, Play } from "lucide-react"
 import { useI18n } from "@/lib/i18n/context"
 import { projectImages, splitProjectName } from "@/lib/showcase"
 import type { Project } from "@/lib/types"
 
-const pad = (n: number) => String(n).padStart(2, "0")
 const CTA = "inline-flex items-center gap-1 border-b border-accent pb-0.5 font-mono text-[11px] uppercase tracking-[0.2em] text-foreground transition-colors hover:text-accent md:max-lg:tracking-[0.1em]"
 const ON_IMAGE = "absolute z-10 bg-black/55 text-white backdrop-blur-sm"
 // Last item's delay + duration of the cascade-out rules in globals.css
 const CASCADE_OUT_MS = 305
+const TEXT_RESIZE_MS = 420
 const IMAGE_FADE = "[transition-duration:800ms,6000ms] ease-linear"
 const IMAGE_FADE_PROJECT = "[transition-delay:120ms,0ms] [transition-duration:700ms,6000ms] [transition-timing-function:ease-in-out,linear]"
 
 export function Stage({
   ref,
   project,
-  index,
-  total,
   next,
   slide,
   paused,
@@ -30,8 +28,6 @@ export function Stage({
 }: {
   ref: RefObject<HTMLDivElement | null>
   project: Project
-  index: number
-  total: number
   next: Project
   slide: number
   paused: boolean
@@ -53,30 +49,30 @@ export function Stage({
   }
 
   // The panel keeps showing the outgoing project until its text has finished leaving
-  const [panel, setPanel] = useState({ project, index })
+  const [panel, setPanel] = useState(project)
   const [hasChanged, setHasChanged] = useState(false)
-  const leaving = panel.project !== project
+  const leaving = panel !== project
   useEffect(() => {
     if (!leaving) return
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches
     const id = setTimeout(() => {
-      setPanel({ project, index })
+      setPanel(project)
       setHasChanged(true)
     }, reduced ? 0 : CASCADE_OUT_MS)
     return () => clearTimeout(id)
-  }, [leaving, project, index])
+  }, [leaving, project])
   const cascade = leaving ? "leaving" : hasChanged ? "entering" : undefined
 
-  const { title, kind } = splitProjectName(panel.project.name[locale])
+  const { title, kind } = splitProjectName(panel.name[locale])
   const imageTitle = splitProjectName(project.name[locale]).title
 
   // Sorted so keyed images never reorder: moving a node mid-change would cut its crossfade
   const mounted = [...new Set([shown.previous, current, upcoming])]
     .filter((src): src is string => Boolean(src))
     .sort()
-  const liveUrl = panel.project.liveUrls?.[0]?.url ?? panel.project.liveUrl
+  const liveUrl = panel.liveUrls?.[0]?.url ?? panel.liveUrl
 
-  const paragraphs = panel.project.description[locale]
+  const paragraphs = panel.description[locale]
   const firstParagraph = useRef<HTMLParagraphElement | null>(null)
   const [clamped, setClamped] = useState(false)
   useEffect(() => {
@@ -87,9 +83,25 @@ export function Stage({
     return () => observer.disconnect()
   }, [expanded, paragraphs])
 
+  // Height can't transition to auto: measure both ends around the toggle and animate between them
+  const text = useRef<HTMLDivElement | null>(null)
+  const heightBeforeToggle = useRef<number | null>(null)
+  const toggleExpanded = () => {
+    heightBeforeToggle.current = text.current?.offsetHeight ?? null
+    onToggleExpanded()
+  }
+  useLayoutEffect(() => {
+    const el = text.current
+    const from = heightBeforeToggle.current
+    heightBeforeToggle.current = null
+    if (!el || from === null || matchMedia("(prefers-reduced-motion: reduce)").matches) return
+    el.animate({ height: [`${from}px`, `${el.offsetHeight}px`] }, { duration: TEXT_RESIZE_MS, easing: "cubic-bezier(0.16, 1, 0.3, 1)" })
+  }, [expanded])
+
   return (
     <div ref={ref} className="grid scroll-mt-20 border border-border bg-card md:grid-cols-[1.6fr_1fr] md:gap-6">
-      <div className={`relative aspect-[4/3] overflow-hidden bg-muted ${expanded ? "md:aspect-auto" : "md:aspect-[16/10]"}`}>
+      {/* Aspect on a spacer, not the cell: it sets the minimum height and the cell still stretches beside taller text */}
+      <div className="relative overflow-hidden bg-muted before:block before:aspect-[4/3] md:before:aspect-[16/10]">
         {mounted.map((src) => (
           <Image
             key={src}
@@ -128,10 +140,10 @@ export function Stage({
         </button>
       </div>
 
-      <div data-cascade={cascade} className="flex min-w-0 flex-col justify-center p-4 md:py-3 md:pl-0 lg:py-6 md:pr-6 lg:pr-8">
+      {/* min-h fits the tallest content (expanded, two rows of tags): the card never resizes while the content stays centered */}
+      <div data-cascade={cascade} className="flex min-h-[315px] min-w-0 flex-col justify-center p-4 md:min-h-[381px] md:py-8 md:pl-0 lg:min-h-[505px] lg:py-10 md:pr-6 lg:pr-8">
         <div className="hidden font-mono text-[10px] uppercase tracking-[0.25em] text-accent md:block">
-          {pad(panel.index + 1)} / {pad(total)}
-          {kind && ` · ${kind}`}
+          {kind}
         </div>
         <h3 className="flex items-baseline gap-2.5 font-medium text-xl tracking-[-0.02em] md:mt-2 md:block md:text-2xl lg:text-3xl" style={{ fontFamily: "var(--font-display)" }}>
           <span className="shrink-0 md:block md:truncate">{title}</span>
@@ -142,12 +154,23 @@ export function Stage({
           )}
         </h3>
         <div className="mt-2 md:mt-3">
-          <div className="flex flex-col gap-3 text-sm leading-relaxed text-muted-foreground xl:text-[15px]">
+          <div
+            ref={text}
+            tabIndex={expanded ? 0 : undefined}
+            className={`flex flex-col gap-3 text-sm leading-relaxed text-muted-foreground [scrollbar-width:thin] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent xl:text-[15px] ${
+              expanded ? "max-h-44 overflow-y-auto pr-3 md:max-h-36 lg:max-h-56" : "overflow-hidden"
+            }`}
+          >
             {(expanded ? paragraphs : paragraphs.slice(0, 1)).map((paragraph, i) => (
               <p
                 key={i}
                 ref={i === 0 ? firstParagraph : undefined}
-                className={expanded ? undefined : "line-clamp-4 min-h-[4lh] md:min-h-0 md:line-clamp-3 lg:line-clamp-5 xl:line-clamp-none"}
+                className={
+                  expanded
+                    ? i > 0 ? "motion-safe:animate-[cascade-in_520ms_cubic-bezier(0.16,1,0.3,1)_backwards]" : undefined
+                    : "line-clamp-7 md:line-clamp-6 lg:line-clamp-9"
+                }
+                style={expanded && i > 0 ? { animationDelay: `${i * 60}ms` } : undefined}
               >
                 {paragraph}
               </p>
@@ -156,7 +179,7 @@ export function Stage({
           {(paragraphs.length > 1 || clamped) && (
             <button
               type="button"
-              onClick={onToggleExpanded}
+              onClick={toggleExpanded}
               aria-expanded={expanded}
               className="mt-1 py-1 font-mono text-[11px] uppercase tracking-[0.2em] text-accent hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:max-lg:tracking-[0.1em]"
             >
@@ -165,7 +188,7 @@ export function Stage({
           )}
         </div>
         <div className="mt-3 hidden flex-wrap gap-1.5 md:flex md:max-lg:h-6 md:max-lg:overflow-hidden">
-          {panel.project.technologies.map((tech) => (
+          {panel.technologies.map((tech) => (
             <span key={tech} className="border border-border px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
               {tech}
             </span>

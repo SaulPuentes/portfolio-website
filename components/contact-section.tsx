@@ -37,11 +37,8 @@ export function ContactSection() {
 
           {/* Left — identity */}
           <div className="lg:col-span-5">
-            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-              // contact
-            </span>
             <h2
-              className="mt-3 font-medium text-4xl md:text-6xl tracking-[-0.03em] leading-[0.95]"
+              className="font-medium text-4xl md:text-6xl tracking-[-0.03em] leading-[0.95]"
               style={{ fontFamily: "var(--font-display)" }}
             >
               {t.contact.sectionTitle}

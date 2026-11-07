@@ -37,8 +37,6 @@ export function ProjectsSection() {
           <Stage
             ref={stageRef}
             project={project}
-            index={timeline.project}
-            total={projects.length}
             next={projects[(timeline.project + 1) % projects.length]}
             slide={timeline.slide}
             paused={paused}
