@@ -11,7 +11,6 @@ import {
   stripCards,
   wrap,
   stepTarget,
-  firstInView,
 } from "./showcase"
 
 const counts = [3, 1, 0]
@@ -84,10 +83,4 @@ test("stepTarget moves one card from the nearest card edge", () => {
   assert.equal(stepTarget(130, 100, 1), 200)
   assert.equal(stepTarget(149, 100, -1), 0)
   assert.equal(stepTarget(-100, 100, -1), -200)
-})
-
-test("firstInView counts cards around the loop", () => {
-  assert.equal(firstInView(0, 100, 8), 0)
-  assert.equal(firstInView(-100, 100, 8), 7)
-  assert.equal(firstInView(790, 100, 8), 0)
 })

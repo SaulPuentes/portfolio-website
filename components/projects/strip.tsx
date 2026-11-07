@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState, type PointerEvent } from "rea
 import Image from "next/image"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useI18n } from "@/lib/i18n/context"
-import { SLIDE_MS, firstInView, projectImages, splitProjectName, stepTarget, stripCards, wrap } from "@/lib/showcase"
+import { SLIDE_MS, projectImages, splitProjectName, stepTarget, stripCards, wrap } from "@/lib/showcase"
 import type { Project } from "@/lib/types"
 
 const EDGE_MASK = "linear-gradient(to right, transparent, black 5%, black 95%, transparent)"
@@ -13,8 +13,9 @@ const DRAG_START_PX = 5
 const MAX_FLING_PX_S = 4000
 const RESUME_AFTER_DRAG_MS = 1500
 const RESUME_AFTER_STEP_MS = 3000
-const NAV_BUTTON = "grid size-8 place-items-center border border-border bg-card text-foreground transition-colors hover:border-foreground/40 focus-visible:outline-2 focus-visible:outline-accent"
-const pad = (n: number) => String(n).padStart(2, "0")
+// Centred on the screenshots (card width x 10/16, halved, minus half the button); shown on hover or keyboard focus only,
+// so touch screens never see them and swipe instead
+const NAV_BUTTON = "absolute z-10 grid size-8 place-items-center border border-border bg-card text-foreground opacity-0 pointer-events-none transition-[opacity,translate,border-color] duration-200 top-[calc(200px*10/32-16px)] md:top-[calc(260px*10/32-16px)] hover:border-foreground/40 focus-visible:outline-2 focus-visible:outline-accent group-hover:pointer-events-auto group-hover:translate-x-0 group-hover:opacity-100 group-has-focus-visible:pointer-events-auto group-has-focus-visible:translate-x-0 group-has-focus-visible:opacity-100"
 
 function StripCard({
   project,
@@ -121,7 +122,6 @@ function Marquee({ projects, activeIndex, running, onSelect }: Props) {
   const count = projects.length
   const viewport = useRef<HTMLDivElement | null>(null)
   const track = useRef<HTMLDivElement | null>(null)
-  const counter = useRef<HTMLSpanElement | null>(null)
   const motion = useRef<Motion>({ x: 0, v: 0, target: null, auto: 1, hover: false, focused: false, dragging: false, holdUntil: 0 })
   const size = useRef({ loop: 0, stride: 0, speed: 0, reduced: false })
   const drag = useRef<Drag | null>(null)
@@ -129,13 +129,11 @@ function Marquee({ projects, activeIndex, running, onSelect }: Props) {
 
   // Straight to the DOM every frame: React never re-renders for motion
   const paint = useCallback(() => {
-    const { loop, stride } = size.current
+    const { loop } = size.current
     const m = motion.current
     if (!track.current || !loop) return
     track.current.style.transform = `translate3d(${-wrap(m.x, loop)}px, 0, 0)`
-    const text = `${pad(firstInView(m.target ?? m.x, stride, count) + 1)} / ${pad(count)}`
-    if (counter.current && counter.current.textContent !== text) counter.current.textContent = text
-  }, [count])
+  }, [])
 
   useEffect(() => {
     const vp = viewport.current
@@ -250,18 +248,16 @@ function Marquee({ projects, activeIndex, running, onSelect }: Props) {
   }
 
   return (
-    <div className="mt-6">
-      <div className="mb-3 flex items-center justify-end gap-3">
-        <span ref={counter} aria-hidden="true" className="font-mono text-[11px] tabular-nums tracking-[0.2em] text-muted-foreground">
-          {`${pad(1)} / ${pad(count)}`}
-        </span>
-        <button type="button" onClick={() => step(-1)} aria-label={t.projects.previous} className={NAV_BUTTON}>
-          <ChevronLeft className="size-4" />
-        </button>
-        <button type="button" onClick={() => step(1)} aria-label={t.projects.next} className={NAV_BUTTON}>
-          <ChevronRight className="size-4" />
-        </button>
-      </div>
+    // Hover is tracked on the whole block: reaching for an arrow must not restart the drift
+    <div
+      className="group relative mt-6"
+      onPointerEnter={(e) => {
+        if (e.pointerType === "mouse") motion.current.hover = true
+      }}
+      onPointerLeave={() => {
+        motion.current.hover = false
+      }}
+    >
       <div
         ref={viewport}
         className="cursor-grab touch-pan-y select-none overflow-hidden data-[dragging]:cursor-grabbing"
@@ -270,12 +266,6 @@ function Marquee({ projects, activeIndex, running, onSelect }: Props) {
         onPointerMove={onPointerMove}
         onPointerUp={onPointerEnd}
         onPointerCancel={onPointerEnd}
-        onPointerEnter={(e) => {
-          if (e.pointerType === "mouse") motion.current.hover = true
-        }}
-        onPointerLeave={() => {
-          motion.current.hover = false
-        }}
         onDragStart={(e) => e.preventDefault()} // native image drag would steal the gesture
         onClickCapture={(e) => {
           if (!swallowClick.current) return
@@ -315,6 +305,12 @@ function Marquee({ projects, activeIndex, running, onSelect }: Props) {
           ))}
         </div>
       </div>
+      <button type="button" onClick={() => step(-1)} aria-label={t.projects.previous} className={`${NAV_BUTTON} left-3 -translate-x-1.5`}>
+        <ChevronLeft className="size-4" />
+      </button>
+      <button type="button" onClick={() => step(1)} aria-label={t.projects.next} className={`${NAV_BUTTON} right-3 translate-x-1.5`}>
+        <ChevronRight className="size-4" />
+      </button>
     </div>
   )
 }

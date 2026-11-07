@@ -56,7 +56,3 @@ export function wrap(x: number, loop: number): number {
 export function stepTarget(x: number, stride: number, dir: number): number {
   return (Math.round(x / stride) + dir) * stride
 }
-
-export function firstInView(x: number, stride: number, count: number): number {
-  return wrap(Math.round(x / stride), count)
-}
