@@ -101,7 +101,7 @@ export function Stage({
   return (
     <div ref={ref} className="grid scroll-mt-20 border border-border bg-card md:grid-cols-[1.6fr_1fr] md:gap-6">
       {/* Aspect on a spacer, not the cell: it sets the minimum height and the cell still stretches beside taller text */}
-      <div className="relative overflow-hidden bg-muted before:block before:aspect-[4/3] md:before:aspect-[16/10]">
+      <div className="group relative overflow-hidden bg-muted before:block before:aspect-[4/3] md:before:aspect-[16/10]">
         {mounted.map((src) => (
           <Image
             key={src}
@@ -129,12 +129,13 @@ export function Stage({
           ))}
         </div>
 
+        {/* Hover only; stays shown while paused so the stopped state is explained, and on touch screens, which can't hover */}
         <button
           type="button"
           onClick={onTogglePaused}
           aria-pressed={paused}
           aria-label={paused ? t.nav.play : t.nav.pause}
-          className={`${ON_IMAGE} bottom-3 right-3 grid size-8 place-items-center transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:hidden md:bottom-auto md:top-3`}
+          className={`${ON_IMAGE} bottom-3 right-3 grid size-8 place-items-center opacity-0 transition-[opacity,background-color] duration-200 group-hover:opacity-100 focus-visible:opacity-100 aria-pressed:opacity-100 pointer-coarse:opacity-100 hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:hidden md:bottom-auto md:top-3`}
         >
           {paused ? <Play className="size-3 fill-current" /> : <Pause className="size-3 fill-current" />}
         </button>
