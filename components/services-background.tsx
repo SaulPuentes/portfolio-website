@@ -20,10 +20,9 @@ export function ServicesBackground({ sectionRef, revealed, isMobile }: {
   const dark = resolvedTheme !== "light"
   const [hovered, setHovered] = useState<number | null>(null)
   const [centered, setCentered] = useState(0)
-  const active = hovered ?? (isMobile ? centered : Math.max(0, revealed - 1))
   const floating = hovered ?? (isMobile ? centered : null) // phones have no hover: the mid-screen card floats
-  const live = useRef({ dark, revealed, active, floating })
-  live.current = { dark, revealed, active, floating }
+  const live = useRef({ dark, revealed, floating })
+  live.current = { dark, revealed, floating }
 
   useEffect(() => {
     const section = sectionRef.current, wrap = wrapRef.current, canvas = canvasRef.current
@@ -71,7 +70,6 @@ export function ServicesBackground({ sectionRef, revealed, isMobile }: {
         })
         bgRef.current = bg
         bg.setRevealed(live.current.revealed)
-        bg.setActive(live.current.active)
         bg.setHovered(live.current.floating)
         update()
         canvas.style.opacity = "1"
@@ -129,7 +127,6 @@ export function ServicesBackground({ sectionRef, revealed, isMobile }: {
     }
   }, [sectionRef, isMobile])
 
-  useEffect(() => { bgRef.current?.setActive(active) }, [active])
   useEffect(() => { bgRef.current?.setHovered(floating) }, [floating])
   useEffect(() => { bgRef.current?.setRevealed(revealed) }, [revealed])
   // Next frame: next-themes swaps the class in its own effect, after this one, and the scene
