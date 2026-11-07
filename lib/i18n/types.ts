@@ -34,6 +34,8 @@ export interface Translations {
     viewLive: string
     readMore: string
     readLess: string
+    previous: string
+    next: string
   }
   contact: {
     sectionTitle: string

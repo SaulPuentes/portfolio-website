@@ -46,3 +46,17 @@ export function stripCards(count: number): { index: number; duplicate: boolean }
   const cards = Array.from({ length: count }, (_, index) => ({ index, duplicate: false }))
   return [...cards, ...cards.map((c) => ({ ...c, duplicate: true }))]
 }
+
+// Strip offsets are unbounded while moving and wrapped into one copy of the cards when drawn
+export function wrap(x: number, loop: number): number {
+  return ((x % loop) + loop) % loop
+}
+
+// Snaps to a card edge, so a step from mid-drift lands on whole cards
+export function stepTarget(x: number, stride: number, dir: number): number {
+  return (Math.round(x / stride) + dir) * stride
+}
+
+export function firstInView(x: number, stride: number, count: number): number {
+  return wrap(Math.round(x / stride), count)
+}

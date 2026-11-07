@@ -43,7 +43,9 @@
     "sectionTitle": "Projekte",
     "viewLive": "Live ansehen",
     "readMore": "Mehr lesen",
-    "readLess": "Weniger lesen"
+    "readLess": "Weniger lesen",
+    "previous": "Vorherige Projekte",
+    "next": "Nächste Projekte"
   },
   "contact": {
     "sectionTitle": "Kontakt",

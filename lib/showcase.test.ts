@@ -9,6 +9,9 @@ import {
   slideMs,
   splitProjectName,
   stripCards,
+  wrap,
+  stepTarget,
+  firstInView,
 } from "./showcase"
 
 const counts = [3, 1, 0]
@@ -69,4 +72,22 @@ test("projectImages prefers gallery, then image, then nothing", () => {
   assert.deepEqual(projectImages({ ...base, gallery: ["/a"], image: "/b" }), ["/a"])
   assert.deepEqual(projectImages({ ...base, gallery: [], image: "/b" }), ["/b"])
   assert.deepEqual(projectImages(base), [])
+})
+
+test("wrap folds any strip offset into one loop", () => {
+  assert.equal(wrap(250, 100), 50)
+  assert.equal(wrap(-10, 100), 90)
+  assert.equal(wrap(0, 100), 0)
+})
+
+test("stepTarget moves one card from the nearest card edge", () => {
+  assert.equal(stepTarget(130, 100, 1), 200)
+  assert.equal(stepTarget(149, 100, -1), 0)
+  assert.equal(stepTarget(-100, 100, -1), -200)
+})
+
+test("firstInView counts cards around the loop", () => {
+  assert.equal(firstInView(0, 100, 8), 0)
+  assert.equal(firstInView(-100, 100, 8), 7)
+  assert.equal(firstInView(790, 100, 8), 0)
 })
