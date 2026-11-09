@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { buildStops, createAutoplay, isStopKey, AUTOPLAY_TOGGLE_EVENT, type AutoplayState } from "@/lib/autoplay"
 
-const HEADER_PX = 64 // sections use scroll-mt-16
+const HEADER_PX = 56 // matches html scroll-pt-14
 const MANUAL_SCROLL_PX = 3
 const INITIAL: AutoplayState = { playing: false, speedIndex: 0, label: "play" }
 

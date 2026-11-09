@@ -120,7 +120,16 @@ body {
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+@utility section-title {
+  font-family: var(--font-display);
+  @apply text-4xl font-medium leading-none tracking-[-0.03em] text-foreground md:text-5xl;
+}
+
 @layer base {
+  html {
+    /* Anchor jumps land below the fixed header (h-14) */
+    @apply scroll-pt-14;
+  }
   * {
     @apply border-border outline-ring/50;
   }

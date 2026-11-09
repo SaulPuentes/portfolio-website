@@ -38,7 +38,7 @@ export function HeroSection() {
   return (
     <section
       id="about"
-      className="scroll-mt-16 relative flex h-dvh min-h-[640px] flex-col overflow-hidden pt-14 sm:pt-16"
+      className="relative flex h-dvh min-h-[640px] flex-col overflow-hidden pt-14 sm:pt-16"
     >
       <HeroGlobe />
       {/* Veil — fades the globe out behind the text. Same switch as scene.ts: aspect < 0.9 is the

@@ -30,17 +30,14 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="scroll-mt-16 bg-secondary/30 pt-36 pb-24"
+      className="-scroll-mt-10 bg-secondary/30 pt-16 md:-scroll-mt-18 pb-24 md:pt-24"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
 
           {/* Left — identity */}
           <div className="lg:col-span-5">
-            <h2
-              className="font-medium text-4xl md:text-6xl tracking-[-0.03em] leading-[0.95]"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
+            <h2 className="section-title">
               {t.contact.sectionTitle}
             </h2>
             <p className="mt-6 text-sm leading-relaxed text-muted-foreground max-w-sm">

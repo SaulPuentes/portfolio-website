@@ -8,7 +8,7 @@ import { Stage } from "./stage"
 import { Strip } from "./strip"
 
 const MOBILE = "(max-width: 767.98px)"
-const HEADER_PX = 64
+const HEADER_PX = 56
 
 export function ProjectsSection() {
   const { t } = useI18n()
@@ -30,9 +30,9 @@ export function ProjectsSection() {
   const project = projects[timeline.project]
 
   return (
-    <section id="projects" ref={sectionRef} className="relative scroll-mt-16 py-16 md:py-24">
+    <section id="projects" ref={sectionRef} className="relative -scroll-mt-10 py-16 md:-scroll-mt-18 md:py-24">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h2 className="mb-6 text-3xl font-bold text-foreground md:text-4xl">{t.projects.sectionTitle}</h2>
+        <h2 className="section-title mb-6">{t.projects.sectionTitle}</h2>
         {project && (
           <Stage
             ref={stageRef}

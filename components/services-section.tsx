@@ -16,7 +16,7 @@ export function ServicesSection() {
     <section
       id="services"
       ref={sectionRef}
-      className="relative scroll-mt-16"
+      className="relative -scroll-mt-10 md:scroll-mt-0"
       style={{ height: isMobile ? "auto" : "300vh" }}
     >
       <ServicesBackground key={isMobile ? "phone" : "desktop"} sectionRef={sectionRef} revealed={visibleCount} isMobile={isMobile} />
@@ -25,10 +25,7 @@ export function ServicesSection() {
 
           {/* Section header */}
           <div className="flex items-end justify-between mb-10 md:mb-14 gap-4">
-            <h2
-              className="mt-3 font-medium text-3xl md:text-5xl tracking-[-0.03em] leading-[1]"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
+            <h2 className="section-title mt-3">
               {t.services.sectionTitle}
             </h2>
             <span className="font-mono text-[11px] text-muted-foreground hidden sm:block pb-1">

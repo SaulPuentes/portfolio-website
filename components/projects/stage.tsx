@@ -99,7 +99,7 @@ export function Stage({
   }, [expanded])
 
   return (
-    <div ref={ref} className="grid scroll-mt-20 border border-border bg-card md:grid-cols-[1.6fr_1fr] md:gap-6">
+    <div ref={ref} className="grid scroll-mt-4 border border-border bg-card md:grid-cols-[1.6fr_1fr] md:gap-6">
       {/* Aspect on a spacer, not the cell: it sets the minimum height and the cell still stretches beside taller text */}
       <div className="group relative overflow-hidden bg-muted before:block before:aspect-[4/3] md:before:aspect-[16/10]">
         {mounted.map((src) => (
