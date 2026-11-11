@@ -8,9 +8,11 @@ import type { Rect } from "@/lib/services-bg/structures"
 // Decorative objects in the Services cells, placed around each cell's measured copy and number.
 // Desktop pins the canvas with the grid; phones scroll, so it spans the whole section there.
 // Keyed on isMobile by the section: a canvas can't take a second WebGL context after dispose.
-export function ServicesBackground({ sectionRef, revealed, isMobile }: {
+export function ServicesBackground({ sectionRef, revealed, active, isMobile }: {
   sectionRef: RefObject<HTMLDivElement | null>
   revealed: number
+  /** Card the autoplay tour is presenting; a real hover still wins. */
+  active: number | null
   isMobile: boolean
 }) {
   const wrapRef = useRef<HTMLDivElement>(null)
@@ -20,7 +22,7 @@ export function ServicesBackground({ sectionRef, revealed, isMobile }: {
   const dark = resolvedTheme !== "light"
   const [hovered, setHovered] = useState<number | null>(null)
   const [centered, setCentered] = useState(0)
-  const floating = hovered ?? (isMobile ? centered : null) // phones have no hover: the mid-screen card floats
+  const floating = hovered ?? active ?? (isMobile ? centered : null) // phones have no hover: the mid-screen card floats
   const live = useRef({ dark, revealed, floating })
   live.current = { dark, revealed, floating }
 

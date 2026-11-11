@@ -4,7 +4,9 @@ import {
   buildStops,
   createAutoplay,
   isStopKey,
+  PROJECTS_NEXT_EVENT,
   PROJECTS_PAUSE_MS,
+  SERVICE_EVENT,
   type AutoplayEnv,
   type PageMetrics,
   type TourStop,
@@ -30,6 +32,7 @@ function fakeEnv(stops: TourStop[] = STOPS, max = 2000) {
     scrolls: [] as { y: number; seconds: number }[],
     waits: [] as number[],
     hashes: [] as string[],
+    events: [] as unknown[],
     cancels: 0,
     pending: null as (() => void) | null,
   }
@@ -56,6 +59,7 @@ function fakeEnv(stops: TourStop[] = STOPS, max = 2000) {
       return later(done)
     },
     setHash: (h) => s.hashes.push(h),
+    emit: (e) => s.events.push(e),
   }
   const step = () => {
     const p = s.pending
@@ -65,14 +69,25 @@ function fakeEnv(stops: TourStop[] = STOPS, max = 2000) {
   const finish = () => {
     for (let i = 0; i < 100 && s.pending; i++) step()
   }
-  return { s, env, step, finish }
+  // Play from the hero and skip its beat; tests below are about the legs after it
+  const play = (a: { play(): void }) => {
+    a.play()
+    if (s.waits.length !== 1 || s.scrolls.length) return
+    s.waits.length = 0
+    step()
+  }
+  return { s, env, step, finish, play }
 }
 
-test("buildStops stops once at projects", () => {
+test("buildStops holds on projects while the stage steps through three of them", () => {
   const stops = buildStops(M)
-  assert.deepEqual(stops.map((x) => x.y), [0, 1200, 1600, 2000, 2400, 4036, 7336])
-  assert.deepEqual(stops.map((x) => x.hash), ["#about", "#services", undefined, undefined, undefined, "#projects", "#contact"])
-  assert.deepEqual(stops.map((x) => x.pauseMs), [undefined, 400, 400, 400, 400, PROJECTS_PAUSE_MS, undefined])
+  const P = PROJECTS_PAUSE_MS
+  assert.deepEqual(stops.map((x) => x.y), [0, 1200, 1600, 2000, 2400, 4036, 4036, 4036, 7336])
+  assert.deepEqual(stops.map((x) => x.hash), ["#about", "#services", undefined, undefined, undefined, "#projects", undefined, undefined, "#contact"])
+  assert.deepEqual(stops.map((x) => x.pauseMs), [undefined, 2000, 2000, 2000, 2000, P, P, P, undefined])
+  const svc = (detail: number | null) => ({ type: SERVICE_EVENT, detail })
+  const next = { type: PROJECTS_NEXT_EVENT }
+  assert.deepEqual(stops.map((x) => x.event), [undefined, svc(0), svc(1), svc(2), svc(3), svc(null), next, next, undefined])
 })
 
 test("buildStops steps stacked services until every card is on screen", () => {
@@ -88,20 +103,23 @@ test("buildStops clamps to maxScroll", () => {
   assert.equal(stops[stops.length - 1].y, 7600)
 })
 
-test("play from the hero goes straight to the next section", () => {
+test("play from the hero holds a beat, then goes to the next section", () => {
   const { s, env, step } = fakeEnv()
   const a = createAutoplay(env, () => {})
   a.play()
+  assert.deepEqual(s.waits, [1500])
+  assert.deepEqual(s.scrolls, [])
+  step() // beat over
   assert.deepEqual(s.scrolls, [{ y: 1000, seconds: 1.2 }])
   step()
   assert.deepEqual(s.hashes, ["#services"])
-  assert.deepEqual(s.waits, [3000])
+  assert.deepEqual(s.waits, [1500, 3000])
 })
 
 test("walks every stop then labels replay", () => {
-  const { s, env, finish } = fakeEnv(STOPS, 5000)
+  const { s, env, finish, play } = fakeEnv(STOPS, 5000)
   const a = createAutoplay(env, () => {})
-  a.play()
+  play(a)
   finish()
   assert.deepEqual(s.hashes, ["#services", "#contact"])
   assert.deepEqual(s.scrolls.map((x) => x.y), [1000, 2000])
@@ -110,10 +128,10 @@ test("walks every stop then labels replay", () => {
 })
 
 test("2× halves scroll time and holds", () => {
-  const { s, env, step } = fakeEnv()
+  const { s, env, step, play } = fakeEnv()
   const a = createAutoplay(env, () => {})
   a.cycleSpeed()
-  a.play()
+  play(a)
   assert.deepEqual(s.scrolls[0], { y: 1000, seconds: 0.6 })
   step() // arrive services
   assert.equal(s.waits[0], 1500)
@@ -121,9 +139,9 @@ test("2× halves scroll time and holds", () => {
 
 test("a stop's own pauseMs replaces the default hold and still scales with speed", () => {
   const stops: TourStop[] = [{ y: 500, hash: "#services", pauseMs: 1500 }, { y: 1000, hash: "#contact" }]
-  const { s, env, step } = fakeEnv(stops)
+  const { s, env, step, play } = fakeEnv(stops)
   const a = createAutoplay(env, () => {})
-  a.play()
+  play(a)
   step() // arrive first stop
   assert.equal(s.waits[0], 1500)
   a.pause()
@@ -134,10 +152,28 @@ test("a stop's own pauseMs replaces the default hold and still scales with speed
   assert.equal(s.waits[1], 750)
 })
 
-test("pause cancels the pending scroll", () => {
+test("a stop's event fires on arrival", () => {
+  const { s, env, step, play } = fakeEnv([{ y: 500, event: { type: "x", detail: 1 } }])
+  play(createAutoplay(env, () => {}))
+  assert.deepEqual(s.events, [])
+  step()
+  assert.deepEqual(s.events, [{ type: "x", detail: 1 }])
+})
+
+test("pause during the hero beat stays in the hero", () => {
   const { s, env, step } = fakeEnv()
   const a = createAutoplay(env, () => {})
   a.play()
+  a.pause()
+  step()
+  assert.deepEqual(s.scrolls, [])
+  assert.equal(a.getState().playing, false)
+})
+
+test("pause cancels the pending scroll", () => {
+  const { s, env, step, play } = fakeEnv()
+  const a = createAutoplay(env, () => {})
+  play(a)
   a.pause()
   assert.equal(s.cancels, 1)
   step()
@@ -148,9 +184,9 @@ test("pause cancels the pending scroll", () => {
 })
 
 test("resume goes to the next stop below the current position", () => {
-  const { s, env, step } = fakeEnv()
+  const { s, env, step, play } = fakeEnv()
   const a = createAutoplay(env, () => {})
-  a.play()
+  play(a)
   step() // arrive services, holding
   a.pause()
   s.scrollY = 1500
@@ -164,9 +200,9 @@ test("resume on same-y stops keeps stop order", () => {
     { y: 500, hash: "#b" },
     { y: 500, hash: "#c" },
   ]
-  const { s, env, step } = fakeEnv(stops, 5000)
+  const { s, env, step, play } = fakeEnv(stops, 5000)
   const a = createAutoplay(env, () => {})
-  a.play()
+  play(a)
   step() // arrive first
   step() // hold done → leg to second
   step() // arrive second, holding
@@ -185,9 +221,9 @@ test("fresh play mid-page continues with the next stop", () => {
 })
 
 test("play after finishing restarts from the hero", () => {
-  const { s, env, finish } = fakeEnv(STOPS, 5000)
+  const { s, env, finish, play } = fakeEnv(STOPS, 5000)
   const a = createAutoplay(env, () => {})
-  a.play()
+  play(a)
   finish()
   a.play()
   assert.equal(s.scrolls[s.scrolls.length - 1].y, 0)
@@ -196,9 +232,9 @@ test("play after finishing restarts from the hero", () => {
 })
 
 test("re-reads stops before each leg", () => {
-  const { s, env, step } = fakeEnv()
+  const { s, env, step, play } = fakeEnv()
   const a = createAutoplay(env, () => {})
-  a.play()
+  play(a)
   step() // arrive services, holding
   s.stops = [STOPS[0], STOPS[1], { y: 2400, hash: "#contact" }]
   step() // hold done → contact leg
@@ -206,7 +242,7 @@ test("re-reads stops before each leg", () => {
 })
 
 test("pause cancels the hold when the scroll finished synchronously", () => {
-  const { s, env, step } = fakeEnv()
+  const { s, env, step, play } = fakeEnv()
   // Reduced motion jumps instantly, so done() runs before scrollTo returns
   env.scrollTo = (y, _seconds, done) => {
     s.scrollY = y
@@ -214,7 +250,7 @@ test("pause cancels the hold when the scroll finished synchronously", () => {
     return () => {}
   }
   const a = createAutoplay(env, () => {})
-  a.play()
+  play(a)
   a.pause()
   step()
   assert.equal(s.waits.length, 1)
@@ -222,9 +258,9 @@ test("pause cancels the hold when the scroll finished synchronously", () => {
 })
 
 test("manual scroll during a hold pauses instead of jumping", () => {
-  const { s, env, step } = fakeEnv()
+  const { s, env, step, play } = fakeEnv()
   const a = createAutoplay(env, () => {})
-  a.play()
+  play(a)
   step() // arrive services, holding
   s.scrollY = 1600 // scrollbar drag: no wheel/touch/key event
   step() // hold ends

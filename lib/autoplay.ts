@@ -1,7 +1,11 @@
 export const SPEEDS = [1, 2, 0.5] as const
 export const PAUSE_MS = 3000
-export const SERVICE_PAUSE_MS = 400 // per card: each card is short
-export const PROJECTS_PAUSE_MS = 9000 // long enough to watch the stage play
+export const SERVICE_PAUSE_MS = 2000 // per card: a quick read of ~30 words
+export const HERO_DELAY_MS = 1500 // after Play in the hero: let the CTA land in the badge before the page moves
+export const PROJECTS_PAUSE_MS = 3500 // per project: title and a glance at the screenshot
+export const PROJECTS_SHOWN = 3
+export const PROJECTS_NEXT_EVENT = "autoplay:projects-next" // the stage skips ahead instead of waiting out a full gallery
+export const SERVICE_EVENT = "autoplay:service" // detail: card index to play as if hovered, null to release
 export const SCROLL_SECONDS = 1.2
 export const AUTOPLAY_TOGGLE_EVENT = "autoplay:toggle" // hero CTA and badge toggle the engine; header closes its menu
 
@@ -16,6 +20,13 @@ export interface TourStop {
   hash?: string
   /** Hold at 1×; defaults to PAUSE_MS. */
   pauseMs?: number
+  /** Dispatched on arrival. */
+  event?: TourEvent
+}
+
+export interface TourEvent {
+  type: string
+  detail?: unknown
 }
 
 export interface AutoplayEnv {
@@ -27,6 +38,7 @@ export interface AutoplayEnv {
   /** Returns a cancel function. */
   wait(ms: number, done: () => void): () => void
   setHash(hash: string): void
+  emit(event: TourEvent): void
 }
 
 export interface PageMetrics {
@@ -76,12 +88,17 @@ export function buildStops(m: PageMetrics): TourStop[] {
         y: clamp(m.servicesTop + (m.servicesHeight - m.vh) * progress),
         hash: k === 1 ? "#services" : undefined,
         pauseMs: SERVICE_PAUSE_MS,
+        event: { type: SERVICE_EVENT, detail: k - 1 },
       })
     }
   } else {
     stepDown(m.servicesTop, m.serviceBottoms, "#services", SERVICE_PAUSE_MS)
   }
-  stops.push({ y: clamp(m.projectsTop - m.headerPx), hash: "#projects", pauseMs: PROJECTS_PAUSE_MS })
+  const projectsY = clamp(m.projectsTop - m.headerPx)
+  stops.push({ y: projectsY, hash: "#projects", pauseMs: PROJECTS_PAUSE_MS, event: { type: SERVICE_EVENT, detail: null } })
+  for (let i = 1; i < PROJECTS_SHOWN; i++) {
+    stops.push({ y: projectsY, pauseMs: PROJECTS_PAUSE_MS, event: { type: PROJECTS_NEXT_EVENT } })
+  }
   stops.push({ y: clamp(m.contactTop - m.headerPx), hash: "#contact" })
   return stops
 }
@@ -123,6 +140,7 @@ export function createAutoplay(env: AutoplayEnv, onChange: (s: AutoplayState) =>
     cancel = null
     const stopScroll = env.scrollTo(stop.y, SCROLL_SECONDS / speed(), () => {
       if (stop.hash) env.setHash(stop.hash)
+      if (stop.event) env.emit(stop.event)
       nextIndex = i + 1
       const arrivedY = env.getScrollY()
       cancel = env.wait((stop.pauseMs ?? PAUSE_MS) / speed(), () => {
@@ -150,7 +168,10 @@ export function createAutoplay(env: AutoplayEnv, onChange: (s: AutoplayState) =>
     const replay = done || atEnd()
     done = false
     playing = true
-    leg(replay ? 0 : resumeIndex())
+    const i = replay ? 0 : resumeIndex()
+    // Fixed, not speed-scaled: it is a beat for the click to register, not part of the content
+    if (!replay && env.getScrollY() <= POS_TOLERANCE_PX) cancel = env.wait(HERO_DELAY_MS, () => leg(i))
+    else leg(i)
     if (playing) emit()
   }
 

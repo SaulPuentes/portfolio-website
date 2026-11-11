@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import type { Project } from "@/lib/types"
+import { PROJECTS_NEXT_EVENT } from "@/lib/autoplay"
 import { advance, progress, projectImages, selectProject, type Timeline } from "@/lib/showcase"
 
 export function useShowcase(projects: Project[], suspended = false) {
@@ -67,6 +68,12 @@ export function useShowcase(projects: Project[], suspended = false) {
     clock.current = selectProject(clock.current, project)
     setTimeline({ project: clock.current.project, slide: clock.current.slide })
   }, [])
+
+  useEffect(() => {
+    const next = () => select((clock.current.project + 1) % projects.length)
+    window.addEventListener(PROJECTS_NEXT_EVENT, next)
+    return () => window.removeEventListener(PROJECTS_NEXT_EVENT, next)
+  }, [select, projects.length])
 
   const togglePaused = useCallback(() => setPaused((p) => !p), [])
 

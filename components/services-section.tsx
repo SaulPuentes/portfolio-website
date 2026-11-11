@@ -1,5 +1,7 @@
 "use client"
 
+import { useEffect, useState } from "react"
+import { SERVICE_EVENT } from "@/lib/autoplay"
 import { useI18n } from "@/lib/i18n/context"
 import { services } from "@/lib/data"
 import type { Translations } from "@/lib/i18n/types"
@@ -11,6 +13,15 @@ const QUADRANT_ORDER = [0, 1, 2, 3]
 export function ServicesSection() {
   const { t } = useI18n()
   const { sectionRef, visibleCount, isMobile } = useScrollReveal(QUADRANT_ORDER.length)
+  const [tourCard, setTourCard] = useState<number | null>(null)
+  // The tour plays its card as if hovered, only while that card is the newest one revealed: scrolling away releases it
+  const activeCard = tourCard !== null && tourCard === visibleCount - 1 ? tourCard : null
+
+  useEffect(() => {
+    const onTour = (e: Event) => setTourCard((e as CustomEvent<number | null>).detail)
+    window.addEventListener(SERVICE_EVENT, onTour)
+    return () => window.removeEventListener(SERVICE_EVENT, onTour)
+  }, [])
 
   return (
     <section
@@ -19,7 +30,7 @@ export function ServicesSection() {
       className="relative -scroll-mt-10 md:scroll-mt-0"
       style={{ height: isMobile ? "auto" : "300vh" }}
     >
-      <ServicesBackground key={isMobile ? "phone" : "desktop"} sectionRef={sectionRef} revealed={visibleCount} isMobile={isMobile} />
+      <ServicesBackground key={isMobile ? "phone" : "desktop"} sectionRef={sectionRef} revealed={visibleCount} active={activeCard} isMobile={isMobile} />
       <div className={isMobile ? "relative" : "sticky top-0 h-screen flex items-center"}>
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-0">
 
@@ -47,6 +58,7 @@ export function ServicesSection() {
                 <div
                   key={service.key}
                   data-service-cell
+                  data-active={index === activeCard || undefined}
                   className={`group relative overflow-hidden border-b border-border p-8 pb-44 md:p-8 transition-all duration-700 ease-out ${
                     isRight ? "md:border-l" : ""
                   }`}
@@ -59,7 +71,7 @@ export function ServicesSection() {
                   {/* Ghost number — mono, subtle depth */}
                   <span
                     data-service-number
-                    className="pointer-events-none absolute right-6 top-6 select-none font-mono font-medium leading-none text-foreground/[0.05] transition-all duration-500 group-hover:text-accent/30"
+                    className="pointer-events-none absolute right-6 top-6 select-none font-mono font-medium leading-none text-foreground/[0.05] transition-all duration-500 group-hover:text-accent/30 group-data-active:text-accent/30"
                     style={{
                       fontSize: "clamp(3rem, 5vw, 4rem)",
                     }}
@@ -70,7 +82,7 @@ export function ServicesSection() {
 
                   {/* Accent top line reveal */}
                   <span
-                    className="absolute left-0 top-0 h-[2px] w-0 bg-accent transition-all duration-500 ease-out group-hover:w-full"
+                    className="absolute left-0 top-0 h-[2px] w-0 bg-accent transition-all duration-500 ease-out group-hover:w-full group-data-active:w-full"
                     aria-hidden="true"
                   />
 

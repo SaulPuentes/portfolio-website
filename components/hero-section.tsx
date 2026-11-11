@@ -125,6 +125,7 @@ export function HeroSection() {
             <Button
               size="lg"
               data-autoplay-control
+              data-autoplay-cta
               onClick={() => window.dispatchEvent(new Event(AUTOPLAY_TOGGLE_EVENT))}
             >
               <Play className="size-4" />

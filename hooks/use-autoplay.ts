@@ -21,6 +21,11 @@ export function useAutoplay() {
         getMaxScroll,
         getStops: () => {
           const top = (id: string) => (document.getElementById(id)?.getBoundingClientRect().top ?? 0) + window.scrollY
+          // Where the nav link lands: sections pull their title up under the header with a negative scroll-margin
+          const anchor = (id: string) => {
+            const el = document.getElementById(id)
+            return top(id) - (el ? parseFloat(getComputedStyle(el).scrollMarginTop) || 0 : 0)
+          }
           const services = document.getElementById("services")
           return buildStops({
             vh: root.clientHeight,
@@ -29,13 +34,14 @@ export function useAutoplay() {
             servicesTop: top("services"),
             servicesHeight: services?.offsetHeight ?? 0,
             // Read what useScrollReveal rendered instead of repeating its breakpoint
-            servicesSticky: services?.firstElementChild ? getComputedStyle(services.firstElementChild).position === "sticky" : false,
+            // Any child: the decorative background sits before the pinned grid
+            servicesSticky: [...(services?.children ?? [])].some((c) => getComputedStyle(c).position === "sticky"),
             serviceCount: services?.querySelectorAll(".grid > *").length ?? 0,
             serviceBottoms: [...(services?.querySelectorAll(".grid > *") ?? [])].map(
               (card) => card.getBoundingClientRect().bottom + window.scrollY,
             ),
-            projectsTop: top("projects"),
-            contactTop: top("contact"),
+            projectsTop: anchor("projects"),
+            contactTop: anchor("contact"),
           })
         },
         scrollTo: (y, seconds, done) => {
@@ -66,6 +72,7 @@ export function useAutoplay() {
           return () => clearTimeout(id)
         },
         setHash: (hash) => history.replaceState(null, "", hash),
+        emit: ({ type, detail }) => window.dispatchEvent(new CustomEvent(type, { detail })),
       },
       (s) =>
         setState((prev) =>
